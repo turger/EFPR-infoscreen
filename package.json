@@ -7,10 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-        "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-        "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md,mjs}\""
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md,mjs}\""
   },
   "dependencies": {
+    "eha-infoscreen": "file:",
     "lodash.isequal": "^4.5.0",
     "next": "14.2.14",
     "react": "^18",
