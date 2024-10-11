@@ -12,12 +12,12 @@ const AdsbClientComponent = dynamic(() => import('./AdsbClientComponent'), {
 const API_URL = 'https://jsonplaceholder.typicode.com/posts/4';
 
 export default function AdsbServerComponent() {
-    const { data, error, isValidating } = useSWR(API_URL, fetcher, {
+    /* const { data, error, isValidating } = useSWR(API_URL, fetcher, {
         refreshInterval: 60000,
-    });
+    }); */
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
+    /* useEffect(() => {
         if (isValidating) {
             setIsLoading(true);
         } else {
@@ -59,12 +59,13 @@ export default function AdsbServerComponent() {
                 </svg>
             </div>
         );
-    }
+    } */
 
     return (
         <>
             <p className="text-white text-xl">ADS-B</p>
-            <AdsbClientComponent data={data} />
+            {/* <AdsbClientComponent data={data} /> */}
+            <AdsbClientComponent />
         </>
     );
 }

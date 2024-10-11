@@ -11,12 +11,12 @@ import {
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useState, useEffect } from 'react';
+
 function ResetButton({ initialLocation, initialZoom }) {
     const map = useMap();
     const resetMap = () => {
         map.setView(initialLocation, initialZoom);
     };
-
     return (
         <button
             onClick={resetMap}
@@ -60,10 +60,24 @@ function ToggleButton({ toggleMapStyle }) {
     );
 }
 
+const rotatedIcon = (iconUrl, rotation, iconSize) => {
+    const size = iconSize;
+    const anchor = size / 2;
+    return L.divIcon({
+        className: 'custom-icon',
+        html: `<img src="${iconUrl}" style="transform: rotate(${rotation}deg); width: ${size}px; height: ${size}px;" />`,
+        iconSize: [size, size],
+        iconAnchor: [anchor, anchor],
+        popupAnchor: [0, -anchor],
+    });
+};
+
 export default function AdsbClientComponent({ data }) {
     const placeholderData = data;
+    const aerodome_location = [60.48075888598088, 26.59665436528449];
     const initial_location = [60.410626266897054, 22.867355506576178];
     const initial_zoom = 7;
+    const [iconSize, setIconSize] = useState(16);
     const [isDarkMode, setIsDarkMode] = useState(true);
 
     const toggleMapStyle = () => {
@@ -87,6 +101,26 @@ export default function AdsbClientComponent({ data }) {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
             )}
+            <Marker
+                position={aerodome_location}
+                icon={rotatedIcon(
+                    isDarkMode
+                        ? '/svgs/txrunit_yellow.svg'
+                        : '/svgs/txrunit_black.svg',
+                    0,
+                    iconSize
+                )}
+            >
+                <Tooltip
+                    className="custom-tooltip"
+                    direction="top"
+                    offset={[0, -12]}
+                    opacity={1}
+                    permanent={true} // true: name always visible, false: shows while hovered
+                >
+                    Helsinki East Aerodome
+                </Tooltip>
+            </Marker>
             <ToggleButton toggleMapStyle={toggleMapStyle} />
             <ResetButton
                 initialLocation={initial_location}
