@@ -40,7 +40,7 @@ function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
                         : '/svgs/resetmap_black.svg'
                 }
                 alt="Reset Map"
-                style={{ width: '20px', height: '20px' }}
+                style={{ width: '25px', height: '25px' }}
             />
         </button>
     );
@@ -70,7 +70,7 @@ function ToggleButton({ toggleMapStyle, isDarkMode }) {
                         : '/svgs/mode_black.svg'
                 }
                 alt="Change Mode"
-                style={{ width: '20px', height: '20px' }}
+                style={{ width: '25px', height: '25px' }}
             />
         </button>
     );
