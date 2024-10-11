@@ -103,7 +103,7 @@ export default function AdsbClientComponent({ data }) {
     useEffect(() => {
         const handleResize = () => {
             // Adjusts iconSize based on window width
-            setIconSize(window.innerWidth / 50);
+            setIconSize(window.innerWidth / 53);
         };
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -113,51 +113,53 @@ export default function AdsbClientComponent({ data }) {
     }, []);
 
     return (
-        <MapContainer
-            center={initial_location}
-            zoom={initial_zoom}
-            style={{ height: '100%', width: '100%' }}
-        >
-            {isDarkMode ? (
-                <TileLayer
-                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors & CartoDB'
-                />
-            ) : (
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-            )}
-            <Marker
-                position={aerodome_location}
-                icon={rotatedIcon(
-                    isDarkMode
-                        ? '/svgs/txrunit_yellow.svg'
-                        : '/svgs/txrunit_black.svg',
-                    0,
-                    iconSize
-                )}
+        <div className="relative w-full h-full">
+            <MapContainer
+                center={initial_location}
+                zoom={initial_zoom}
+                style={{ height: '100%', width: '100%' }}
             >
-                <Tooltip
-                    className="custom-tooltip"
-                    direction="top"
-                    offset={[0, -12]}
-                    opacity={1}
-                    permanent={true} // true: name always visible, false: shows while hovered
+                {isDarkMode ? (
+                    <TileLayer
+                        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors & CartoDB'
+                    />
+                ) : (
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                )}
+                <Marker
+                    position={aerodome_location}
+                    icon={rotatedIcon(
+                        isDarkMode
+                            ? '/svgs/txrunit_yellow.svg'
+                            : '/svgs/txrunit_black.svg',
+                        0,
+                        iconSize
+                    )}
                 >
-                    Helsinki East Aerodome
-                </Tooltip>
-            </Marker>
-            <ToggleButton
-                toggleMapStyle={toggleMapStyle}
-                isDarkMode={isDarkMode}
-            />
-            <ResetButton
-                initialLocation={initial_location}
-                initialZoom={initial_zoom}
-                isDarkMode={isDarkMode}
-            />
-        </MapContainer>
+                    <Tooltip
+                        className="custom-tooltip"
+                        direction="top"
+                        offset={[0, -12]}
+                        opacity={1}
+                        permanent={true} // true: name always visible, false: shows while hovered
+                    >
+                        Helsinki East Aerodome
+                    </Tooltip>
+                </Marker>
+                <ToggleButton
+                    toggleMapStyle={toggleMapStyle}
+                    isDarkMode={isDarkMode}
+                />
+                <ResetButton
+                    initialLocation={initial_location}
+                    initialZoom={initial_zoom}
+                    isDarkMode={isDarkMode}
+                />
+            </MapContainer>
+        </div>
     );
 }

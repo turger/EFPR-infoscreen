@@ -16,6 +16,7 @@ export default function AdsbServerComponent() {
         refreshInterval: 60000,
     }); */
     const [isLoading, setIsLoading] = useState(true);
+    const [adsbTime, setAdsbTime] = useState('--:--:--');
 
     /* useEffect(() => {
         if (isValidating) {
@@ -63,10 +64,9 @@ export default function AdsbServerComponent() {
 
     return (
         <>
-            <p className="text-white text-xl">ADS-B</p>
+            <p className="text-white text-sm">ADS-B {adsbTime}</p>
             {/* <AdsbClientComponent data={data} /> */}
             <AdsbClientComponent />
         </>
     );
 }
-
