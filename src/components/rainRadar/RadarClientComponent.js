@@ -10,6 +10,7 @@ function ResetButton({ initialLocation, initialZoom }) {
     const resetMap = () => {
         map.setView(initialLocation, initialZoom);
     };
+
     return (
         <button
             onClick={resetMap}
@@ -47,10 +48,10 @@ export default function RadarClientComponent({ data }) {
     //const [iconSize, setIconSize] = useState(2);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
-
+    //16.8674,56.7513,37.3717,70.9831
     const bounds = [
-        [56.85132, 15.99743], // Southwest corner
-        [71.0, 33.9], // Northeast corner
+        [56.7513, 16.8674], // Southwest corner
+        [70.9831, 37.3717], // Northeast corner
     ];
 
     useEffect(() => {

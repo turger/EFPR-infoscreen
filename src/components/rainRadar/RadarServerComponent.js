@@ -9,10 +9,9 @@ import {
 } from '@/lib/fmiQueryData';
 
 // Dynamic import for the client-side component, with SSR disabled
-const RadarClientComponent = dynamic(
-    () => import('./RadarClientComponent'),
-    { ssr: false }
-);
+const RadarClientComponent = dynamic(() => import('./RadarClientComponent'), {
+    ssr: false,
+});
 
 //const API_URL = 'https://jsonplaceholder.typicode.com/posts/4';
 //const url = `${config.url}?${new URLSearchParams(config.params).toString()}`;
@@ -39,7 +38,7 @@ export default function RadarServerComponent() {
                     return { url, time };
                 })
             );
-            setImages(imageUrls.reverse());
+            setImages(imageUrls);
         };
 
         fetchImages();
