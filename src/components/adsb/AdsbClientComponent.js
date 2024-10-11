@@ -12,7 +12,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useState, useEffect } from 'react';
 
-function ResetButton({ initialLocation, initialZoom }) {
+function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
     const map = useMap();
     const resetMap = () => {
         map.setView(initialLocation, initialZoom);
@@ -26,19 +26,27 @@ function ResetButton({ initialLocation, initialZoom }) {
                 bottom: '30px',
                 zIndex: 1000,
                 padding: '5px 10px',
-                backgroundColor: '#fac807',
+                //backgroundColor: '#fac807',
                 color: 'white',
                 border: 'none',
                 borderRadius: '30px',
                 cursor: 'pointer',
             }}
         >
-            Reset Map
+            <img
+                src={
+                    isDarkMode
+                        ? '/svgs/resetmap_yellow.svg'
+                        : '/svgs/resetmap_black.svg'
+                }
+                alt="Reset Map"
+                style={{ width: '20px', height: '20px' }}
+            />
         </button>
     );
 }
 
-function ToggleButton({ toggleMapStyle }) {
+function ToggleButton({ toggleMapStyle, isDarkMode }) {
     return (
         <button
             onClick={toggleMapStyle}
@@ -48,14 +56,22 @@ function ToggleButton({ toggleMapStyle }) {
                 bottom: '60px',
                 zIndex: 1000,
                 padding: '5px 10px',
-                backgroundColor: '#fac807',
+                //backgroundColor: '#fac807',
                 color: 'white',
-                border: 'none',
+                border: '3px',
                 borderRadius: '30px',
                 cursor: 'pointer',
             }}
         >
-            Change mode
+            <img
+                src={
+                    isDarkMode
+                        ? '/svgs/mode_yellow.svg'
+                        : '/svgs/mode_black.svg'
+                }
+                alt="Change Mode"
+                style={{ width: '20px', height: '20px' }}
+            />
         </button>
     );
 }
@@ -76,13 +92,25 @@ export default function AdsbClientComponent({ data }) {
     const placeholderData = data;
     const aerodome_location = [60.48075888598088, 26.59665436528449];
     const initial_location = [60.410626266897054, 22.867355506576178];
-    const initial_zoom = 7;
+    const initial_zoom = 6;
     const [iconSize, setIconSize] = useState(16);
     const [isDarkMode, setIsDarkMode] = useState(true);
 
     const toggleMapStyle = () => {
         setIsDarkMode((prevMode) => !prevMode);
     };
+
+    useEffect(() => {
+        const handleResize = () => {
+            // Adjusts iconSize based on window width
+            setIconSize(window.innerWidth / 50);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     return (
         <MapContainer
@@ -121,10 +149,14 @@ export default function AdsbClientComponent({ data }) {
                     Helsinki East Aerodome
                 </Tooltip>
             </Marker>
-            <ToggleButton toggleMapStyle={toggleMapStyle} />
+            <ToggleButton
+                toggleMapStyle={toggleMapStyle}
+                isDarkMode={isDarkMode}
+            />
             <ResetButton
                 initialLocation={initial_location}
                 initialZoom={initial_zoom}
+                isDarkMode={isDarkMode}
             />
         </MapContainer>
     );
