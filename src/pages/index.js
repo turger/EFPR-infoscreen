@@ -4,6 +4,7 @@ import Head from 'next/head';
 // Import only one component which handles the rest of the components which are related to the component.
 import CameraServerComponent from '../components/example/ExampleServerComponent';
 import RadarServerComponent from '@/components/rainRadar/RadarServerComponent';
+import AdsbServerComponent from '@/components/adsb/AdsbServerComponent';
 
 export default function Home() {
     return (
@@ -36,7 +37,9 @@ export default function Home() {
                         </div>
 
                         {/* Bottom Component */}
-                        <div className="bg-gray-700 rounded-lg shadow-lg p-6 h-1/2"></div>
+                        <div className="bg-gray-700 rounded-lg shadow-lg p-6 h-1/2">
+                            <AdsbServerComponent />
+                        </div>
                     </div>
                 </div>
 
