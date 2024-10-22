@@ -1,5 +1,12 @@
 import fetch from 'node-fetch';
 
+// Cache to store the ADS-B data and the time of the last fetch
+let adsbCache = {
+    data: null,
+    lastFetch: 0,
+};
+const CACHE_DURATION = 4000; // Cache duration 4 seconds
+
 export default async function getAdsbData(req, res) {
     try {
         const adsb_apikey = process.env.ADSB_APIKEY;
@@ -7,6 +14,12 @@ export default async function getAdsbData(req, res) {
 
         if (!adsb_apikey || !adsb_userkey) {
             return res.status(500).json({ error: 'Missing API or USER KEY' });
+        }
+
+        const now = Date.now();
+        if (adsbCache.data && now - adsbCache.lastFetch < CACHE_DURATION) {
+            // Return cached data if still valid
+            return res.status(200).json(adsbCache.data);
         }
 
         const url = `https://aero-network.com/distributor/json?api-key=${adsb_apikey}&user-key=${adsb_userkey}`;
@@ -24,6 +37,12 @@ export default async function getAdsbData(req, res) {
         }
 
         const data = await response.json();
+
+        adsbCache = {
+            data,
+            lastFetch: now,
+        };
+
         res.status(200).json(data);
     } catch (error) {
         console.log('Error fetching ADS-B data:', error);

@@ -88,7 +88,7 @@ const rotatedIcon = (iconUrl, rotation, iconSize) => {
     });
 };
 
-export default function AdsbClientComponent({ flights, adsbTime }) {
+export default function AdsbClientComponent({ flights }) {
     const aerodome_location = [60.48075888598088, 26.59665436528449];
     const initial_location = [60.410626266897054, 22.867355506576178];
     const initial_zoom = 6;
