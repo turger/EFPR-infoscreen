@@ -88,8 +88,7 @@ const rotatedIcon = (iconUrl, rotation, iconSize) => {
     });
 };
 
-export default function AdsbClientComponent({ data }) {
-    const placeholderData = data;
+export default function AdsbClientComponent({ flights, adsbTime }) {
     const aerodome_location = [60.48075888598088, 26.59665436528449];
     const initial_location = [60.410626266897054, 22.867355506576178];
     const initial_zoom = 6;
@@ -150,6 +149,58 @@ export default function AdsbClientComponent({ data }) {
                         Helsinki East Aerodome
                     </Tooltip>
                 </Marker>
+
+                {flights.map((flight) => {
+                    const isValidFlight =
+                        flight.lat != null && flight.lon != null && flight.fli;
+
+                    if (!isValidFlight) {
+                        console.log('invalid flight data:', flight);
+                        return null;
+                    }
+
+                    const rotation = flight.trk;
+                    return (
+                        <Marker
+                            key={flight.hex}
+                            position={[flight.lat, flight.lon]}
+                            icon={rotatedIcon(
+                                isDarkMode
+                                    ? '/svgs/plane_yellow.svg'
+                                    : '/svgs/plane_black.svg',
+                                rotation,
+                                iconSize
+                            )}
+                        >
+                            <Tooltip
+                                className="custom-tooltip"
+                                direction="top"
+                                offset={[0, -18]}
+                                opacity={1}
+                                permanent={true} // true: flight number always visible, false: shows while hovered
+                            >
+                                {flight.fli}
+                            </Tooltip>
+
+                            <Popup>
+                                <h4 className="popup-h4">{flight.fli}</h4>
+                                <div>
+                                    Flight ID: {flight.hex}
+                                    <br />
+                                    Altitude: {flight.alt} feet
+                                    <br />
+                                    Speed: {flight.spd}
+                                    <br />
+                                    Heading: {flight.trk}
+                                    <br />
+                                    Category: {flight.cat}
+                                    <br />
+                                </div>
+                            </Popup>
+                        </Marker>
+                    );
+                })}
+
                 <ToggleButton
                     toggleMapStyle={toggleMapStyle}
                     isDarkMode={isDarkMode}

@@ -9,14 +9,52 @@ const AdsbClientComponent = dynamic(() => import('./AdsbClientComponent'), {
     ssr: false,
 });
 
-const API_URL = 'https://jsonplaceholder.typicode.com/posts/4';
+// const API_URL = 'https://jsonplaceholder.typicode.com/posts/4';
 
 export default function AdsbServerComponent() {
     /* const { data, error, isValidating } = useSWR(API_URL, fetcher, {
         refreshInterval: 60000,
     }); */
+
     const [isLoading, setIsLoading] = useState(true);
     const [adsbTime, setAdsbTime] = useState('--:--:--');
+    const [flights, setFlights] = useState([]);
+
+    const adjustTime = (timeString) => {
+        let [hours, minutes, seconds] = timeString.split(':').map(Number);
+        hours = (hours + 3) % 24; // time -3h in JSON data
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+
+    const fetchAdsbData = async () => {
+        try {
+            const response = await fetch('/api/adsb');
+            const result = await response.json();
+
+            if (response.ok && result.length > 0) {
+                const uniqueFlights = result.filter(
+                    (flight, index, self) =>
+                        index === self.findIndex((f) => f.hex === flight.hex)
+                );
+
+                setFlights(uniqueFlights);
+
+                const timeZoneOffSet = result[0].tim.slice(0, 8);
+                const adjustedTime = adjustTime(timeZoneOffSet);
+                setAdsbTime(adjustedTime);
+            } else {
+                console.warn('ADS-B data response empty/not ok');
+            }
+        } catch (error) {
+            console.error('Error fetching ADS-B data: ', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAdsbData();
+        const intervalADSB = setInterval(fetchAdsbData, 3000);
+        return () => clearInterval(intervalADSB);
+    }, []);
 
     /* useEffect(() => {
         if (isValidating) {
@@ -66,7 +104,7 @@ export default function AdsbServerComponent() {
         <>
             <p className="text-white text-sm">ADS-B {adsbTime}</p>
             {/* <AdsbClientComponent data={data} /> */}
-            <AdsbClientComponent />
+            <AdsbClientComponent flights={flights} adsbTime={adsbTime} />
         </>
     );
 }
