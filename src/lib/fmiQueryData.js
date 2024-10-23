@@ -23,7 +23,7 @@ export const defaultQueryParams = {
     service: 'WMS', //Web Map Service
     version: '2.0.0',
     request: 'GetMap',
-    format: 'image/png',
+    format: 'image/PNG',
     transparent: 'true',
     bbox: projectionBounds.join(','),
     srs: projectionSrs,
@@ -49,18 +49,25 @@ export function generateRadarFrameTimestamps(
     framesCount,
     baseDate = Date.now()
 ) {
-    const numberSeries = new Array(framesCount).keys();
-    return Array.from(
-        numberSeries,
-        nthTenMinuteDivisibleTimestamp(baseDate)
-    ).reverse();
+    const uniqueTimestamps = new Set();
+    const numberSeries = Array.from({ length: framesCount }, (_, n) => n);
+
+    // Ensure baseDate is rounded down to the nearest ten minutes
+    const tenMinutes = 10 * 60 * 1000;
+    const lastFullTenMinutes = Math.floor(baseDate / tenMinutes) * tenMinutes;
+
+    // Generate timestamps using the nthTenMinuteDivisibleTimestamp function
+    numberSeries.reverse().forEach((n) => {
+        const timestamp = nthTenMinuteDivisibleTimestamp(lastFullTenMinutes)(n);
+        uniqueTimestamps.add(timestamp);
+    });
+
+    return Array.from(uniqueTimestamps);
 }
 
 function nthTenMinuteDivisibleTimestamp(baseDate) {
     return (n) => {
         const tenMinutes = 10 * 60 * 1000;
-        const lastFullTenMinutes =
-            Math.floor(baseDate / tenMinutes) * tenMinutes;
-        return new Date(lastFullTenMinutes - n * tenMinutes).toISOString();
+        return new Date(baseDate - n * tenMinutes).toISOString();
     };
 }
