@@ -1,97 +1,64 @@
-import { useState, useEffect } from 'react';
-/*import useSWR from 'swr';
-import { FaExclamationTriangle } from 'react-icons/fa';
-import { fetcher } from '../common/fetcher'; */
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import {
-    requestRainRadar,
-    generateRadarFrameTimestamps,
-} from '@/lib/fmiQueryData';
+import LoadingSpinner from '../LoadingSpinner';
+import ErrorComponent from '../ErrorComponent';
 
-// Dynamic import for the client-side component, with SSR disabled
 const RadarClientComponent = dynamic(() => import('./RadarClientComponent'), {
     ssr: false,
 });
 
-//const API_URL = 'https://jsonplaceholder.typicode.com/posts/4';
-//const url = `${config.url}?${new URLSearchParams(config.params).toString()}`;
-
 export default function RadarServerComponent() {
-    /*const { data, error, isValidating } = useSWR(API_URL, fetcher, {
-        refreshInterval: 60000,
-    });
-    const [isLoading, setIsLoading] = useState(true); */
-    const [images, setImages] = useState([]);
-    const timestamps = generateRadarFrameTimestamps(12);
-    /*const urls = timestamps.map((time) => {
-        const config = requestRainRadar(time);
-        const url = `${config.url}?${new URLSearchParams(config.params).toString()}`;
-        setImages(...images, url);
-    }); */
+    const [imagePaths, setImagePaths] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchImages = async () => {
-            const imageUrls = await Promise.all(
-                timestamps.map(async (time) => {
-                    const config = requestRainRadar(time);
-                    const url = `${config.url}?${new URLSearchParams(config.params).toString()}`;
-                    return { url, time };
-                })
-            );
-            setImages(imageUrls);
+        const fetchRadarImages = async () => {
+            try {
+                // Fetch the radar images from the server-side API
+                const res = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_RADAR_URL}/api/processRadarImages`,
+                    {
+                        cache: 'no-store', // Ensure fresh data
+                    }
+                );
+
+                // Ensure the API call was successful
+                if (!res.ok) {
+                    throw new Error('Failed to fetch radar images');
+                }
+
+                const data = await res.json();
+                setImagePaths(data.imagePaths); // Set the image paths from the response
+                setIsLoading(false);
+            } catch (error) {
+                setError('Could not create imagePaths: ' + error.message);
+                setIsLoading(false); // Stop loading on error
+            }
         };
 
-        fetchImages();
-    }, [timestamps]);
-    /*
-    useEffect(() => {
-        if (isValidating) {
-            setIsLoading(true);
-        } else {
-            const timer = setTimeout(() => setIsLoading(false), 1000);
-            return () => clearTimeout(timer);
-        }
-    }, [isValidating]);
+        // Call the function immediately when the component mounts
+        fetchRadarImages();
 
+        // Set up an interval to fetch data every 10 minutes (600,000 milliseconds)
+        const intervalId = setInterval(fetchRadarImages, 600000);
+
+        // Clean up the interval when the component is unmounted
+        return () => clearInterval(intervalId);
+    }, []); // Empty dependency array ensures this effect runs only once when the component mounts
+
+    // Loading and error handling
     if (error) {
-        return (
-            <div className="p-6 rounded-lg shadow-lg flex items-center justify-center h-full">
-                <FaExclamationTriangle className="text-red-500 text-3xl" />
-            </div>
-        );
+        return <ErrorComponent message={error} />;
+    }
+    if (isLoading || !imagePaths) {
+        return <LoadingSpinner />;
     }
 
-    if (isLoading || !data) {
-        return (
-            <div className="p-6 rounded-lg shadow-lg flex items-center justify-center h-full">
-                <svg
-                    className="animate-spin h-10 w-10 text-blue-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                >
-                    <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                    ></circle>
-                    <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    ></path>
-                </svg>
-            </div>
-        );
-    } */
-
     return (
-        <>
-            <p className="text-white text-xl">Rain radar</p>
-            <RadarClientComponent data={images} />
-        </>
+        <div>
+            <h1 className="text-white text-xl">Rain Radar</h1>
+            <RadarClientComponent data={imagePaths} />
+        </div>
     );
 }

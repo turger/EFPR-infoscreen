@@ -1,9 +1,8 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, useMap, ImageOverlay } from 'react-leaflet';
-//import { EPSG3067 } from '../common/crs';
+import { MapContainer, TileLayer, ImageOverlay, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-//import L from 'leaflet';
 
 function ResetButton({ initialLocation, initialZoom }) {
     const map = useMap();
@@ -31,24 +30,10 @@ function ResetButton({ initialLocation, initialZoom }) {
         </button>
     );
 }
-/*
-const rotatedIcon = (iconUrl, rotation, iconSize) => {
-    const size = iconSize;
-    const anchor = size / 2;
-    return L.divIcon({
-        className: 'custom-icon',
-        html: `<img src="${iconUrl}" style="transform: rotate(${rotation}deg); width: ${size}px; height: ${size}px;" />`,
-        iconSize: [size, size],
-        iconAnchor: [anchor, anchor],
-        popupAnchor: [0, -anchor],
-    });
-}; */
 
 export default function RadarClientComponent({ data }) {
-    //const [iconSize, setIconSize] = useState(2);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
-    //16.8674,56.7513,37.3717,70.9831
+    const [error, setError] = useState(false);
     const bounds = [
         [56.7513, 16.8674], // Southwest corner
         [70.9831, 37.3717], // Northeast corner
@@ -56,76 +41,58 @@ export default function RadarClientComponent({ data }) {
 
     useEffect(() => {
         if (data.length > 0) {
-            setIsLoading(false);
             const interval = setInterval(() => {
                 setCurrentImageIndex(
                     (prevIndex) => (prevIndex + 1) % data.length
                 );
-            }, 1000); // Change image every second
+            }, 1000); // Change image every 3 seconds
             return () => clearInterval(interval);
         }
     }, [data.length]);
 
-    /*useEffect(() => {
-        console.log('Current Image Index:', currentImageIndex);
-        console.log('Image URL:', data[currentImageIndex]?.url); // Check if URL exists
-    }, [currentImageIndex, data]); */
-    /*useEffect(() => {
-        const handleResize = () => {
-            setIconSize(window.innerWidth / 45);
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []); */
-
-    //const aerodomeLocation = [60.48075888598088, 26.59665436528449];
     const initialLocation = [60.518742, 26.398944];
     const initialZoom = 7;
-
-    if (isLoading) {
-        return <div>Loading map...</div>;
-    }
 
     return (
         <MapContainer
             center={initialLocation}
             zoom={initialZoom}
-            style={{ height: '100%', width: '100%' }}
-            //crs={EPSG3067}
+            style={{ height: '100vh', width: '100%' }} // Adjust height for full viewport
         >
             <TileLayer
                 url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors & CartoDB'
             />
 
-            {data.length > 0 && (
+            {data.length > 0 && !error && (
                 <ImageOverlay
-                    key={data[currentImageIndex].url}
-                    url={data[currentImageIndex].url}
+                    key={data[currentImageIndex]}
+                    url={data[currentImageIndex]}
                     bounds={bounds}
-                    //opacity={0.7}
+                    onError={() => {
+                        setError(true);
+                        console.error(
+                            `Failed to load image at: ${data[currentImageIndex]}`
+                        );
+                    }}
                 />
             )}
-            {/* 
-             <Marker
-                position={aerodomeLocation}
-                icon={rotatedIcon('/svgs/txrunit_yellow.svg', 0, iconSize)}
-            >
-                <Tooltip
-                    className="custom-tooltip"
-                    direction="top"
-                    offset={[0, -12]}
-                    opacity={1}
-                    permanent={false}
-                >
-                    Helsinki East Aerodome
-                </Tooltip>
-            </Marker>
 
-            */}
+            {error && (
+                <div
+                    style={{
+                        position: 'absolute',
+                        zIndex: 1000,
+                        top: '10px',
+                        left: '10px',
+                        backgroundColor: 'white',
+                        padding: '5px',
+                        borderRadius: '5px',
+                    }}
+                >
+                    Error loading image. Please try again later.
+                </div>
+            )}
 
             <ResetButton
                 initialLocation={initialLocation}
