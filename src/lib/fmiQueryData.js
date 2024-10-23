@@ -58,7 +58,9 @@ export function generateRadarFrameTimestamps(
 
     // Generate timestamps using the nthTenMinuteDivisibleTimestamp function
     numberSeries.reverse().forEach((n) => {
-        const timestamp = nthTenMinuteDivisibleTimestamp(lastFullTenMinutes)(n);
+        const timestamp = nthTenMinuteDivisibleTimestamp(lastFullTenMinutes)(
+            n + 1
+        );
         uniqueTimestamps.add(timestamp);
     });
 
