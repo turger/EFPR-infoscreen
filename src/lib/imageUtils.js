@@ -5,15 +5,46 @@ import fs, { promises as fsPromises } from 'fs';
 sharp.cache(false);
 sharp.concurrency(1);
 const storageDir = path.join(process.cwd(), 'storage', 'radarImages');
-
+// Function to introduce a delay
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 // Main function to fetch and save all radar images
-export async function fetchRadarImagesAndSave(urls, timestamps) {
-    // Limit concurrency (optional)
+export async function fetchRadarImagesAndSave(urls, timestamps, concurrencyLimit= 2) {
+    const imagePaths = []; // Array to hold successfully saved image paths
+    const executing = []; // Array to track currently executing promises
+
+    for (let i = 0; i < urls.length; i++) {
+        const promise = fetchAndSaveImage(urls[i], timestamps[i]).then(imagePath => {
+            if (imagePath) {
+                imagePaths.push(imagePath); // Add the path if successfully saved
+            }
+        }).catch(error => {
+            console.error(`Error processing image ${urls[i]}: ${error.message}`);
+        }).finally(() => {
+            // Remove the promise from the executing array once done
+            executing.splice(executing.indexOf(promise), 1);
+        });
+
+        executing.push(promise);
+
+        // If we've reached the concurrency limit, wait for one of the promises to resolve
+        if (executing.length >= concurrencyLimit) {
+            await Promise.race(executing); // Wait for any promise to resolve
+        }
+
+        // Introduce a delay between fetches
+        await delay(500); // Adjust delay as needed
+    }
+
+    // Wait for all remaining promises to complete
+    await Promise.all(executing);
+
+    return imagePaths; // Return array of saved image paths
+    /* Limit concurrency (optional)
     const imagePaths = await Promise.all(
         urls.map((url, index) => fetchAndSaveImage(url, timestamps[index]))
     );
 
-    return imagePaths.filter(Boolean); // Filter out any null values
+    return imagePaths.filter(Boolean); */ // Filter out any null values
 }
 
 const fetchAndSaveImage = async (url, timestamp) => {
