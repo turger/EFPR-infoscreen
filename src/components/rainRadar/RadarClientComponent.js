@@ -3,6 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, ImageOverlay, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import proj4 from 'proj4'; // Import proj4
+import { projectionBounds } from '@/lib/fmiQueryData';
+
+// Define the projections
+proj4.defs([
+    [
+        'EPSG:3857',
+        '+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +no_defs',
+    ],
+    ['EPSG:4326', '+proj=longlat +datum=WGS84 +no_defs'],
+]);
 
 function ResetButton({ initialLocation, initialZoom }) {
     const map = useMap();
@@ -34,9 +45,21 @@ function ResetButton({ initialLocation, initialZoom }) {
 export default function RadarClientComponent({ data }) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [error, setError] = useState(false);
+
+    // Convert EPSG:3857 bounds to EPSG:4326
+    const sw = proj4('EPSG:3857', 'EPSG:4326', [
+        projectionBounds[0],
+        projectionBounds[1],
+    ]);
+    const ne = proj4('EPSG:3857', 'EPSG:4326', [
+        projectionBounds[2],
+        projectionBounds[3],
+    ]);
+
+    // Create bounds for Leaflet
     const bounds = [
-        [56.7513, 16.8674], // Southwest corner
-        [70.9831, 37.3717], // Northeast corner
+        [sw[1], sw[0]], // SW corner (lat, lon)
+        [ne[1], ne[0]], // NE corner (lat, lon)
     ];
 
     useEffect(() => {
@@ -45,7 +68,7 @@ export default function RadarClientComponent({ data }) {
                 setCurrentImageIndex(
                     (prevIndex) => (prevIndex + 1) % data.length
                 );
-            }, 1000); // Change image every 3 seconds
+            }, 3000); // Change image every 3 seconds
             return () => clearInterval(interval);
         }
     }, [data.length]);
@@ -69,12 +92,6 @@ export default function RadarClientComponent({ data }) {
                     key={data[currentImageIndex]}
                     url={data[currentImageIndex]}
                     bounds={bounds}
-                    onError={() => {
-                        setError(true);
-                        console.error(
-                            `Failed to load image at: ${data[currentImageIndex]}`
-                        );
-                    }}
                 />
             )}
 
