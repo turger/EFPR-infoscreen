@@ -25,7 +25,10 @@ export default async function handler(req, res) {
         // Return local image paths to the client
         const localImagePaths = timestamps.map((time) => {
             const formattedTime = time.replace(/:/g, '-');
-            return `/api/getRadarImage?filename=radar-image-${formattedTime}.png`;
+            return {
+                url: `/api/getRadarImage?filename=radar-image-${formattedTime}.png`,
+                timestamp: time, // Keep the original time for use on the client
+            };
         });
 
         res.status(200).json({ imagePaths: localImagePaths });
