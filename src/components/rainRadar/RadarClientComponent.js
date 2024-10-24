@@ -45,6 +45,15 @@ function ResetButton({ initialLocation, initialZoom }) {
 export default function RadarClientComponent({ data }) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [error, setError] = useState(false);
+    const [timestamps, setTimestamps] = useState([]);
+
+    // Extract URLs and timestamps from the data
+    useEffect(() => {
+        if (data.length > 0) {
+            const generatedTimestamps = data.map((item) => item.timestamp); // Extract timestamps
+            setTimestamps(generatedTimestamps);
+        }
+    }, [data]);
 
     // Convert EPSG:3857 bounds to EPSG:4326
     const sw = proj4('EPSG:3857', 'EPSG:4326', [
@@ -61,26 +70,59 @@ export default function RadarClientComponent({ data }) {
         [sw[1], sw[0]], // SW corner (lat, lon)
         [ne[1], ne[0]], // NE corner (lat, lon)
     ];
-
+    /*
     useEffect(() => {
         if (data.length > 0) {
             const interval = setInterval(() => {
                 setCurrentImageIndex(
                     (prevIndex) => (prevIndex + 1) % data.length
                 );
-            }, 3000); // Change image every 3 seconds
+            }, 2000); // Change image every 2 seconds
             return () => clearInterval(interval);
         }
-    }, [data.length]);
+    }, [data.length]); */
 
-    const initialLocation = [60.518742, 26.398944];
-    const initialZoom = 7;
+    useEffect(() => {
+        if (data.length === 0) return;
+
+        // Function to advance the image index
+        const advanceImage = () => {
+            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % data.length);
+        };
+
+        // Set an interval to change the image every 5 seconds
+        const intervalId = setInterval(advanceImage, 5000);
+
+        // Clear interval on component unmount
+        return () => clearInterval(intervalId);
+    }, [data]);
+
+    const initialLocation = [60.1, 25.198944];
+    const initialZoom = 8;
+
+    const getFinnishTime = (timestamp) => {
+        console.log('Raw Timestamp:', timestamp); // Log raw timestamp
+        const date = new Date(timestamp);
+        if (isNaN(date.getTime())) {
+            console.error('Invalid date for timestamp:', timestamp);
+            return 'Invalid time'; // or return an empty string
+        }
+
+        const finnishTime = new Intl.DateTimeFormat('fi-FI', {
+            timeZone: 'Europe/Helsinki',
+            hour: '2-digit',
+            minute: '2-digit',
+        }).format(date);
+
+        console.log('Formatted Finnish Time:', finnishTime);
+        return finnishTime;
+    };
 
     return (
         <MapContainer
             center={initialLocation}
             zoom={initialZoom}
-            style={{ height: '100vh', width: '100%' }} // Adjust height for full viewport
+            style={{ height: '40vh', width: '100%' }} // Adjust height for full viewport
         >
             <TileLayer
                 url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
@@ -89,8 +131,8 @@ export default function RadarClientComponent({ data }) {
 
             {data.length > 0 && !error && (
                 <ImageOverlay
-                    key={data[currentImageIndex]}
-                    url={data[currentImageIndex]}
+                    key={data[currentImageIndex].url}
+                    url={data[currentImageIndex].url}
                     bounds={bounds}
                 />
             )}
@@ -110,6 +152,23 @@ export default function RadarClientComponent({ data }) {
                     Error loading image. Please try again later.
                 </div>
             )}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    zIndex: 1000,
+                    backgroundColor: 'white',
+                    padding: '5px',
+                    borderRadius: '5px',
+                    color: '#000',
+                    fontWeight: 'bold',
+                }}
+            >
+                {timestamps[currentImageIndex] && (
+                    <div>{getFinnishTime(timestamps[currentImageIndex])}</div>
+                )}
+            </div>
 
             <ResetButton
                 initialLocation={initialLocation}
