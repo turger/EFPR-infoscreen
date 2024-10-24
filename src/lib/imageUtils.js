@@ -32,19 +32,13 @@ export async function fetchRadarImagesAndSave(urls, timestamps, concurrencyLimit
         }
 
         // Introduce a delay between fetches
-        await delay(500); // Adjust delay as needed
+        await delay(700); // Adjust delay as needed
     }
 
     // Wait for all remaining promises to complete
     await Promise.all(executing);
 
     return imagePaths; // Return array of saved image paths
-    /* Limit concurrency (optional)
-    const imagePaths = await Promise.all(
-        urls.map((url, index) => fetchAndSaveImage(url, timestamps[index]))
-    );
-
-    return imagePaths.filter(Boolean); */ // Filter out any null values
 }
 
 const fetchAndSaveImage = async (url, timestamp) => {
