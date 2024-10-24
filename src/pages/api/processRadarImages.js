@@ -4,7 +4,7 @@ import {
     generateRadarFrameTimestamps,
     requestRainRadar,
 } from '@/lib/fmiQueryData';
-import fetchRadarImagesAndSave from '@/lib/imageUtils'; // This is the function we defined
+import { fetchRadarImagesAndSave, pruneOldRadarImages } from '@/lib/imageUtils'; // This is the function we defined
 
 export default async function handler(req, res) {
     try {
@@ -16,6 +16,8 @@ export default async function handler(req, res) {
             const config = requestRainRadar(time);
             return `${config.url}?${new URLSearchParams(config.params).toString()}`;
         });
+
+        await pruneOldRadarImages(timestamps);
 
         // Fetch and save radar images concurrently
         await fetchRadarImagesAndSave(urls, timestamps);
