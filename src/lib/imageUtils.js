@@ -31,7 +31,6 @@ const fetchAndSaveImage = async (url, timestamp) => {
         .then(() => true)
         .catch(() => false);
     if (fileExists) {
-        console.log(`Image already exists at ${savePath}, skipping fetch.`);
         return savePath;
     }
 
@@ -87,14 +86,12 @@ const fetchAndSaveImage = async (url, timestamp) => {
                     .png() // Save as PNG to preserve transparency
                     .toFile(savePath);
             });
-        console.log(`Image saved at ${savePath}`);
         return savePath;
     } catch (error) {
-        console.error(
-            `Error fetching or saving image for ${timestamp}:`,
+        throw new Error(
+            `Error fetching or saving image for ${timestamp}`,
             error
         );
-        return null;
     }
 };
 
@@ -102,6 +99,11 @@ export async function pruneOldRadarImages(newTimestamps) {
     try {
         // Read all files from the storage directory
         const files = await fs.promises.readdir(storageDir);
+
+        // Format new timestamps to match the saved filenames
+        const formattedNewTimestamps = newTimestamps.map((timestamp) =>
+            timestamp.replace(/:/g, '-')
+        );
 
         // Extract timestamps from filenames
         const savedTimestamps = files
@@ -115,7 +117,7 @@ export async function pruneOldRadarImages(newTimestamps) {
 
         // Find timestamps to delete
         const timestampsToDelete = savedTimestamps.filter(
-            (savedTimestamp) => !newTimestamps.includes(savedTimestamp)
+            (savedTimestamp) => !formattedNewTimestamps.includes(savedTimestamp)
         );
 
         // Delete outdated images
@@ -126,10 +128,9 @@ export async function pruneOldRadarImages(newTimestamps) {
                     `radar-image-${timestamp}.png`
                 );
                 await fs.promises.unlink(filePath);
-                console.log(`Deleted outdated radar image: ${filePath}`);
             })
         );
     } catch (error) {
-        console.error('Error pruning radar images:', error);
+        throw new Error('Error pruning radar images: ', error);
     }
 }
