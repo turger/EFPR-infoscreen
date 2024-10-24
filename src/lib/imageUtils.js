@@ -8,8 +8,6 @@ const storageDir = path.join(process.cwd(), 'storage', 'radarImages');
 
 // Main function to fetch and save all radar images
 export async function fetchRadarImagesAndSave(urls, timestamps) {
-    await fsPromises.mkdir(storageDir, { recursive: true });
-
     // Limit concurrency (optional)
     const imagePaths = await Promise.all(
         urls.map((url, index) => fetchAndSaveImage(url, timestamps[index]))
@@ -96,6 +94,7 @@ const fetchAndSaveImage = async (url, timestamp) => {
 };
 
 export async function pruneOldRadarImages(newTimestamps) {
+    await fsPromises.mkdir(storageDir, { recursive: true });
     try {
         // Read all files from the storage directory
         const files = await fs.promises.readdir(storageDir);
