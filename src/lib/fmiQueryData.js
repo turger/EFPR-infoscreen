@@ -1,15 +1,23 @@
 const wmsUrl = 'https://openwms.fmi.fi/geoserver/Radar/wms';
 const wmsImageWidth = 1987;
 const wmsImageHeight = 3144;
-//The EPSG:4326 projection bounds would be: 16.8674,56.7513,37.3717,70.9831
-/*const projectionBounds = [
+
+/* These are the EPSG 4326 bounds and projectionSrs
+const projectionBounds = [16.8674, 56.7513, 37.37166, 70.98306];
+const projectionSrs = 'EPSG:4326'; */
+
+// the EPSG:3857 bounds
+export const projectionBounds = [
+    1877673.7198253432, 7709459.582123121, 4160194.1605840144,
+    11396482.455942834,
+];
+const projectionSrs = 'EPSG:3857';
+
+/*EPSG:3067 bounds and srs
+const projectionBounds = [
     -118331.366408, 6335621.167014, 875567.731907, 7907751.537264,
 ];
-//EPSG:4326 is the most used EPSG projection
-const projectionSrs = 'EPSG:3067'; //This is the code for the Finnish projected coordinates that FMI uses
-*/
-const projectionBounds = [16.8674, 56.7513, 37.37166, 70.98306];
-const projectionSrs = 'EPSG:4326';
+const projectionSrs = 'EPSG:3067'; */
 export function requestRainRadar(time) {
     return wmsRequestConfig('Radar:suomi_rr_eureffin', time); // Radar:suomi ... is the layer id to get the current and previous data
 }
