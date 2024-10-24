@@ -100,6 +100,11 @@ export async function pruneOldRadarImages(newTimestamps) {
         // Read all files from the storage directory
         const files = await fs.promises.readdir(storageDir);
 
+        if (files.length === 0) {
+            console.log('No images found. Skipping pruning.');
+            return; // Skip the pruning process
+        }
+
         // Format new timestamps to match the saved filenames
         const formattedNewTimestamps = newTimestamps.map((timestamp) =>
             timestamp.replace(/:/g, '-')

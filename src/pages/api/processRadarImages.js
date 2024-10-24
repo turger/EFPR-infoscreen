@@ -35,6 +35,7 @@ export default async function handler(req, res) {
 
             res.status(200).json({ imagePaths: localImagePaths });
         } catch (error) {
+            console.error('Could not do something', error);
             res.status(500).json({ error: 'Failed to process radar images' });
         }
     } else {
