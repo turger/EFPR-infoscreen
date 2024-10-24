@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import proj4 from 'proj4'; // Import proj4
 import { projectionBounds } from '@/lib/fmiQueryData';
 
-// Define the projections
+// Defines the projections
 proj4.defs([
     [
         'EPSG:3857',
@@ -44,10 +44,9 @@ function ResetButton({ initialLocation, initialZoom }) {
 
 export default function RadarClientComponent({ data }) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [error, setError] = useState(false);
     const [timestamps, setTimestamps] = useState([]);
 
-    // Extract URLs and timestamps from the data
+    // Extracts URLs and timestamps from the data
     useEffect(() => {
         if (data.length > 0) {
             const generatedTimestamps = data.map((item) => item.timestamp); // Extract timestamps
@@ -70,17 +69,6 @@ export default function RadarClientComponent({ data }) {
         [sw[1], sw[0]], // SW corner (lat, lon)
         [ne[1], ne[0]], // NE corner (lat, lon)
     ];
-    /*
-    useEffect(() => {
-        if (data.length > 0) {
-            const interval = setInterval(() => {
-                setCurrentImageIndex(
-                    (prevIndex) => (prevIndex + 1) % data.length
-                );
-            }, 2000); // Change image every 2 seconds
-            return () => clearInterval(interval);
-        }
-    }, [data.length]); */
 
     useEffect(() => {
         if (data.length === 0) return;
@@ -90,21 +78,19 @@ export default function RadarClientComponent({ data }) {
             setCurrentImageIndex((prevIndex) => (prevIndex + 1) % data.length);
         };
 
-        // Set an interval to change the image every 5 seconds
-        const intervalId = setInterval(advanceImage, 5000);
+        // Set an interval to change the image every 2 seconds
+        const intervalId = setInterval(advanceImage, 2000);
 
         // Clear interval on component unmount
         return () => clearInterval(intervalId);
     }, [data]);
 
-    const initialLocation = [60.1, 25.198944];
-    const initialZoom = 8;
+    const initialLocation = [61.1, 23.0];
+    const initialZoom = 6;
 
     const getFinnishTime = (timestamp) => {
-        console.log('Raw Timestamp:', timestamp); // Log raw timestamp
         const date = new Date(timestamp);
         if (isNaN(date.getTime())) {
-            console.error('Invalid date for timestamp:', timestamp);
             return 'Invalid time'; // or return an empty string
         }
 
@@ -114,7 +100,6 @@ export default function RadarClientComponent({ data }) {
             minute: '2-digit',
         }).format(date);
 
-        console.log('Formatted Finnish Time:', finnishTime);
         return finnishTime;
     };
 
@@ -122,14 +107,14 @@ export default function RadarClientComponent({ data }) {
         <MapContainer
             center={initialLocation}
             zoom={initialZoom}
-            style={{ height: '40vh', width: '100%' }} // Adjust height for full viewport
+            style={{ height: '40vh', width: '100%' }}
         >
             <TileLayer
                 url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors & CartoDB'
             />
 
-            {data.length > 0 && !error && (
+            {data.length > 0 && (
                 <ImageOverlay
                     key={data[currentImageIndex].url}
                     url={data[currentImageIndex].url}
@@ -137,21 +122,6 @@ export default function RadarClientComponent({ data }) {
                 />
             )}
 
-            {error && (
-                <div
-                    style={{
-                        position: 'absolute',
-                        zIndex: 1000,
-                        top: '10px',
-                        left: '10px',
-                        backgroundColor: 'white',
-                        padding: '5px',
-                        borderRadius: '5px',
-                    }}
-                >
-                    Error loading image. Please try again later.
-                </div>
-            )}
             <div
                 style={{
                     position: 'absolute',
