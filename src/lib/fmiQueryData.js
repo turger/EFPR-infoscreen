@@ -2,28 +2,15 @@ const wmsUrl = 'https://openwms.fmi.fi/geoserver/Radar/wms';
 const wmsImageWidth = 1987;
 const wmsImageHeight = 3144;
 
-/* These are the EPSG 4326 bounds and projectionSrs
-const projectionBounds = [16.8674, 56.7513, 37.37166, 70.98306];
-const projectionSrs = 'EPSG:4326'; */
-
-// the EPSG:3857 bounds
+// the EPSG:3857 bounds because of leaflet
 export const projectionBounds = [
     1877673.7198253432, 7709459.582123121, 4160194.1605840144,
     11396482.455942834,
 ];
 const projectionSrs = 'EPSG:3857';
 
-/*EPSG:3067 bounds and srs
-const projectionBounds = [
-    -118331.366408, 6335621.167014, 875567.731907, 7907751.537264,
-];
-const projectionSrs = 'EPSG:3067'; */
 export function requestRainRadar(time) {
     return wmsRequestConfig('Radar:suomi_rr_eureffin', time); // Radar:suomi ... is the layer id to get the current and previous data
-}
-
-export function requestRainRadarEstimate(time) {
-    return wmsRequestConfig('Radar:suomi_tuliset_rr_eureffin', time); // This was in the sataako.fi files, but I don't see how they are used. Keeping it here just in case for now
 }
 
 //setting the query params for the request
@@ -60,15 +47,9 @@ export function generateRadarFrameTimestamps(
     const uniqueTimestamps = new Set();
     const numberSeries = Array.from({ length: framesCount }, (_, n) => n);
 
-    // Ensure baseDate is rounded down to the nearest ten minutes
-    const tenMinutes = 10 * 60 * 1000;
-    const lastFullTenMinutes = Math.floor(baseDate / tenMinutes) * tenMinutes;
-
     // Generate timestamps using the nthTenMinuteDivisibleTimestamp function
     numberSeries.reverse().forEach((n) => {
-        const timestamp = nthTenMinuteDivisibleTimestamp(lastFullTenMinutes)(
-            n + 1
-        );
+        const timestamp = nthTenMinuteDivisibleTimestamp(baseDate)(n);
         uniqueTimestamps.add(timestamp);
     });
 
@@ -77,7 +58,15 @@ export function generateRadarFrameTimestamps(
 
 function nthTenMinuteDivisibleTimestamp(baseDate) {
     return (n) => {
+        //Extracting minutes from baseDate
+        const minutes = new Date(baseDate).getMinutes();
+        let fiveMinutesOffset = 0;
+        //Checks the baseDate minutes, FMI updates data every full 5 minutes
+        if (n === 0 && minutes % 10 <= 5) {
+            fiveMinutesOffset = 5 * 60 * 1000
+        }
         const tenMinutes = 10 * 60 * 1000;
-        return new Date(baseDate - n * tenMinutes).toISOString();
+        const lastFullTenMinutes = Math.floor(baseDate / tenMinutes) * tenMinutes;
+        return new Date(lastFullTenMinutes - n * tenMinutes - fiveMinutesOffset).toISOString();
     };
 }

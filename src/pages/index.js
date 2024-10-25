@@ -33,7 +33,7 @@ export default function Home() {
                     {/*  Middle Container: Two components stacked vertically */}
                     <div className="flex flex-col justify-between w-3/5 h-full space-y-4">
                         {/* Top Component */}
-                        <div className="bg-gray-700 rounded-lg shadow-lg p-6 h-1/2">
+                        <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-1/2">
                             <RadarServerComponent />
                             {/*Radar here */}
                         </div>
