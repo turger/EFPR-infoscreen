@@ -6,23 +6,32 @@ sharp.cache(false);
 sharp.concurrency(1);
 const storageDir = path.join(process.cwd(), 'storage', 'radarImages');
 // Function to introduce a delay
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // Main function to fetch and save all radar images
-export async function fetchRadarImagesAndSave(urls, timestamps, concurrencyLimit= 2) {
+export async function fetchRadarImagesAndSave(
+    urls,
+    timestamps,
+    concurrencyLimit = 2
+) {
     const imagePaths = []; // Array to hold successfully saved image paths
     const executing = []; // Array to track currently executing promises
 
     for (let i = 0; i < urls.length; i++) {
-        const promise = fetchAndSaveImage(urls[i], timestamps[i]).then(imagePath => {
-            if (imagePath) {
-                imagePaths.push(imagePath); // Add the path if successfully saved
-            }
-        }).catch(error => {
-            console.error(`Error processing image ${urls[i]}: ${error.message}`);
-        }).finally(() => {
-            // Remove the promise from the executing array once done
-            executing.splice(executing.indexOf(promise), 1);
-        });
+        const promise = fetchAndSaveImage(urls[i], timestamps[i])
+            .then((imagePath) => {
+                if (imagePath) {
+                    imagePaths.push(imagePath); // Add the path if successfully saved
+                }
+            })
+            .catch((error) => {
+                throw new Error(
+                    `Error processing image ${urls[i]}: ${error.message}`
+                );
+            })
+            .finally(() => {
+                // Remove the promise from the executing array once done
+                executing.splice(executing.indexOf(promise), 1);
+            });
 
         executing.push(promise);
 
@@ -42,6 +51,7 @@ export async function fetchRadarImagesAndSave(urls, timestamps, concurrencyLimit
 }
 
 const fetchAndSaveImage = async (url, timestamp) => {
+    // Format timestamp to exclude unallowed characters
     const formattedTimestamp = timestamp.replace(/:/g, '-');
     const savePath = path.join(
         storageDir,
@@ -82,6 +92,7 @@ const fetchAndSaveImage = async (url, timestamp) => {
                 // Create a new buffer for the output image
                 const outputData = Buffer.alloc(data.length);
 
+                // Change background color to transparent
                 for (let i = 0; i < data.length; i += channels) {
                     const r = data[i];
                     const g = data[i + 1];
@@ -148,7 +159,8 @@ export async function pruneOldRadarImages(newTimestamps) {
 
             // Find timestamps to delete
             const timestampsToDelete = savedTimestamps.filter(
-                (savedTimestamp) => !formattedNewTimestamps.includes(savedTimestamp)
+                (savedTimestamp) =>
+                    !formattedNewTimestamps.includes(savedTimestamp)
             );
 
             // Delete outdated images
@@ -162,8 +174,8 @@ export async function pruneOldRadarImages(newTimestamps) {
                 })
             );
         } catch (error) {
-            if (i === retries -1 ) throw new Error('Error pruning radar images: ', error);
+            if (i === retries - 1)
+                throw new Error('Error pruning radar images: ', error);
         }
-                
     }
 }

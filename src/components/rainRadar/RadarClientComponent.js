@@ -1,7 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, ImageOverlay, useMap, Marker } from 'react-leaflet';
+import {
+    MapContainer,
+    TileLayer,
+    ImageOverlay,
+    useMap,
+    Marker,
+} from 'react-leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import proj4 from 'proj4'; // Import proj4
 import { projectionBounds } from '@/lib/fmiQueryData';
@@ -50,7 +57,7 @@ const rotatedIcon = (iconUrl, rotation, iconSize) => {
         html: `<img src="${iconUrl}" style="transform: rotate(${rotation}deg); width: ${size}px; height: ${size}px;" />`,
         iconSize: [size, size],
         iconAnchor: [anchor, anchor],
-        popupAnchor: [0, -anchor]
+        popupAnchor: [0, -anchor],
     });
 };
 
@@ -90,7 +97,7 @@ export default function RadarClientComponent({ data }) {
             setCurrentImageIndex((prevIndex) => (prevIndex + 1) % data.length);
         };
 
-        // Set an interval to change the image every 2 seconds
+        // Set an interval to change the image, every 1000 = 1 second
         const intervalId = setInterval(advanceImage, 1000);
 
         // Clear interval on component unmount
@@ -98,7 +105,9 @@ export default function RadarClientComponent({ data }) {
     }, [data]);
 
     const aerodome_location = [60.48075888598088, 26.59665436528449];
+    // Not center on aerodrome, to show rain from west better
     const initialLocation = [61.1, 23.0];
+    // Bigger number means closer zoom
     const initialZoom = 6;
     const [iconSize, setIconSize] = useState(5);
 
@@ -114,11 +123,10 @@ export default function RadarClientComponent({ data }) {
         };
     }, []);
 
-
     const getFinnishTime = (timestamp) => {
         const date = new Date(timestamp);
         if (isNaN(date.getTime())) {
-            return 'Invalid time'; // or return an empty string
+            return '';
         }
 
         const finnishTime = new Intl.DateTimeFormat('fi-FI', {
@@ -140,9 +148,10 @@ export default function RadarClientComponent({ data }) {
                 url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors & CartoDB'
             />
-            <Marker position={aerodome_location}
-                icon={rotatedIcon('/svgs/txrunit_yellow.svg', 0, iconSize)}>
-                    </Marker>
+            <Marker
+                position={aerodome_location}
+                icon={rotatedIcon('/svgs/txrunit_yellow.svg', 0, iconSize)}
+            ></Marker>
 
             {data.length > 0 && (
                 <ImageOverlay

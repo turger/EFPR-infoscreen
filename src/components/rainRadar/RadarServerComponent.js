@@ -13,27 +13,19 @@ export default function RadarServerComponent() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(false);
 
-    /* SWR fetching the radar images
-    const { data, error } = useSWR('/api/fetchRadarImages', fetcher, {
-        refreshInterval: 1000 * 60 * 10, // 10 minutes
-        dedupingInterval: 1000 * 60 * 10,
-    }); */
-
     // Function to send timestamps to the server every 10 minutes
     const sendTimestampsToAPI = async () => {
         const newTimestamps = generateRadarFrameTimestamps(12); // Generate the new timestamps for radar images
 
         try {
-            const response = await fetch(
-                '/api/processRadarImages', // Assuming the API route for processing images
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ timestamps: newTimestamps }),
-                }
-            );
+            setIsLoading(true);
+            const response = await fetch('/api/processRadarImages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ timestamps: newTimestamps }),
+            });
 
             if (!response.ok) {
                 throw new Error(
@@ -42,7 +34,8 @@ export default function RadarServerComponent() {
             }
 
             const data = await response.json();
-            setImagePaths(data.imagePaths); // Update the state with the latest image paths
+            setImagePaths(data.imagePaths);
+            setIsLoading(false);
         } catch (error) {
             setError(true);
         }
@@ -52,12 +45,13 @@ export default function RadarServerComponent() {
     useEffect(() => {
         sendTimestampsToAPI(); // Call it on initial load
 
-        const intervalId = setInterval(sendTimestampsToAPI, 600000); // Every 10 minutes
+        // Interval, change first number to change minutes
+        const intervalId = setInterval(sendTimestampsToAPI, 5 * 60 * 1000);
 
         return () => clearInterval(intervalId); // Clean up the interval on unmount
     }, []);
 
-    if (!imagePaths) {
+    if (!imagePaths || isLoading) {
         return <LoadingSpinner />; // Show loading spinner while fetching
     }
 

@@ -61,12 +61,15 @@ function nthTenMinuteDivisibleTimestamp(baseDate) {
         //Extracting minutes from baseDate
         const minutes = new Date(baseDate).getMinutes();
         let fiveMinutesOffset = 0;
-        //Checks the baseDate minutes, FMI updates data every full 5 minutes
-        if (n === 0 && minutes % 10 <= 5) {
-            fiveMinutesOffset = 5 * 60 * 1000
+        //Checks the baseDate minutes, FMI updates data every full 5 minutes, this ensures that the time isn't too old
+        if (n === 0 && minutes % 10 < 5) {
+            fiveMinutesOffset = 5 * 60 * 1000;
         }
         const tenMinutes = 10 * 60 * 1000;
-        const lastFullTenMinutes = Math.floor(baseDate / tenMinutes) * tenMinutes;
-        return new Date(lastFullTenMinutes - n * tenMinutes - fiveMinutesOffset).toISOString();
+        const lastFullTenMinutes =
+            Math.floor(baseDate / tenMinutes) * tenMinutes;
+        return new Date(
+            lastFullTenMinutes - n * tenMinutes - fiveMinutesOffset
+        ).toISOString();
     };
 }
