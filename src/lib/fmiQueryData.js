@@ -1,6 +1,6 @@
 const wmsUrl = 'https://openwms.fmi.fi/geoserver/Radar/wms';
-const wmsImageWidth = 1987;
-const wmsImageHeight = 3144;
+const wmsImageWidth = 993; //Half of 1987 for faster results
+const wmsImageHeight = 1572; // Half of 3144 for faster results
 
 // the EPSG:3857 bounds because of leaflet
 export const projectionBounds = [
