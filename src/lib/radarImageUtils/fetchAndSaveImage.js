@@ -1,13 +1,13 @@
 import sharp from 'sharp';
 import path from 'path';
 import { promises as fsPromises } from 'fs';
-import { createBlob, listBlobs } from '@vercel/blob';
+import { list } from '@vercel/blob';
 
 const storageDir = path.join(process.cwd(), 'storage', 'radarImages');
 
-//placeholder url for vercel app, CHANGE TO CORRECT ONE BEFORE PRODUCTION
-const vercelUrl = 'https://your-vercel-project.vercel.app';
 const localUrl = '/api/getRadarImage?filename=';
+// Adjust this to match your uploadBlob.js path
+const uploadBlobUrl = 'https://rain-radar.vercel.app/api/uploadBlob';
 
 export const fetchAndSaveImage = async (url, timestamp) => {
     // Format timestamp to exclude unallowed characters
@@ -26,9 +26,10 @@ export const fetchAndSaveImage = async (url, timestamp) => {
             return `${localUrl}${fileName}`;
         }
     } else {
-        const blobExists = await doesBlobExist(blobFileName);
-        if (blobExists) {
-            return `${vercelUrl}/path-to-blob/${blobFileName}`;
+        const blobExistsUrl = await doesBlobExist(blobFileName);
+        if (blobExistsUrl) {
+            console.log('image already exists at: ' + blobExistsUrl);
+            return blobExistsUrl;
         }
     }
 
@@ -37,7 +38,7 @@ export const fetchAndSaveImage = async (url, timestamp) => {
         const res = await fetch(url);
         if (!res.ok) {
             throw new Error(
-                `Failed to fetch image from ${url}: ${res.statusText}`
+                `Failed to fetch image from ${url}: ${res.statusText} Status: ${res.status}`
             );
         }
 
@@ -45,31 +46,65 @@ export const fetchAndSaveImage = async (url, timestamp) => {
         const arrayBuffer = await res.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
 
-        //Process the image with Sharp
-        const processedBuffer = await processImage(buffer);
-
         //Saving locally
         if (process.env.NODE_ENV === 'development') {
+            //Process the image with Sharp
+            const processedBuffer = await processImage(buffer);
             await fsPromises.writeFile(savePath, processedBuffer);
             return `${localUrl}${fileName}`;
         }
-        const blobResult = await createBlob(processedBuffer, {
-            access: 'public',
-            contentType: 'image/png',
-        });
+        const blobResult = await uploadImageToBlob(buffer, blobFileName);
+        console.log('Image saved to: ' + blobResult.url);
+
         return blobResult.url;
     } catch (error) {
-        throw new Error(
-            `Error fetching or saving image for ${timestamp}`,
-            error
-        );
+        throw new Error(error);
+    }
+};
+
+// Function to upload the processed image to the blob
+const uploadImageToBlob = async (imageBuffer, filename) => {
+    try {
+        // Convert the image buffer to a Blob
+        const blob = new Blob([imageBuffer], { type: 'image/png' });
+
+        const response = await fetch(`${uploadBlobUrl}?filename=${filename}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'image/png',
+            },
+            body: blob,
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Failed to upload image to blob: ${response.statusText}`
+            );
+        }
+
+        return await response.json(); // Return the blob information, which includes the URL
+    } catch (error) {
+        throw new Error(`Error uploading image: ${error.message}`);
     }
 };
 
 // Helper function to check if blob already exists
 async function doesBlobExist(fileName) {
-    const blobs = await listBlobs();
-    return blobs.some((blob) => blob.name === fileName);
+    try {
+        const response = await list();
+        const blobs = response.blobs || [];
+
+        // Find the blob with the specific filename
+        const foundBlob = blobs.find((blob) => blob.pathname === `${fileName}`);
+        if (foundBlob) {
+            return foundBlob.url; // Return the full URL
+        }
+
+        return null; // Return null if the blob does not exist
+    } catch (error) {
+        console.error('Error checking blob existence:', error);
+        return null; // Return null in case of an error
+    }
 }
 
 //Image processing logic
@@ -106,84 +141,3 @@ const processImage = async (buffer) => {
         .png()
         .toBuffer();
 };
-
-/*
-export const fetchAndSaveImage = async (url, timestamp) => {
-    // Format timestamp to exclude unallowed characters
-    const formattedTimestamp = timestamp.replace(/:/g, '-');
-    const savePath = path.join(
-        storageDir,
-        `radar-image-${formattedTimestamp}.png`
-    );
-
-    // Check if the image already exists
-    const fileExists = await fsPromises
-        .access(savePath)
-        .then(() => true)
-        .catch(() => false);
-    if (fileExists) {
-        return savePath;
-    }
-
-    try {
-        // Fetch the image
-        const res = await fetch(url);
-        if (!res.ok) {
-            throw new Error(
-                `Failed to fetch image from ${url}: ${res.statusText}`
-            );
-        }
-
-        // Buffer the image data
-        const arrayBuffer = await res.arrayBuffer();
-
-        const buffer = Buffer.from(arrayBuffer);
-
-        // Process the image to change the background to transparent
-        await sharp(buffer)
-            .ensureAlpha() // Ensure the image has an alpha channel
-            .raw() // Process raw pixel data
-            .toBuffer({ resolveWithObject: true })
-            .then(({ data, info }) => {
-                const { width, height, channels } = info;
-
-                // Create a new buffer for the output image
-                const outputData = Buffer.alloc(data.length);
-
-                // Change background color to transparent
-                for (let i = 0; i < data.length; i += channels) {
-                    const r = data[i];
-                    const g = data[i + 1];
-                    const b = data[i + 2];
-                    const a = data[i + 3];
-
-                    // Check if the pixel matches the target background color
-                    if (r === 204 && g === 204 && b === 204 && a < 255) {
-                        // Set the pixel to fully transparent
-                        outputData[i] = r;
-                        outputData[i + 1] = g;
-                        outputData[i + 2] = b;
-                        outputData[i + 3] = 0; // Set alpha to 0
-                    } else {
-                        // Keep the original pixel
-                        outputData[i] = r;
-                        outputData[i + 1] = g;
-                        outputData[i + 2] = b;
-                        outputData[i + 3] = a; // Keep original alpha
-                    }
-                }
-
-                // Save the modified image
-                return sharp(outputData, { raw: { width, height, channels } })
-                    .png() // Save as PNG to preserve transparency
-                    .toFile(savePath);
-            });
-        return savePath;
-    } catch (error) {
-        throw new Error(
-            `Error fetching or saving image for ${timestamp}`,
-            error
-        );
-    }
-};
-*/

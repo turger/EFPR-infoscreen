@@ -1,12 +1,14 @@
 import path from 'path';
 import fs, { promises as fsPromises } from 'fs';
-import { listBlobs, deleteBlob } from '@vercel/blob';
+import { list, del } from '@vercel/blob';
 
 const storageDir = path.join(process.cwd(), 'storage', 'radarImages');
 
 export async function pruneOldRadarImages(newTimestamps) {
     const retries = 3;
-    await fsPromises.mkdir(storageDir, { recursive: true });
+    if (process.env.NODE_ENV === 'development') {
+        await fsPromises.mkdir(storageDir, { recursive: true });
+    }
 
     // Format new timestamps to match the saved filenames
     const formattedNewTimestamps = newTimestamps.map((timestamp) =>
@@ -20,7 +22,6 @@ export async function pruneOldRadarImages(newTimestamps) {
                 const files = await fs.promises.readdir(storageDir);
 
                 if (files.length === 0) {
-                    console.log('No images found. Skipping pruning.');
                     return; // Skip the pruning process
                 }
 
@@ -59,38 +60,55 @@ export async function pruneOldRadarImages(newTimestamps) {
         // Pruning from Vercel Blob in production
         for (let i = 0; i < retries; i++) {
             try {
-                // List all blobs in the Vercel Blob storage
-                const blobs = await listBlobs();
+                const response = await list();
 
-                // Extract blob names and timestamps
+                const blobs = response.blobs || [];
+
+                // Extracts existing blob names and URLs
+                const existingBlobs = blobs.map((blob) => ({
+                    name: blob.pathname,
+                    url: blob.url,
+                }));
+
                 const savedTimestamps = blobs
                     .map((blob) => {
-                        // Assuming your blob naming convention matches
-                        const match = blob.name.match(/radar-image-(.*)\.png/);
+                        const match = blob.pathname.match(
+                            /radar-image-(.*)\.png/
+                        );
                         return match ? match[1] : null;
                     })
                     .filter(Boolean); // Filter out any nulls in case of bad matches
 
-                // Find timestamps to delete
                 const timestampsToDelete = savedTimestamps.filter(
                     (savedTimestamp) =>
                         !formattedNewTimestamps.includes(savedTimestamp)
                 );
 
-                // Delete outdated blobs
+                if (timestampsToDelete.length === 0) {
+                    return; // No need to continue if there are no blobs to delete
+                }
+
                 await Promise.all(
                     timestampsToDelete.map(async (timestamp) => {
-                        await deleteBlob(`radar-image-${timestamp}.png`);
+                        const blobName = `radar-image-${timestamp}.png`;
+                        const blobToDelete = existingBlobs.find(
+                            (blob) => blob.name === `${blobName}`
+                        );
+                        if (blobToDelete) {
+                            //Console logs go to the Vercel dashboard logs, so it's fine to use them in blob logic
+                            console.log('blob to delete: ' + blobToDelete.url);
+                            await del(blobToDelete.url);
+                        }
                     })
                 );
 
                 return; // Exit if successful
             } catch (error) {
-                if (i === retries - 1)
+                if (i === retries - 1) {
                     throw new Error(
-                        'Error pruning Vercel Blob radar images: ',
-                        error
+                        `Error pruning Vercel Blob radar images: ${error.message}`
                     );
+                }
             }
         }
     }

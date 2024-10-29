@@ -17,7 +17,7 @@ export default function RadarServerComponent() {
     // Function to send timestamps to the server every 10 minutes
     const sendTimestampsToAPI = async () => {
         setError(false);
-        const newTimestamps = generateRadarFrameTimestamps(12); // Generate the new timestamps for radar images
+        const newTimestamps = generateRadarFrameTimestamps(12); // Generate the new timestamps for radar images,
 
         try {
             setIsLoading(true);
