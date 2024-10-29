@@ -1,7 +1,6 @@
 // pages/api/processRadarImages.js
 
 import { requestRainRadar } from '@/lib/fmiQueryData';
-//import { fetchRadarImagesAndSave, pruneOldRadarImages } from '@/lib/imageUtils'; // Import the necessary functions
 import { fetchRadarImagesAndSave } from '@/lib/radarImageUtils/imageHandling';
 import { pruneOldRadarImages } from '@/lib/radarImageUtils/pruneImages';
 
@@ -24,18 +23,14 @@ export default async function handler(req, res) {
             await pruneOldRadarImages(timestamps);
 
             // Fetch and save radar images concurrently using the generated URLs
-            await fetchRadarImagesAndSave(urls, timestamps);
+            const imagePaths = await fetchRadarImagesAndSave(urls, timestamps);
 
-            // Return the paths to the saved images (using the formatted timestamps)
-            const localImagePaths = timestamps.map((time) => {
-                const formattedTime = time.replace(/:/g, '-'); // Format the timestamp for the file name
-                return {
-                    url: `/api/getRadarImage?filename=radar-image-${formattedTime}.png`,
-                    timestamp: time, // Keep the original time for use on the client
-                };
-            });
+            const result = timestamps.map((timestamp, index) => ({
+                timestamp,
+                url: imagePaths[index],
+            }));
 
-            res.status(200).json({ imagePaths: localImagePaths });
+            res.status(200).json({ imagePaths: result });
         } catch (error) {
             res.status(500).json({ error: 'Failed to process radar images' });
         }

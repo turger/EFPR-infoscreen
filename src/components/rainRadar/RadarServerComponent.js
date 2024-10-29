@@ -12,9 +12,11 @@ export default function RadarServerComponent() {
     const [imagePaths, setImagePaths] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [hasFetched, setHasFetched] = useState(false); // Flag to track if data has been fetched
 
     // Function to send timestamps to the server every 10 minutes
     const sendTimestampsToAPI = async () => {
+        setError(false);
         const newTimestamps = generateRadarFrameTimestamps(12); // Generate the new timestamps for radar images
 
         try {
@@ -36,6 +38,7 @@ export default function RadarServerComponent() {
             const data = await response.json();
             setImagePaths(data.imagePaths);
             setIsLoading(false);
+            setHasFetched(true);
         } catch (error) {
             setError(true);
         }
@@ -43,13 +46,22 @@ export default function RadarServerComponent() {
 
     // Call the function every 10 minutes
     useEffect(() => {
-        sendTimestampsToAPI(); // Call it on initial load
+        if (!hasFetched) {
+            sendTimestampsToAPI(); // Call it on initial load
+        }
 
         // Interval, change first number to change minutes
-        const intervalId = setInterval(sendTimestampsToAPI, 5 * 60 * 1000);
+        const intervalId = setInterval(
+            () => {
+                if (hasFetched) {
+                    sendTimestampsToAPI(); // Called only if the initial fetch has completed
+                }
+            },
+            5 * 60 * 1000
+        );
 
         return () => clearInterval(intervalId); // Clean up the interval on unmount
-    }, []);
+    }, [hasFetched]);
 
     if (!imagePaths || isLoading) {
         return <LoadingSpinner />; // Show loading spinner while fetching
