@@ -1,7 +1,9 @@
 // pages/api/processRadarImages.js
 
 import { requestRainRadar } from '@/lib/fmiQueryData';
-import { fetchRadarImagesAndSave, pruneOldRadarImages } from '@/lib/imageUtils'; // Import the necessary functions
+//import { fetchRadarImagesAndSave, pruneOldRadarImages } from '@/lib/imageUtils'; // Import the necessary functions
+import { fetchRadarImagesAndSave } from '@/lib/radarImageUtils/imageHandling';
+import { pruneOldRadarImages } from '@/lib/radarImageUtils/pruneImages';
 
 export default async function handler(req, res) {
     if (req.method === 'POST') {
