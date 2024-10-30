@@ -20,7 +20,9 @@ export default async function handler(req, res) {
             });
 
             // Prune old radar images (keep only images corresponding to the new timestamps)
-            await pruneOldRadarImages(timestamps);
+            if (process.env.NODE_ENV === 'development') {
+                await pruneOldRadarImages(timestamps);
+            }
 
             // Fetch and save radar images concurrently using the generated URLs
             const imagePaths = await fetchRadarImagesAndSave(urls, timestamps);
@@ -33,6 +35,7 @@ export default async function handler(req, res) {
             res.status(200).json({ imagePaths: result });
         } catch (error) {
             res.status(500).json({ error: 'Failed to process radar images' });
+            throw new Error(error);
         }
     } else {
         res.status(405).json({ error: 'Method not allowed' }); // Only allow POST requests
