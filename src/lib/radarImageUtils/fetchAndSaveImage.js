@@ -7,7 +7,7 @@ const storageDir = path.join(process.cwd(), 'storage', 'radarImages');
 
 const localUrl = '/api/getRadarImage?filename=';
 // Adjust this to match your uploadBlob.js path
-const uploadBlobUrl = 'https://rain-radar.vercel.app/api/uploadBlob';
+const uploadBlobUrl = 'https://eha-infoscreen.vercel.app/api/uploadBlob';
 
 export const fetchAndSaveImage = async (url, timestamp) => {
     // Format timestamp to exclude unallowed characters
