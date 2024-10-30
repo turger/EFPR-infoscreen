@@ -51,7 +51,6 @@ export default function Home() {
                 <div className="w-2/5 h-full flex flex-col justify-between space-y-4">
                     {/* Top: Two components side by side */}
                     <div className="flex space-x-4 h-3/5">
-
                         <div className="bg-gray-700 rounded-lg shadow-lg p-6 w-1/2 h-full">
                             <MetarServerComponent />
                         </div>
