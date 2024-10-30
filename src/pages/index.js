@@ -32,7 +32,7 @@ export default function Home() {
                     <div className="flex flex-col justify-between w-3/5 h-full space-y-4">
                         {/* Top Component */}
                         <div className="bg-gray-700 rounded-lg shadow-lg p-6 h-1/2">
-                        <MetarServerComponent />
+                        
                         </div>
 
                         {/* Bottom Component */}
@@ -44,7 +44,7 @@ export default function Home() {
                 <div className="w-2/5 h-full flex flex-col justify-between space-y-4">
                     {/* Top: Two components side by side */}
                     <div className="flex space-x-4 h-3/5">
-                        <div className="bg-gray-700 rounded-lg shadow-lg p-6 w-1/2 h-full"></div>
+                        <div className="bg-gray-700 rounded-lg shadow-lg p-6 w-1/2 h-full"><MetarServerComponent /></div>
                         <div className="bg-gray-700 rounded-lg shadow-lg p-6 w-1/2 h-full"></div>
                     </div>
                     {/* Bottom: One component */}
