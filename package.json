@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-        "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-        "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md,mjs}\""
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md,mjs}\""
   },
   "dependencies": {
     "lodash.isequal": "^4.5.0",
