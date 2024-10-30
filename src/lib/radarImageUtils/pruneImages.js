@@ -63,6 +63,9 @@ export async function pruneOldRadarImages(newTimestamps) {
                 const response = await list();
 
                 const blobs = response.blobs || [];
+                if (blobs.length === 0) {
+                    return; // No need to continue if there are no blobs
+                }
 
                 // Extracts existing blob names and URLs
                 const existingBlobs = blobs.map((blob) => ({
