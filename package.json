@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "eha-infoscreen": "file:",
+    "node-fetch": "^3.3.2",
     "@vercel/blob": "^0.25.1",
     "fs": "^0.0.1-security",
     "leaflet": "^1.9.4",
