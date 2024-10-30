@@ -1,0 +1,21 @@
+name: Sync with Personal Fork
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Push to Personal Fork
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.SERICAKITTY_PERSONAL_ACCESS_TOKEN }}
+        run: |
+          git remote add fork https://sericakitty:${{ secrets.SERICAKITTY_PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
+          git push -u fork ${{ github.ref }}
