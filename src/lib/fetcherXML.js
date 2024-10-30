@@ -18,14 +18,14 @@ export const fetcherXML = async (urls) => {
                     const message =
                         genericErrorMessages[response.status] ||
                         'An error occurred. Please try again later.';
- 
+
                     // Create and throw a new error with the message
                     throw new Error(message);
                 }
                 return await response.text();
             })
         );
- 
+
         const parser = new DOMParser();
         return {
             windXmlDoc: parser.parseFromString(responses[0], 'text/xml'),

@@ -1,0 +1,35 @@
+name: Sync with Personal Fork
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Pull from upstream
+        run: |
+          git remote add upstream https://github.com/EHA-Display-Terminal-Team/eha-infoscreen.git
+          git fetch upstream
+          git checkout ${{ github.ref_name }}
+          git merge upstream/${{ github.ref_name }} --no-edit
+
+      - name: Push to Personal Fork
+        run: |
+          git remote add fork https://sericakitty:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
+          git push fork ${{ github.ref_name }}
+
