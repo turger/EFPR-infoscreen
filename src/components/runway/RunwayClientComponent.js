@@ -4,8 +4,8 @@ import { useState } from 'react';
 import styles from './runwayTemp.module.css';
 
 export default function RunwayClientComponent({ data }) {
-    const [windData, setWindData] = useState({ knots: 3, angle: 40 }); // Mock data
-    const [visibleTooltip, setVisibleTooltip] = useState(null); // State for visible tooltip
+    const [windData, setWindData] = useState({ knots: "N/A", angle: 0 }); // TBD: get real data
+    const [visibleTooltip, setVisibleTooltip] = useState(null);
 
     const getTemperatureBySiteId = (siteId) => {
         const station = data.find(station => station.siteId === siteId);

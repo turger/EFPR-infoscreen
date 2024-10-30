@@ -45,7 +45,7 @@
     align-items: center;
     justify-content: center;
     padding: 5px;
-    font-size: 25px;
+    font-size: 21px;
     width: 45%;
     text-align: center;
     color: black;
@@ -94,7 +94,7 @@
 
 .ball[data-siteid="52280"] {
     top: 12%;
-    left: 34%;
+    left: 32%;
 }
 
 .ball[data-siteid="52437"] {
@@ -104,7 +104,7 @@
 
 .ball[data-siteid="52281"] {
     top: 59%;
-    left: 52%;
+    left: 53%;
 }
 
 .tooltip {
