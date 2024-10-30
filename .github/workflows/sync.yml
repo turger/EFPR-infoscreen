@@ -7,7 +7,7 @@ on:
       - dev
 
 permissions:
-  contents: write  # Ensure the action has write access
+  contents: write
 
 jobs:
   sync:
@@ -21,7 +21,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Pull from upstream
+        run: |
+          git remote add upstream https://github.com/EHA-Display-Terminal-Team/eha-infoscreen.git
+          git pull upstream ${{ github.ref }} --rebase
+
       - name: Push to Personal Fork
         run: |
-          git remote add fork https://sericakitty${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
-          git push fork ${{ github.ref }}
+          git remote add fork https://sericakitty:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
+          git push fork ${{ github.ref }} --force-with-lease
