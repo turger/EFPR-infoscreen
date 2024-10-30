@@ -1,18 +1,16 @@
 const wmsUrl = 'https://openwms.fmi.fi/geoserver/Radar/wms';
-const wmsImageWidth = 1987;
-const wmsImageHeight = 3144;
+const wmsImageWidth = 993; //Half of 1987 for faster results
+const wmsImageHeight = 1572; // Half of 3144 for faster results
 
-const projectionBounds = [
-    -118331.366408, 6335621.167014, 875567.731907, 7907751.537264,
+// the EPSG:3857 bounds because of leaflet
+export const projectionBounds = [
+    1877673.7198253432, 7709459.582123121, 4160194.1605840144,
+    11396482.455942834,
 ];
-const projectionSrs = 'EPSG:3067'; //This is the code for the Finnish projected coordinates that FMI uses
+const projectionSrs = 'EPSG:3857';
 
 export function requestRainRadar(time) {
     return wmsRequestConfig('Radar:suomi_rr_eureffin', time); // Radar:suomi ... is the layer id to get the current and previous data
-}
-
-export function requestRainRadarEstimate(time) {
-    return wmsRequestConfig('Radar:suomi_tuliset_rr_eureffin', time); // This was in the sataako.fi files, but I don't see how they are used. Keeping it here just in case for now
 }
 
 //setting the query params for the request
@@ -20,7 +18,7 @@ export const defaultQueryParams = {
     service: 'WMS', //Web Map Service
     version: '2.0.0',
     request: 'GetMap',
-    format: 'image/png',
+    format: 'image/PNG',
     transparent: 'true',
     bbox: projectionBounds.join(','),
     srs: projectionSrs,
@@ -46,18 +44,32 @@ export function generateRadarFrameTimestamps(
     framesCount,
     baseDate = Date.now()
 ) {
-    const numberSeries = new Array(framesCount).keys();
-    return Array.from(
-        numberSeries,
-        nthTenMinuteDivisibleTimestamp(baseDate)
-    ).reverse();
+    const uniqueTimestamps = new Set();
+    const numberSeries = Array.from({ length: framesCount }, (_, n) => n);
+
+    // Generate timestamps using the nthTenMinuteDivisibleTimestamp function
+    numberSeries.reverse().forEach((n) => {
+        const timestamp = nthTenMinuteDivisibleTimestamp(baseDate)(n);
+        uniqueTimestamps.add(timestamp);
+    });
+
+    return Array.from(uniqueTimestamps);
 }
 
 function nthTenMinuteDivisibleTimestamp(baseDate) {
     return (n) => {
+        //Extracting minutes from baseDate
+        const minutes = new Date(baseDate).getMinutes();
+        let fiveMinutesOffset = 0;
+        //Checks the baseDate minutes, FMI updates data every full 5 minutes, this ensures that the time isn't too old
+        if (n === 0 && minutes % 10 < 5) {
+            fiveMinutesOffset = 5 * 60 * 1000;
+        }
         const tenMinutes = 10 * 60 * 1000;
         const lastFullTenMinutes =
             Math.floor(baseDate / tenMinutes) * tenMinutes;
-        return new Date(lastFullTenMinutes - n * tenMinutes).toISOString();
+        return new Date(
+            lastFullTenMinutes - n * tenMinutes - fiveMinutesOffset
+        ).toISOString();
     };
 }
