@@ -6,6 +6,9 @@ on:
       - main
       - dev
 
+permissions:
+  contents: write  # Ensure the action has write access
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -13,9 +16,12 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Push to Personal Fork
-        env:
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Configure Git
         run: |
-          git remote add fork https://sericakitty:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
-          git push -u fork ${{ github.ref }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Push to Personal Fork
+        run: |
+          git remote add fork https://sericakitty${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
+          git push fork ${{ github.ref }}
