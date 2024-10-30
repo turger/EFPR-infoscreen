@@ -8,8 +8,8 @@ async function getAccessToken() {
         return accessToken;
     }
 
-    const clientId = process.env.CLIENT_ID;
-    const clientSecret = process.env.CLIENT_SECRET;
+    const clientId = process.env.RUNWAY_ID;
+    const clientSecret = process.env.RUNWAY_SECRET;
     const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
 
     const response = await fetch('https://wxh-app-app-prod-eu.auth.eu-west-1.amazoncognito.com/oauth2/token', {

@@ -36,7 +36,7 @@ export default function Home() {
                     <div className="flex flex-col justify-between w-3/5 h-full space-y-4">
                         {/* Top Component */}
                         <div className="bg-gray-700 rounded-lg shadow-lg p-6 h-1/2">
-                            <RadarServerComponent />
+                        
                         </div>
 
                         {/* Bottom Component */}
