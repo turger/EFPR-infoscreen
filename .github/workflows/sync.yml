@@ -15,7 +15,7 @@ jobs:
 
       - name: Push to Personal Fork
         env:
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.SERICAKITTY_PERSONAL_ACCESS_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          git remote add fork https://sericakitty:${{ secrets.SERICAKITTY_PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
+          git remote add fork https://sericakitty:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
           git push -u fork ${{ github.ref }}
