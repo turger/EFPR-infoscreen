@@ -17,7 +17,7 @@ export default function RunwayServerComponent() {
     if (error) return <ErrorComponent message="Failed to load data" />;
     if (!data) return <LoadingSpinner />;
 
-    const stationsData = Object.keys(data.stations).map(stationId => {
+    const stationsData = Object.keys(data.stations).map((stationId) => {
         const station = data.stations[stationId][0];
         const site = station[8][0];
         return {
