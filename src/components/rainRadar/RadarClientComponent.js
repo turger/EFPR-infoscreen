@@ -96,19 +96,22 @@ export default function RadarClientComponent({ data }) {
         const advanceImage = () => {
             setCurrentImageIndex((prevIndex) => (prevIndex + 1) % data.length);
         };
+        //Adds a delay of either 4 sec for last image or 1 for others.
+        const delay = currentImageIndex === data.length - 1 ? 4000 : 1000;
 
         // Set an interval to change the image, every 1000 = 1 second
-        const intervalId = setInterval(advanceImage, 1000);
-
+        //const intervalId = setInterval(advanceImage, 1000);
+        const timeoutId = setTimeout(advanceImage, delay);
         // Clear interval on component unmount
-        return () => clearInterval(intervalId);
-    }, [data]);
+        //return () => clearInterval(intervalId);
+        return () => clearTimeout(timeoutId);
+    }, [currentImageIndex, data]);
 
     const aerodome_location = [60.48075888598088, 26.59665436528449];
     // Not center on aerodrome, to show rain from west better
-    const initialLocation = [61.1, 23.0];
+    const initialLocation = [61.1, 22.0];
     // Bigger number means closer zoom
-    const initialZoom = 6;
+    const initialZoom = 6.1;
     const [iconSize, setIconSize] = useState(5);
 
     useEffect(() => {
@@ -143,6 +146,7 @@ export default function RadarClientComponent({ data }) {
             center={initialLocation}
             zoom={initialZoom}
             style={{ height: '42vh', width: '100%' }}
+            zoomSnap={0.1}
         >
             <TileLayer
                 url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
@@ -158,6 +162,7 @@ export default function RadarClientComponent({ data }) {
                     key={data[currentImageIndex].url}
                     url={data[currentImageIndex].url}
                     bounds={bounds}
+                    opacity={0.45}
                 />
             )}
 
