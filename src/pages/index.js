@@ -8,6 +8,8 @@ import RadarServerComponent from '@/components/rainRadar/RadarServerComponent';
 import AdsbServerComponent from '@/components/adsb/AdsbServerComponent';
 import RunwayServerComponent from '@/components/runway/RunwayServerComponent';
 
+import InfoClientComponent from '@/components/Info/InfoClientComponent';
+
 export default function Home() {
     return (
         <div className="min-h-screen bg-gray-900 text-white">
@@ -59,6 +61,7 @@ export default function Home() {
                         </div>
                         <div className="bg-gray-700 rounded-lg shadow-lg p-6 w-1/2 h-full">
                             <CameraServerComponent />
+                            <InfoClientComponent />
                         </div>
                     </div>
                     {/* Bottom: One component */}

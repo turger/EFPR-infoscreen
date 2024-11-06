@@ -1,4 +1,3 @@
-// AdsbClientComponent.js
 'use client';
 import {
     MapContainer,
@@ -97,7 +96,10 @@ function ZoomHandler({ initialZoom }) {
         const handleZoom = () => {
             const zoomLevel = map.getZoom();
             const fontSize = 0.5 + (zoomLevel - initialZoom) * 0.05; // Adjust the multiplier as needed
-            document.documentElement.style.setProperty('--tooltip-font-size', `${fontSize}rem`);
+            document.documentElement.style.setProperty(
+                '--tooltip-font-size',
+                `${fontSize}rem`
+            );
         };
 
         map.on('zoomend', handleZoom);
@@ -177,14 +179,17 @@ export default function AdsbClientComponent({ flights, airspaces }) {
                         0,
                         iconSize
                     )}
-                >
-                </Marker>
+                ></Marker>
 
                 {airspaces.map((feature, index) => (
                     <Polygon
                         key={index}
-                        positions={feature.geometry.coordinates[0].map(coord => [coord[1], coord[0]])}
-                        color={getColorByAirspaceClass(feature.properties.airspaceclass)}
+                        positions={feature.geometry.coordinates[0].map(
+                            (coord) => [coord[1], coord[0]]
+                        )}
+                        color={getColorByAirspaceClass(
+                            feature.properties.airspaceclass
+                        )}
                     >
                         {/* <Tooltip
                             direction="center"
@@ -205,7 +210,7 @@ export default function AdsbClientComponent({ flights, airspaces }) {
                         flight.lat != null && flight.lon != null && flight.fli;
 
                     if (!isValidFlight) {
-                        console.log('invalid flight data:', flight);
+                        //console.log('invalid flight data:', flight);
                         return null;
                     }
 
