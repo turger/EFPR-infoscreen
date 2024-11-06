@@ -36,6 +36,6 @@ jobs:
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          git remote add fork https://sericakitty:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
+          git remote add fork https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
           git push fork temp-branch-${{ github.ref_name }}:${{ github.ref_name }} --force
 
