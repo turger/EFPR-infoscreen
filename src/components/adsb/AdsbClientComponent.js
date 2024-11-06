@@ -190,6 +190,7 @@ export default function AdsbClientComponent({ flights, airspaces }) {
                         color={getColorByAirspaceClass(
                             feature.properties.airspaceclass
                         )}
+                        dashArray={feature.properties.alwaysActive === 'true' ? '5,5' : '0'}
                     >
                         {/* <Tooltip
                             direction="center"
