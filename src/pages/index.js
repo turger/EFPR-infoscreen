@@ -43,7 +43,7 @@ export default function Home() {
                         </div>
 
                         {/* Bottom Component */}
-                        <div className="bg-gray-700 rounded-lg shadow-lg p-6 h-1/2">
+                        <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-1/2">
                             <AdsbServerComponent />
                             {/* ads-B here */}
                         </div>
