@@ -125,7 +125,7 @@ export default function AdsbClientComponent({ flights, airspaces }) {
     useEffect(() => {
         const handleResize = () => {
             // Adjusts iconSize based on window width
-            setIconSize(window.innerWidth / 150);
+            setIconSize(window.innerWidth / 130);
         };
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -154,7 +154,7 @@ export default function AdsbClientComponent({ flights, airspaces }) {
             <MapContainer
                 center={initial_location}
                 zoom={initial_zoom}
-                style={{ height: '42vh', width: '100%' }}
+                style={{ height: '41vh', width: '100%' }}
             >
                 <ZoomHandler initialZoom={initial_zoom} />
                 {isDarkMode ? (
@@ -186,7 +186,7 @@ export default function AdsbClientComponent({ flights, airspaces }) {
                         positions={feature.geometry.coordinates[0].map(coord => [coord[1], coord[0]])}
                         color={getColorByAirspaceClass(feature.properties.airspaceclass)}
                     >
-                        <Tooltip
+                        {/* <Tooltip
                             direction="center"
                             offset={[0, 0]}
                             opacity={1}
@@ -196,7 +196,7 @@ export default function AdsbClientComponent({ flights, airspaces }) {
                             <span style={{ color: getColorByAirspaceClass(feature.properties.airspaceclass) }}>
                                 {feature.properties.code}
                             </span>
-                        </Tooltip>
+                        </Tooltip> */}
                     </Polygon>
                 ))}
 

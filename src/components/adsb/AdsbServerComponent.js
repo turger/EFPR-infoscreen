@@ -60,7 +60,7 @@ export default function AdsbServerComponent() {
 
     return (
         <div>
-            <p className="text-white text-xl">ADS-B {adsbTime}</p>
+            <p className="text-white text-sm">ADS-B {adsbTime}</p>
             <AdsbClientComponent flights={flights} airspaces={airspacesData.features} />
         </div>
     );
