@@ -1,0 +1,30 @@
+.airspaceTooltip {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: inherit !important; /* Inherit the color from the inline style */
+    font-size: var(--tooltip-font-size, 1rem); /* Use CSS variable */
+    font-weight: bold;
+    padding: 0 !important; /* Remove padding */
+}
+
+.airplaneTooltip {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: inherit !important; /* Inherit the color from the inline style */
+    font-size: var(--tooltip-font-size, 3rem); /* Use CSS variable */
+    font-weight: bold;
+    padding: 0 !important; /* Remove padding */
+}
+
+.leaflet-tooltip-left.airplaneTooltip::before {
+    border-left-color: transparent !important;
+    right: 0;
+    margin-right: -12px;
+}
+.leaflet-tooltip-right.airplaneTooltip::before {
+    border-right-color: transparent !important;
+    left: 0;
+    margin-left: -12px;
+}

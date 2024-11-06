@@ -10,9 +10,14 @@ const AdsbClientComponent = dynamic(() => import('./AdsbClientComponent'), {
 });
 
 export default function AdsbServerComponent() {
-    const { data, error } = useSWR('/api/adsb', fetcher, {
+    const { data: adsbData, error: adsbError } = useSWR('/api/adsb', fetcher, {
         refreshInterval: 4000, // 4 seconds
         dedupingInterval: 4000, // Prevent SWR from sending multiple requests at the same time
+    });
+
+    const { data: airspacesData, error: airspacesError } = useSWR('/api/airspaces', fetcher, {
+        refreshInterval: 60000, // 60 seconds
+        dedupingInterval: 60000,
     });
 
     const [flights, setFlights] = useState([]);
@@ -28,8 +33,8 @@ export default function AdsbServerComponent() {
 
     // Handles filtering flights and sets adsbTime when ADS-B data changes
     useEffect(() => {
-        if (data && Array.isArray(data)) {
-            const uniqueFlights = data.filter(
+        if (adsbData && Array.isArray(adsbData)) {
+            const uniqueFlights = adsbData.filter(
                 (flight, index, self) =>
                     index === self.findIndex((f) => f.hex === flight.hex)
             );
@@ -43,20 +48,20 @@ export default function AdsbServerComponent() {
             }
             setIsLoading(false);
         }
-    }, [data]);
+    }, [adsbData]);
 
     // Loading and error handling
-    if (error) {
-        return <ErrorComponent message={error.message} />;
+    if (adsbError || airspacesError) {
+        return <ErrorComponent message={adsbError?.message || airspacesError?.message} />;
     }
-    if (isLoading || !data) {
+    if (isLoading || !adsbData || !airspacesData) {
         return <LoadingSpinner />;
     }
 
     return (
-        <>
-            <p className="text-white text-sm">ADS-B {adsbTime}</p>
-            <AdsbClientComponent flights={flights} />
-        </>
+        <div>
+            <p className="text-white text-xl">ADS-B {adsbTime}</p>
+            <AdsbClientComponent flights={flights} airspaces={airspacesData.features} />
+        </div>
     );
 }
