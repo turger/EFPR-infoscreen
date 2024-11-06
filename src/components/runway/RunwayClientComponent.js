@@ -50,7 +50,9 @@ export default function RunwayClientComponent({ data }) {
                         onMouseEnter={() => setVisibleTooltip('52280')}
                         onMouseLeave={() => setVisibleTooltip(null)}
                     >
+                        <span styles={{fontsize: 5}}>{getStationBySiteId('52280')?.name}</span>
                         <span>{getTemperatureBySiteId('52280')}</span>
+                        <span>{getColorAndExplanationByCondition(getStationBySiteId('52280')?.condition).explanation}</span>
                     </div>
                     <div
                         className={styles.temperatureValue}

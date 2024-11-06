@@ -74,7 +74,7 @@ export default function RadarServerComponent() {
     // Pass imagePaths to the RadarClientComponent
     return (
         <div>
-            <h1 className="text-white text-xl">Rain Radar</h1>
+            <h1 className="text-white text-sm">Rain Radar</h1>
             <RadarClientComponent data={imagePaths} />
         </div>
     );

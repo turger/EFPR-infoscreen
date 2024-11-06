@@ -142,7 +142,7 @@ export default function RadarClientComponent({ data }) {
         <MapContainer
             center={initialLocation}
             zoom={initialZoom}
-            style={{ height: '42vh', width: '100%' }}
+            style={{ height: '41vh', width: '100%' }}
         >
             <TileLayer
                 url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
