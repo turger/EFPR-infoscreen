@@ -12,7 +12,7 @@ export default function NotamClientComponent() {
     // Function to retrieve NOTAM data
     async function fetchNotam() {
         try {
-            const response = await fetch('http://localhost:3000/api/notams', {
+            const response = await fetch('/api/notams', {
                 method: 'GET',
                 headers: {
                     'Cache-Control': 'no-store',
