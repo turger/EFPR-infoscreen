@@ -21,7 +21,7 @@ export default function RunwayClientComponent({ data }) {
             case 1:
                 return { color: 'Green', explanation: 'Dry' };
             case 13:
-                return { color: 'White', explanation: 'Not dry' };
+                return { color: 'blue', explanation: 'Not dry' };
             default:
                 return { color: 'black', explanation: 'N/A' };
         }
@@ -51,29 +51,26 @@ export default function RunwayClientComponent({ data }) {
                     className={styles.airstripImage}
                 />
                 <div className={styles.temperatureContainer}>
-                    <div
-                        className={styles.temperatureValue}
-                        onMouseEnter={() => setVisibleTooltip('52280')}
-                        onMouseLeave={() => setVisibleTooltip(null)}
-                    >
-                        <span styles={{fontsize: 5}}>{getStationBySiteId('52280')?.name}</span>
-                        <span>{getTemperatureBySiteId('52280')}</span>
-                        <span>{getColorAndExplanationByCondition(getStationBySiteId('52280')?.condition).explanation}</span>
-                    </div>
-                    <div
-                        className={styles.temperatureValue}
-                        onMouseEnter={() => setVisibleTooltip('52437')}
-                        onMouseLeave={() => setVisibleTooltip(null)}
-                    >
-                        <span>{getTemperatureBySiteId('52437')}</span>
-                    </div>
-                    <div
-                        className={styles.temperatureValue}
-                        onMouseEnter={() => setVisibleTooltip('52281')}
-                        onMouseLeave={() => setVisibleTooltip(null)}
-                    >
-                        <span>{getTemperatureBySiteId('52281')}</span>
-                    </div>
+                    {['52280', '52437', '52281'].map(siteId => {
+                        const station = getStationBySiteId(siteId);
+                        const temperature = getTemperatureBySiteId(siteId);
+                        const condition = station?.condition;
+                        const colorAndExplanation = getColorAndExplanationByCondition(condition);
+
+                        if (!station || temperature === undefined || !colorAndExplanation) {
+                            return null;
+                        }
+
+                        return (
+                            <div key={siteId} className={styles.temperatureValue}>
+                                <span style={{fontWeight: 'bold'}}>{station.name}</span>
+                                <span style={{fontSize: 14, fontWeight: 'bold'}}>{temperature}</span>
+                                <span style={{ color: colorAndExplanation.color, fontWeight: 'bold' }}>
+                                    {colorAndExplanation.explanation}
+                                </span>
+                            </div>
+                        );
+                    })}
                 </div>
                 <div
                     className={styles.ball}
