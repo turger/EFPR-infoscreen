@@ -7,6 +7,7 @@ import MetarServerComponent from '@/components/metar/MetarServerComponent';
 import RadarServerComponent from '@/components/rainRadar/RadarServerComponent';
 import AdsbServerComponent from '@/components/adsb/AdsbServerComponent';
 import RunwayServerComponent from '@/components/runway/RunwayServerComponent';
+import NotamClientComponent from '@/components/notam/NotamClientComponent';
 
 export default function Home() {
     return (
@@ -63,6 +64,7 @@ export default function Home() {
                     </div>
                     {/* Bottom: One component */}
                     <div className="bg-gray-700 rounded-lg shadow-lg p-6 h-full w-full">
+                        <NotamClientComponent />
                         {/* Airport Notes here */}
                     </div>
                 </div>
