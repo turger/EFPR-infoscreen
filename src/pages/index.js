@@ -11,6 +11,8 @@ import RunwayServerComponent from '@/components/runway/RunwayServerComponent';
 import NotamClientComponent from '@/components/notam/NotamClientComponent';
 import WeatherServerComponent from '@/components/weather/WeatherServerComponent';
 
+import InfoClientComponent from '@/components/Info/InfoClientComponent';
+
 export default function Home() {
     return (
         <div className="min-h-screen bg-gray-900 text-white">
