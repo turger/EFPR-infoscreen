@@ -7,14 +7,13 @@ const storageDir = path.join(process.cwd(), 'storage', 'radarImages');
 
 const localUrl = '/api/getRadarImage?filename=';
 // Adjust this to match your uploadBlob.js path
-const uploadBlobUrl = 'https://eha-infoscreen.vercel.app/api/uploadBlob';
+const uploadBlobUrl = '/api/uploadBlob';
 
 export const fetchAndSaveImage = async (url, timestamp) => {
     // Format timestamp to exclude unallowed characters
     const formattedTimestamp = timestamp.replace(/:/g, '-');
     const fileName = `radar-image-${formattedTimestamp}.png`;
     const savePath = path.join(storageDir, fileName);
-    const blobFileName = `radar-image-${formattedTimestamp}.png`;
 
     if (process.env.NODE_ENV === 'development') {
         // Check if the image already exists
@@ -26,7 +25,7 @@ export const fetchAndSaveImage = async (url, timestamp) => {
             return `${localUrl}${fileName}`;
         }
     } else {
-        const blobExistsUrl = await doesBlobExist(blobFileName);
+        const blobExistsUrl = await doesBlobExist(fileName);
         if (blobExistsUrl) {
             console.log('image already exists at: ' + blobExistsUrl);
             return blobExistsUrl;
@@ -53,7 +52,7 @@ export const fetchAndSaveImage = async (url, timestamp) => {
             await fsPromises.writeFile(savePath, processedBuffer);
             return `${localUrl}${fileName}`;
         }
-        const blobResult = await uploadImageToBlob(buffer, blobFileName);
+        const blobResult = await uploadImageToBlob(buffer, fileName);
         console.log('Image saved to: ' + blobResult.url);
 
         return blobResult.url;
