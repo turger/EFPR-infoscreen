@@ -22,29 +22,66 @@ proj4.defs([
     ['EPSG:4326', '+proj=longlat +datum=WGS84 +no_defs'],
 ]);
 
-function ResetButton({ initialLocation, initialZoom }) {
+function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
     const map = useMap();
     const resetMap = () => {
         map.setView(initialLocation, initialZoom);
     };
-
     return (
         <button
             onClick={resetMap}
             style={{
                 position: 'absolute',
                 right: '5px',
-                bottom: '20px',
+                bottom: '30px',
                 zIndex: 1000,
                 padding: '5px 10px',
-                backgroundColor: '#fac807',
+                //backgroundColor: '#fac807',
                 color: 'white',
                 border: 'none',
                 borderRadius: '30px',
                 cursor: 'pointer',
             }}
         >
-            Reset Map
+            <img
+                src={
+                    isDarkMode
+                        ? '/svgs/resetmap_yellow.svg'
+                        : '/svgs/resetmap_black.svg'
+                }
+                alt="Reset Map"
+                style={{ width: '25px', height: '25px' }}
+            />
+        </button>
+    );
+}
+
+function ToggleButton({ toggleMapStyle, isDarkMode }) {
+    return (
+        <button
+            onClick={toggleMapStyle}
+            style={{
+                position: 'absolute',
+                right: '5px',
+                bottom: '60px',
+                zIndex: 1000,
+                padding: '5px 10px',
+                //backgroundColor: '#fac807',
+                color: 'white',
+                border: '3px',
+                borderRadius: '30px',
+                cursor: 'pointer',
+            }}
+        >
+            <img
+                src={
+                    isDarkMode
+                        ? '/svgs/mode_yellow.svg'
+                        : '/svgs/mode_black.svg'
+                }
+                alt="Change Mode"
+                style={{ width: '25px', height: '25px' }}
+            />
         </button>
     );
 }
@@ -64,6 +101,11 @@ const rotatedIcon = (iconUrl, rotation, iconSize) => {
 export default function RadarClientComponent({ data }) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [timestamps, setTimestamps] = useState([]);
+    const [isDarkMode, setIsDarkMode] = useState(true);
+
+    const toggleMapStyle = () => {
+        setIsDarkMode((prevMode) => !prevMode);
+    };
 
     // Extracts URLs and timestamps from the data
     useEffect(() => {
@@ -99,17 +141,15 @@ export default function RadarClientComponent({ data }) {
         //Adds a delay of either 4 sec for last image or 1 for others.
         const delay = currentImageIndex === data.length - 1 ? 4000 : 1000;
 
-        // Set an interval to change the image, every 1000 = 1 second
-        //const intervalId = setInterval(advanceImage, 1000);
+        // Set an interval to change the image according to delay
         const timeoutId = setTimeout(advanceImage, delay);
         // Clear interval on component unmount
-        //return () => clearInterval(intervalId);
         return () => clearTimeout(timeoutId);
     }, [currentImageIndex, data]);
 
     const aerodome_location = [60.48075888598088, 26.59665436528449];
-    // Not center on aerodrome, to show rain from west better
-    const initialLocation = [61.1, 22.0];
+    // Not centered on aerodrome, to show rain from west and south better
+    const initialLocation = [60.81462, 24.42146];
     // Bigger number means closer zoom
     const initialZoom = 6.1;
     const [iconSize, setIconSize] = useState(5);
@@ -148,13 +188,26 @@ export default function RadarClientComponent({ data }) {
             style={{ height: '42vh', width: '100%' }}
             zoomSnap={0.1}
         >
-            <TileLayer
-                url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors & CartoDB'
-            />
+            {isDarkMode ? (
+                <TileLayer
+                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors & CartoDB'
+                />
+            ) : (
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}{r}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+            )}
             <Marker
                 position={aerodome_location}
-                icon={rotatedIcon('/svgs/txrunit_yellow.svg', 0, iconSize)}
+                icon={rotatedIcon(
+                    isDarkMode
+                        ? '/svgs/txrunit_yellow.svg'
+                        : '/svgs/txrunit_black.svg',
+                    0,
+                    iconSize
+                )}
             ></Marker>
 
             {data.length > 0 && (
@@ -184,9 +237,14 @@ export default function RadarClientComponent({ data }) {
                 )}
             </div>
 
+            <ToggleButton
+                toggleMapStyle={toggleMapStyle}
+                isDarkMode={isDarkMode}
+            />
             <ResetButton
                 initialLocation={initialLocation}
                 initialZoom={initialZoom}
+                isDarkMode={isDarkMode}
             />
         </MapContainer>
     );
