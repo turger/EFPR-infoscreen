@@ -1,4 +1,6 @@
 'use client';
+
+import React, { useState, useEffect } from 'react';
 import {
     MapContainer,
     TileLayer,
@@ -8,10 +10,21 @@ import {
     Popup,
     Polygon,
 } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { useState, useEffect } from 'react';
-import styles from '../reactLeafletMap/mapDataStyles.module.css';
+import 'leaflet/dist/leaflet.css';
+import styles from './mapDataStyles.module.css';
+
+const rotatedIcon = (iconUrl, rotation, iconSize) => {
+    const size = iconSize;
+    const anchor = size / 2;
+    return L.divIcon({
+        className: 'custom-icon',
+        html: `<img src="${iconUrl}" style="transform: rotate(${rotation}deg); width: ${size}px; height: ${size}px;" />`,
+        iconSize: [size, size],
+        iconAnchor: [anchor, anchor],
+        popupAnchor: [0, -anchor],
+    });
+};
 
 function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
     const map = useMap();
@@ -75,18 +88,6 @@ function ToggleButton({ toggleMapStyle, isDarkMode }) {
     );
 }
 
-const rotatedIcon = (iconUrl, rotation, iconSize) => {
-    const size = iconSize;
-    const anchor = size / 2;
-    return L.divIcon({
-        className: 'custom-icon',
-        html: `<img src="${iconUrl}" style="transform: rotate(${rotation}deg); width: ${size}px; height: ${size}px;" />`,
-        iconSize: [size, size],
-        iconAnchor: [anchor, anchor],
-        popupAnchor: [0, -anchor],
-    });
-};
-
 function ZoomHandler({ initialZoom }) {
     const map = useMap();
 
@@ -111,10 +112,13 @@ function ZoomHandler({ initialZoom }) {
     return null;
 }
 
-export default function AdsbClientComponent({ flights, airspaces }) {
-    const aerodome_location = [60.48075888598088, 26.59665436528449];
-    const initial_location = [61.1, 23.0];
-    const initial_zoom = 6;
+export default function ReactLeafletMap({
+    aerodomeLocation,
+    initialLocation,
+    initialZoom,
+    flights = [],
+    airspaces = [],
+}) {
     const [iconSize, setIconSize] = useState(6);
     const [isDarkMode, setIsDarkMode] = useState(true);
 
@@ -150,36 +154,37 @@ export default function AdsbClientComponent({ flights, airspaces }) {
     };
 
     return (
-        <div className="relative w-full h-full">
-            <MapContainer
-                center={initial_location}
-                zoom={initial_zoom}
-                style={{ height: '41vh', width: '100%' }}
-            >
-                <ZoomHandler initialZoom={initial_zoom} />
-                {isDarkMode ? (
-                    <TileLayer
-                        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors & CartoDB'
-                    />
-                ) : (
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    />
+        <MapContainer
+            center={initialLocation}
+            zoom={initialZoom}
+            style={{ height: '41vh', width: '100%' }}
+        >
+            <ZoomHandler initialZoom={initialZoom} />
+            {isDarkMode ? (
+                <TileLayer
+                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors & CartoDB'
+                />
+            ) : (
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+            )}
+            <Marker
+                position={aerodomeLocation}
+                icon={rotatedIcon(
+                    isDarkMode
+                        ? '/svgs/txrunit_yellow.svg'
+                        : '/svgs/txrunit_black.svg',
+                    0,
+                    iconSize
                 )}
-                <Marker
-                    position={aerodome_location}
-                    icon={rotatedIcon(
-                        isDarkMode
-                            ? '/svgs/txrunit_yellow.svg'
-                            : '/svgs/txrunit_black.svg',
-                        0,
-                        iconSize
-                    )}
-                ></Marker>
+            ></Marker>
 
-                {airspaces.map((feature, index) => (
+            {airspaces &&
+                airspaces.length > 0 &&
+                airspaces.map((feature, index) => (
                     <Polygon
                         key={index}
                         positions={feature.geometry.coordinates[0].map(
@@ -208,7 +213,9 @@ export default function AdsbClientComponent({ flights, airspaces }) {
                     </Polygon>
                 ))}
 
-                {flights.map((flight) => {
+            {flights &&
+                flights.length > 0 &&
+                flights.map((flight) => {
                     const isValidFlight =
                         flight.lat != null && flight.lon != null && flight.fli;
 
@@ -217,18 +224,25 @@ export default function AdsbClientComponent({ flights, airspaces }) {
                         return null;
                     }
 
+                    const isDrone =
+                        flight.src === 'RID' ||
+                        flight.cat === 'B7' ||
+                        flight.cat === 'O13';
+
+                    const iconPath = isDrone
+                        ? isDarkMode
+                            ? '/svgs/drone_yellow.svg'
+                            : '/svgs/drone_black.svg'
+                        : isDarkMode
+                            ? '/svgs/plane_yellow.svg'
+                            : '/svgs/plane_black.svg';
+
                     const rotation = flight.trk;
                     return (
                         <Marker
                             key={flight.hex}
                             position={[flight.lat, flight.lon]}
-                            icon={rotatedIcon(
-                                isDarkMode
-                                    ? '/svgs/plane_yellow.svg'
-                                    : '/svgs/plane_black.svg',
-                                rotation,
-                                iconSize
-                            )}
+                            icon={rotatedIcon(iconPath, rotation, iconSize)}
                         >
                             <Tooltip
                                 className={styles.airplaneTooltip}
@@ -237,7 +251,13 @@ export default function AdsbClientComponent({ flights, airspaces }) {
                                 opacity={1}
                                 permanent={true}
                             >
-                                <span style={{ color: 'yellow' }}>
+                                <span
+                                    style={{
+                                        color: isDarkMode
+                                            ? '#fac807'
+                                            : '#000000',
+                                    }}
+                                >
                                     {flight.fli}
                                 </span>
                             </Tooltip>
@@ -261,16 +281,15 @@ export default function AdsbClientComponent({ flights, airspaces }) {
                     );
                 })}
 
-                <ToggleButton
-                    toggleMapStyle={toggleMapStyle}
-                    isDarkMode={isDarkMode}
-                />
-                <ResetButton
-                    initialLocation={initial_location}
-                    initialZoom={initial_zoom}
-                    isDarkMode={isDarkMode}
-                />
-            </MapContainer>
-        </div>
+            <ToggleButton
+                toggleMapStyle={toggleMapStyle}
+                isDarkMode={isDarkMode}
+            />
+            <ResetButton
+                initialLocation={initialLocation}
+                initialZoom={initialZoom}
+                isDarkMode={isDarkMode}
+            />
+        </MapContainer>
     );
 }
