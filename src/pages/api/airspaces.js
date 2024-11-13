@@ -1,12 +1,12 @@
-import fetch from "node-fetch";
+import fetch from 'node-fetch';
 
 export default async function getAirspaces(req, res) {
     try {
         const url1 = `https://flyk.com/api/airspaces.geojson`;
         const response1 = await fetch(url1, {
-            method: "GET",
+            method: 'GET',
             headers: {
-                accept: "application/json",
+                accept: 'application/json',
             },
         });
 
@@ -18,17 +18,21 @@ export default async function getAirspaces(req, res) {
 
         const data1 = await response1.json();
 
-        const filteredFeatures1 = data1.features.filter(feature => {
+        const filteredFeatures1 = data1.features.filter((feature) => {
             const airspaceClass = feature.properties.airspaceclass;
             const isActive = feature.properties.active;
-            return ["Danger", "Prohibited", "Restricted", "Other"].includes(airspaceClass) && isActive;
+            return (
+                ['Danger', 'Prohibited', 'Restricted', 'Other'].includes(
+                    airspaceClass
+                ) && isActive
+            );
         });
 
         const url2 = `https://flyk.com/api/reservations.geojson`;
         const response2 = await fetch(url2, {
-            method: "GET",
+            method: 'GET',
             headers: {
-                accept: "application/json",
+                accept: 'application/json',
             },
         });
 
@@ -40,22 +44,22 @@ export default async function getAirspaces(req, res) {
 
         const data2 = await response2.json();
 
-        const filteredFeatures2 = data2.features.filter(feature => {
+        const filteredFeatures2 = data2.features.filter((feature) => {
             const airspaceClass = feature.properties.airspaceclass;
             const isActive = feature.properties.active;
-            return ["TSA"].includes(airspaceClass) && isActive;
+            return ['TSA'].includes(airspaceClass) && isActive;
         });
 
         const combinedFeatures = [...filteredFeatures1, ...filteredFeatures2];
 
         const combinedData = {
-            type: "FeatureCollection",
+            type: 'FeatureCollection',
             features: combinedFeatures,
         };
 
         res.status(200).json(combinedData);
     } catch (error) {
-        console.log("Error fetching data:", error);
-        res.status(500).json({ error: "Failed to fetch data" });
+        console.log('Error fetching data:', error);
+        res.status(500).json({ error: 'Failed to fetch data' });
     }
 }

@@ -4,16 +4,26 @@ import useSWR from 'swr';
 import { fetcher } from '@/lib/fetcher';
 import LoadingSpinner from '../LoadingSpinner';
 import ErrorComponent from '../ErrorComponent';
+import { useData } from '@/lib/DataContext';
 
-const AdsbClientComponent = dynamic(() => import('./AdsbClientComponent'), {
+/* const AdsbClientComponent = dynamic(() => import('./AdsbClientComponent'), {
     ssr: false,
-});
+}); */
+
+const MapComponent = dynamic(
+    () => import('../reactLeafletMap/ReactLeafletMap'),
+    {
+        ssr: false,
+    }
+);
 
 export default function AdsbServerComponent() {
-    const { data: adsbData, error: adsbError } = useSWR('/api/adsb', fetcher, {
-        refreshInterval: 4000, // 4 seconds
-        dedupingInterval: 4000, // Prevent SWR from sending multiple requests at the same time
-    });
+    /* ADS-B data is fetched in lib/DataContext.js */
+    const { adsbData, adsbError } = useData();
+    /*     const { data: adsbData, error: adsbError } = useSWR('/api/adsb', fetcher, {
+            refreshInterval: 4000, // 4 seconds
+            dedupingInterval: 4000, // Prevent SWR from sending multiple requests at the same time
+        }); */
 
     const { data: airspacesData, error: airspacesError } = useSWR(
         '/api/airspaces',
@@ -27,6 +37,9 @@ export default function AdsbServerComponent() {
     const [flights, setFlights] = useState([]);
     const [adsbTime, setAdsbTime] = useState('--:--:--');
     const [isLoading, setIsLoading] = useState(true);
+    const aerodomeLocation = [60.48075888598088, 26.59665436528449];
+    const initialLocation = [61.1, 23.0];
+    const initialZoom = 6;
 
     // Adjusts time (JSON time -3h)
     const getFinnishTime = (timestamp) => {
@@ -73,13 +86,21 @@ export default function AdsbServerComponent() {
     if (isLoading || !adsbData || !airspacesData) {
         return <LoadingSpinner />;
     }
-
     return (
         <div>
-            <p className="text-white text-sm">ADS-B {adsbTime}</p>
-            <AdsbClientComponent
+            <p className="text-white text-sm">
+                ADS-B - Flights And Airspace - {adsbTime}
+            </p>
+            {/*  <AdsbClientComponent
                 flights={flights}
                 airspaces={airspacesData.features}
+            /> */}
+            <MapComponent
+                aerodomeLocation={aerodomeLocation}
+                initialLocation={initialLocation}
+                flights={flights}
+                airspaces={airspacesData.features}
+                initialZoom={initialZoom}
             />
         </div>
     );
