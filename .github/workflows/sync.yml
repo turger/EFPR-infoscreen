@@ -6,15 +6,12 @@ on:
       - main
       - dev
 
-permissions:
-  contents: write
-
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Configure Git
         run: |
@@ -28,8 +25,17 @@ jobs:
           git checkout ${{ github.ref_name }}
           git merge upstream/${{ github.ref_name }} --no-edit
 
-      - name: Push to Personal Fork
+      - name: Remove Workflow Files
         run: |
-          git remote add fork https://sericakitty:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
-          git push fork ${{ github.ref_name }}
+          # Create a temporary branch for pushing without workflows
+          git checkout -b temp-branch-${{ github.ref_name }}
+          git rm -r --cached .github/workflows/  # Remove workflows from the index only
+          git commit -m "Remove workflows for fork push (${{ github.ref_name }})" || echo "No changes to commit"
+
+      - name: Push to Personal Fork (filtered)
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          git remote add fork https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
+          git push fork temp-branch-${{ github.ref_name }}:${{ github.ref_name }} --force
 
