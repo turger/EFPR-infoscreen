@@ -4,11 +4,11 @@ import isEqual from 'lodash.isequal';
 import LoadingSpinner from '../LoadingSpinner';
 import ErrorComponent from '../ErrorComponent';
 import { fetcherXML } from '@/lib/fetcherXML';
- 
+
 function compareData(currentData, newData) {
     return isEqual(currentData, newData);
 }
- 
+
 async function saveMetarReport(reportData) {
     try {
         const response = await fetch('/api/metarHandler', {
@@ -18,7 +18,7 @@ async function saveMetarReport(reportData) {
         });
 
         const result = await response.json();
- 
+
         if (!response.ok)
             throw new Error(result.error || 'Error saving report');
         console.log('METAR report saved:', result.message);
@@ -26,13 +26,13 @@ async function saveMetarReport(reportData) {
         console.error('Failed to save METAR report:', error);
     }
 }
- 
+
 async function fetchMetarReports() {
     const response = await fetch('/api/metarHandler');
     const data = await response.json();
     return data;
 }
- 
+
 export default function MetarServerComponent() {
     const [isLoading, setIsLoading] = useState(true); // Loading state
     const previousDataRef = useRef(null); // Store the previous data
@@ -42,12 +42,12 @@ export default function MetarServerComponent() {
         []
     );
     const [reportsOneHourAgo, setReportsOneHourAgo] = useState([]);
- 
+
     useEffect(() => {
         async function getReports() {
             try {
                 const reportsData = await fetchMetarReports();
- 
+
                 setReportsFifteenMinutesAgo(
                     reportsData.results_15_minutes_ago || []
                 );
@@ -56,10 +56,10 @@ export default function MetarServerComponent() {
                 console.error('Error fetching reports:', error);
             }
         }
- 
+
         getReports();
         const intervalId = setInterval(getReports, 60000);
- 
+
         return () => clearInterval(intervalId);
     }, []);
 
@@ -70,11 +70,11 @@ export default function MetarServerComponent() {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                 });
-                
+
                 if (!response.ok) {
                     throw new Error('Failed to delete reports');
                 }
-                
+
                 console.log('Old reports deleted successfully');
             } catch (error) {
                 console.error('Failed to delete reports:', error);
@@ -88,32 +88,31 @@ export default function MetarServerComponent() {
         return () => clearInterval(intervalId);
     }, []);
 
-
     const weatherStation = '107029';
     //pyhtää 107029
- 
+
     const now = new Date();
     const thirteenMinutesAgo = new Date(now.getTime() - 13 * 60 * 1000);
     const threeMinutesAgo = new Date(now.getTime() - 3 * 60 * 1000);
- 
+
     const formatDateUTC = (date) =>
         date.toISOString().replace(/\.\d{3}Z$/, 'Z');
- 
+
     const startTimeForWindDirection = formatDateUTC(thirteenMinutesAgo);
     const endTimeForWindDirection = formatDateUTC(threeMinutesAgo);
- 
+
     const windApiUrl = `https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::simple&fmisid=${weatherStation}&starttime=${startTimeForWindDirection}&endtime=${endTimeForWindDirection}&parameters=winddirection&format=application/xml`;
- 
+
     threeMinutesAgo.setSeconds(0, 0);
- 
+
     const startTime = formatDateUTC(threeMinutesAgo);
- 
+
     // Create the end time, which is exactly one second after the start time
     const endTimeDate = new Date(threeMinutesAgo.getTime() + 1000);
     const endTimeForThreeMinutesAgo = formatDateUTC(endTimeDate);
- 
+
     const weatherApiUrl = `https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::simple&fmisid=${weatherStation}&starttime=${startTime}&endtime=${endTimeForThreeMinutesAgo}&parameters=humidity,wawa,temperature,visibility,winddirection,windspeedms,windgust,dewpoint,totalcloudcover,pressure&format=application/xml`;
- 
+
     // Use a single SWR call to fetch both URLs
     const { data, error, isValidating } = useSWR(
         [windApiUrl, weatherApiUrl],
@@ -129,7 +128,7 @@ export default function MetarServerComponent() {
             errorRetryCount: 3, // Retry up to 3 times
         }
     );
- 
+
     useEffect(() => {
         if (data) {
             // On initial load, used to prevent showing the loading spinner on first load
@@ -139,7 +138,7 @@ export default function MetarServerComponent() {
                 previousDataRef.current = data;
                 return;
             }
- 
+
             // If data is being fetched and data has changed
             if (isValidating && !compareData(previousDataRef.current, data)) {
                 setIsLoading(true);
@@ -150,26 +149,26 @@ export default function MetarServerComponent() {
                 }, 500); // Adjust the delay as needed
                 return () => clearTimeout(timer);
             }
- 
+
             // If data is being fetched but data hasn't changed
             if (isValidating && compareData(previousDataRef.current, data)) {
                 setIsLoading(false);
             }
         }
     }, [data, isValidating]);
- 
+
     // Show error message if there's an error
     if (error) {
         return <ErrorComponent message={error.message} />;
     }
- 
+
     // Show loading spinner while loading
     if (isLoading || !data) {
         return <LoadingSpinner />;
     }
- 
+
     const { windXmlDoc, weatherXmlDoc } = data;
- 
+
     let winddirection = [];
     let windspeed = null,
         windgust = null,
@@ -181,7 +180,7 @@ export default function MetarServerComponent() {
         wawa = null,
         humidity = null,
         windDirWeather = null;
- 
+
     const windMembers = windXmlDoc.getElementsByTagName('wfs:member');
     for (let i = 0; i < windMembers.length; i++) {
         const paramName = windMembers[i].getElementsByTagName(
@@ -191,12 +190,12 @@ export default function MetarServerComponent() {
             windMembers[i].getElementsByTagName('BsWfs:ParameterValue')[0]
                 ?.textContent
         );
- 
+
         if (paramName === 'winddirection') {
             winddirection.push(paramValue);
         }
     }
- 
+
     const minDir =
         winddirection.length > 0
             ? Math.round(Math.min(...winddirection) / 10) * 10
@@ -205,7 +204,7 @@ export default function MetarServerComponent() {
         winddirection.length > 0
             ? Math.round(Math.max(...winddirection) / 10) * 10
             : '000';
- 
+
     const weatherMembers = weatherXmlDoc.getElementsByTagName('wfs:member');
     for (let i = 0; i < weatherMembers.length; i++) {
         const paramName = weatherMembers[i].getElementsByTagName(
@@ -215,7 +214,7 @@ export default function MetarServerComponent() {
             weatherMembers[i].getElementsByTagName('BsWfs:ParameterValue')[0]
                 ?.textContent
         );
- 
+
         switch (paramName) {
             case 'windspeedms':
                 windspeed = paramValue;
@@ -251,7 +250,7 @@ export default function MetarServerComponent() {
                 break;
         }
     }
- 
+
     const windSpeed =
         windspeed !== null && !isNaN(windspeed)
             ? String(Math.round(windspeed * 1.94384)).padStart(2, '0')
@@ -260,7 +259,7 @@ export default function MetarServerComponent() {
         windgust !== null && !isNaN(windgust)
             ? String(Math.round(windgust * 1.94384)).padStart(2, '0')
             : '////';
- 
+
     const visibilityKm =
         visibility !== null && !isNaN(visibility)
             ? visibility > 10000
@@ -277,12 +276,12 @@ export default function MetarServerComponent() {
                       )
                     : String(Math.round(visibility / 50) * 50).padStart(4, '0')
             : '////';
- 
+
     const pressureValue =
         pressure !== null && !isNaN(pressure)
             ? String(Math.round(pressure)).padStart(4, '0')
             : '////';
- 
+
     let cloudCover = 'CLR';
     if (totalcloudcover !== null && !isNaN(totalcloudcover)) {
         let cloudBaseFeet = ((temperature - dewpoint) / 2.5) * 1000; //estimated cloud base using mathematical formula
@@ -291,7 +290,7 @@ export default function MetarServerComponent() {
             3,
             '0'
         );
- 
+
         if (totalcloudcover <= 2) {
             cloudCover = `FEW${cloudBase}`;
         } else if (totalcloudcover <= 4) {
@@ -304,7 +303,7 @@ export default function MetarServerComponent() {
     } else {
         cloudCover = '///';
     }
- 
+
     let wawaMetar = '';
     if (wawa === 0.0) {
         wawaMetar = '';
@@ -385,7 +384,7 @@ export default function MetarServerComponent() {
     } else if (isNaN(wawa)) {
         wawaMetar = '//';
     }
- 
+
     let weatherCondition = '';
     if (
         visibility >= 10000 &&
@@ -396,47 +395,47 @@ export default function MetarServerComponent() {
     } else {
         weatherCondition = `${visibilityKm} ${wawaMetar} ${cloudCover}`;
     }
- 
+
     const gustInfo = gustSpeed !== '' ? `G${gustSpeed}` : '';
     const temp =
         temperature !== null
             ? (temperature < 0 ? 'M' : '') +
               String(Math.abs(Math.round(temperature))).padStart(2, '0')
             : '///';
- 
+
     const dew =
         dewpoint !== null
             ? (dewpoint < 0 ? 'M' : '') +
               String(Math.abs(Math.round(dewpoint))).padStart(2, '0')
             : '/';
- 
+
     const windDir =
         windDirWeather !== null
             ? String(Math.round(windDirWeather / 10) * 10).padStart(3, '0')
             : '/';
- 
+
     const utcDay = String(threeMinutesAgo.getUTCDate()).padStart(2, '0');
- 
+
     const utcTime = threeMinutesAgo
         .toISOString()
         .slice(11, 16)
         .replace(':', '');
- 
+
     const windDirVariation = minDir !== maxDir ? ` ${minDir}V${maxDir}` : '';
- 
+
     const metarReport = `EFPR ${utcDay}${utcTime}Z AUTO ${windDir}${windSpeed}${gustInfo}KT${windDirVariation} ${weatherCondition} ${temp}/${dew} Q${pressureValue}=`;
- 
+
     if (metarReport !== lastSavedReportRef.current) {
         saveMetarReport(metarReport);
         lastSavedReportRef.current = metarReport;
     }
- 
+
     return (
         <div>
             <p>{metarReport}</p>
             <div>
                 <br></br>
- 
+
                 <ul>
                     {reportsFifteenMinutesAgo.length > 0 ? (
                         reportsFifteenMinutesAgo.map((report) => (
@@ -459,7 +458,9 @@ export default function MetarServerComponent() {
                     )}
                 </ul>
                 <br></br>
-               <p style={{fontSize: "12px"}}>Not suitable for official flight preparation</p>
+                <p style={{ fontSize: '12px' }}>
+                    Not suitable for official flight preparation
+                </p>
             </div>
         </div>
     );
