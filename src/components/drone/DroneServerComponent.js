@@ -87,6 +87,25 @@ export default function DroneServerComponent() {
     };
 
     // Handles filtering drones and sets adsbTime when ADS-B data changes
+    /*     useEffect(() => {
+            if (adsbData && Array.isArray(adsbData)) {
+                const uniqueDrones = adsbData.filter(
+                    (flight, index, self) =>
+                        (flight.src === 'RID' ||
+                            flight.cat === 'B7' ||
+                            flight.cat === 'O13') &&
+                        index === self.findIndex((f) => f.hex === flight.hex)
+                );
+    
+                setDrones(uniqueDrones);
+    
+                if (uniqueDrones.length > 0 && uniqueDrones[0].tim) {
+                    const adjustedTime = getFinnishTime(uniqueDrones[0].dat);
+                    setAdsbTime(adjustedTime);
+                }
+                setIsLoading(false);
+            }
+        }, [adsbData]); */
     useEffect(() => {
         if (adsbData && Array.isArray(adsbData)) {
             const uniqueDrones = adsbData.filter(
@@ -94,7 +113,16 @@ export default function DroneServerComponent() {
                     (flight.src === 'RID' ||
                         flight.cat === 'B7' ||
                         flight.cat === 'O13') &&
-                    index === self.findIndex((f) => f.hex === flight.hex)
+                    flight.lat != null &&
+                    flight.lon != null &&
+                    index ===
+                    self.findIndex(
+                        (f) =>
+                            (f.src === flight.src ||
+                                f.cat === flight.cat) &&
+                            f.lat === flight.lat &&
+                            f.lon === flight.lon
+                    )
             );
 
             setDrones(uniqueDrones);
