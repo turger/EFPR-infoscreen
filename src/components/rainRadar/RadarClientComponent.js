@@ -57,6 +57,10 @@ function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
 }
 
 function ToggleButton({ toggleMapStyle, isDarkMode }) {
+    const map = useMap();
+    useEffect(() => {
+        map.invalidateSize();
+    }, [map, isDarkMode]);
     return (
         <button
             onClick={toggleMapStyle}
@@ -102,6 +106,12 @@ export default function RadarClientComponent({ data }) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [timestamps, setTimestamps] = useState([]);
     const [isDarkMode, setIsDarkMode] = useState(true);
+    const aerodome_location = [60.48075888598088, 26.59665436528449];
+    // Not centered on aerodrome, to show rain from west and south better
+    const initialLocation = [60.81462, 24.42146];
+    // Bigger number means closer zoom
+    const initialZoom = 6.1;
+    const [iconSize, setIconSize] = useState(5);
 
     const toggleMapStyle = () => {
         setIsDarkMode((prevMode) => !prevMode);
@@ -147,13 +157,6 @@ export default function RadarClientComponent({ data }) {
         return () => clearTimeout(timeoutId);
     }, [currentImageIndex, data]);
 
-    const aerodome_location = [60.48075888598088, 26.59665436528449];
-    // Not centered on aerodrome, to show rain from west and south better
-    const initialLocation = [60.81462, 24.42146];
-    // Bigger number means closer zoom
-    const initialZoom = 6.1;
-    const [iconSize, setIconSize] = useState(5);
-
     useEffect(() => {
         const handleResize = () => {
             // Adjusts iconSize based on window width
@@ -185,20 +188,19 @@ export default function RadarClientComponent({ data }) {
         <MapContainer
             center={initialLocation}
             zoom={initialZoom}
-            style={{ height: '42vh', width: '100%' }}
+            style={{ height: '45vh', width: '100%' }}
             zoomSnap={0.1}
         >
-            {isDarkMode ? (
-                <TileLayer
-                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors & CartoDB'
-                />
-            ) : (
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}{r}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-            )}
+            <TileLayer
+                key={isDarkMode ? 'dark' : 'light'}
+                url={
+                    isDarkMode
+                        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                        : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                }
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+
             <Marker
                 position={aerodome_location}
                 icon={rotatedIcon(
@@ -212,7 +214,7 @@ export default function RadarClientComponent({ data }) {
 
             {data.length > 0 && (
                 <ImageOverlay
-                    key={data[currentImageIndex].url}
+                    key={`${data[currentImageIndex].url}-${isDarkMode}`}
                     url={data[currentImageIndex].url}
                     bounds={bounds}
                     opacity={0.45}
