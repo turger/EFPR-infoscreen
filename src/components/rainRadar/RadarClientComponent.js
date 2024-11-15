@@ -57,10 +57,6 @@ function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
 }
 
 function ToggleButton({ toggleMapStyle, isDarkMode }) {
-    const map = useMap();
-    useEffect(() => {
-        map.invalidateSize();
-    }, [map, isDarkMode]);
     return (
         <button
             onClick={toggleMapStyle}
