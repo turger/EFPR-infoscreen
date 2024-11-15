@@ -14,6 +14,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import styles from './mapDataStyles.module.css';
 
+/* Rotates icon to be displayed on the map according to the direction its headed towards */
 const rotatedIcon = (iconUrl, rotation, iconSize) => {
     const size = iconSize;
     const anchor = size / 2;
@@ -26,6 +27,7 @@ const rotatedIcon = (iconUrl, rotation, iconSize) => {
     });
 };
 
+/* Resets map to initial values */
 function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
     const map = useMap();
     const resetMap = () => {
@@ -59,6 +61,7 @@ function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
     );
 }
 
+/* Button to toggle between dark and light mode */
 function ToggleButton({ toggleMapStyle, isDarkMode }) {
     return (
         <button
@@ -88,6 +91,7 @@ function ToggleButton({ toggleMapStyle, isDarkMode }) {
     );
 }
 
+/* Handles zoom levels */
 function ZoomHandler({ initialZoom }) {
     const map = useMap();
 
@@ -122,6 +126,7 @@ export default function ReactLeafletMap({
     const [iconSize, setIconSize] = useState(6);
     const [isDarkMode, setIsDarkMode] = useState(true);
 
+    /* Changes chosen mode for map (light/dark) */
     const toggleMapStyle = () => {
         setIsDarkMode((prevMode) => !prevMode);
     };
@@ -160,17 +165,15 @@ export default function ReactLeafletMap({
             style={{ height: '41vh', width: '100%' }}
         >
             <ZoomHandler initialZoom={initialZoom} />
-            {isDarkMode ? (
-                <TileLayer
-                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors & CartoDB'
-                />
-            ) : (
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-            )}
+            <TileLayer
+                key={isDarkMode ? 'dark' : 'light'}
+                url={
+                    isDarkMode
+                        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                        : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                }
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
             <Marker
                 position={aerodomeLocation}
                 icon={rotatedIcon(
