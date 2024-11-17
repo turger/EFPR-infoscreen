@@ -63,6 +63,37 @@ export default function RadarServerComponent() {
         return () => clearInterval(intervalId); // Clean up the interval on unmount
     }, [hasFetched]);
 
+    // Function to trigger blob deletion every hour
+    const deleteOldBlobs = async () => {
+        try {
+            const response = await fetch('/api/deleteBlobs', {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                console.error('Failed to delete old blobs.');
+            } else {
+                console.log('Old blobs deleted successfully.');
+            }
+        } catch (error) {
+            console.error('Error deleting old blobs:', error);
+        }
+    };
+
+    // Call the blob deletion function every hour
+    useEffect(() => {
+        deleteOldBlobs(); // Call it on initial load
+
+        const deleteInterval = setInterval(
+            () => {
+                deleteOldBlobs();
+            },
+            60 * 60 * 1000
+        ); // Run every hour
+
+        return () => clearInterval(deleteInterval); // Clean up the interval on unmount
+    }, []);
+
     if (!imagePaths || isLoading) {
         return <LoadingSpinner />; // Show loading spinner while fetching
     }
