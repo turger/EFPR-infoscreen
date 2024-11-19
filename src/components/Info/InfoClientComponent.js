@@ -8,25 +8,23 @@ import ErrorComponent from '../ErrorComponent';
 
 export default function InfoClientComponent() {
     const { data: session } = useSession();
-    const [note, setNote] = useState('Write a note...');
+    const [note, setNote] = useState('');
     const [allNotes, setAllNotes] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [editText, setEditText] = useState('');
+    const [editingNoteId, setEditingNoteId] = useState(null);
 
-    // Fetch all notes from database
     useEffect(() => {
         fetchNotes();
     }, []);
 
+    // Fetch all notes from database
     async function fetchNotes() {
         try {
             const response = await fetch('/api/infonote');
             const data = await response.json();
-            //console.log(data);
-            //console.log(data.notes);
-            console.log(data.notes.rows);
-            //console.log(data.rows);
             if (response.ok) {
                 setAllNotes(data.notes.rows);
             } else {
@@ -41,9 +39,15 @@ export default function InfoClientComponent() {
         setNote(e.target.value);
     };
 
-    // Save the note to the database via the API
+    const handleEditNote = (id, currentNote) => {
+        setEditingNoteId(id);
+        setEditText(currentNote);
+    };
+
+    // Save a note to the database
     const handleSaveNote = async () => {
         if (!note) return;
+        setIsLoading(true);
         try {
             const response = await fetch('/api/infonote', {
                 method: 'POST',
@@ -53,8 +57,11 @@ export default function InfoClientComponent() {
 
             if (!response.ok) {
                 throw new Error('Failed to save note');
+            } else {
+                await fetchNotes();
+                setNote('');
             }
-            setIsEditing(false); // Hide the textarea after saving
+            setIsEditing(false); // Hides the textarea after saving
         } catch (err) {
             setError('Failed to save note. Please try again.');
         } finally {
@@ -62,34 +69,30 @@ export default function InfoClientComponent() {
         }
     };
 
-    /*     async function handleSaveNote() {
-            if (!note) return; // Ensure note is not empty
-    
-            setIsLoading(true); // Set loading state
-    
-            try {
-                const response = await fetch('/api/infonote', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ note }) // Send the current note
-                });
-    
-                const data = await response.json();
-    
-                if (response.ok) {
-                    // After saving, re-fetch notes to get the latest state
-                    await fetchNotes();
-                } else {
-                    console.error(data.error);
-                }
-            } catch (error) {
-                console.error('Error saving note:', error);
-            } finally {
-                setIsLoading(false); // Reset loading state after save attempt
-            }
-        } */
+    // Edit an existing note
+    const handleUpdateNote = async () => {
+        try {
+            const response = await fetch('/api/infonote', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: editingNoteId, note: editText }),
+            });
 
-    // Delete a note from the database via the API
+            if (!response.ok) throw new Error('Failed to update note');
+
+            const data = await response.json();
+
+            // Refresh notes
+            await fetchNotes();
+
+            setEditingNoteId(null);
+            setEditText('');
+        } catch (error) {
+            console.error('Error updating note:', error.message);
+        }
+    };
+
+    // Delete a note from the database
     const handleDeleteNote = async (id) => {
         try {
             const response = await fetch('/api/infonote', {
@@ -118,25 +121,85 @@ export default function InfoClientComponent() {
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold">EHA-Info</h1>
-            {/* <p className="my-4">{note || 'No notes'}</p> */}
-            {Array.isArray(allNotes) && allNotes.length > 0 ? (
-                <ul>
-                    {allNotes.map((note) => (
-                        <li key={note.id} className="border-b py-2">
-                            {note.note}
-                            <button
-                                onClick={() => handleDeleteNote(note.id)}
-                                className="ml-4 py-1 px-2 bg-red-500 text-white rounded-md hover:bg-red-600 text-xs"
-                            >
-                                Delete
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No notes.</p>
-            )}
+            <ul>
+                {allNotes.map((note) => (
+                    <li
+                        key={note.id}
+                        className="py-1 text-sm flex items-center"
+                    >
+                        {editingNoteId === note.id ? (
+                            <>
+                                <input
+                                    type="text"
+                                    value={editText}
+                                    onChange={(e) =>
+                                        setEditText(e.target.value)
+                                    }
+                                    className="border rounded-md p-1 text-sm flex-1 text-black"
+                                />
+                                <button
+                                    onClick={handleUpdateNote}
+                                    className="ml-2"
+                                >
+                                    <img
+                                        src={'/svgs/save_green.svg'}
+                                        alt="Save note"
+                                        style={{
+                                            width: '25px',
+                                            height: '25px',
+                                        }}
+                                    />
+                                </button>
+                                <button
+                                    onClick={() => setEditingNoteId(null)}
+                                    className="ml-2"
+                                >
+                                    <img
+                                        src={'/svgs/cancel_gray.svg'}
+                                        alt="Cancel edit"
+                                        style={{
+                                            width: '25px',
+                                            height: '25px',
+                                        }}
+                                    />
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <span className="flex-1">{note.note}</span>
+                                <button
+                                    onClick={() => handleDeleteNote(note.id)}
+                                    className="ml-2"
+                                >
+                                    <img
+                                        src={'/svgs/delete_red.svg'}
+                                        alt="Delete note"
+                                        style={{
+                                            width: '25px',
+                                            height: '25px',
+                                        }}
+                                    />
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        handleEditNote(note.id, note.note)
+                                    }
+                                    className="ml-2"
+                                >
+                                    <img
+                                        src={'/svgs/edit_yellow.svg'}
+                                        alt="Edit note"
+                                        style={{
+                                            width: '25px',
+                                            height: '25px',
+                                        }}
+                                    />
+                                </button>
+                            </>
+                        )}
+                    </li>
+                ))}
+            </ul>
             {session ? (
                 <div>
                     {isEditing ? (
@@ -172,11 +235,11 @@ export default function InfoClientComponent() {
                         </div>
                     ) : (
                         <button
-                            onClick={() => setIsEditing(true)} // Show textarea when editing
+                            onClick={() => setIsEditing(true)} // Shows textarea when adding a new note
                             style={{ backgroundColor: '#fac807' }}
                             className="py-1 px-3 text-white rounded-md shadow-md hover:bg-yellow-400 text-xs"
                         >
-                            Edit note
+                            Add a new note
                         </button>
                     )}
                 </div>
