@@ -1,4 +1,4 @@
-// InfoClinetComponent.js
+// InfoClientComponent.js
 'use client';
 
 import { useSession, signIn, signOut } from 'next-auth/react';
@@ -120,7 +120,7 @@ export default function InfoClientComponent() {
     }
 
     return (
-        <div className="p-4">
+        <div className="p-1">
             <ul>
                 {allNotes.map((note) => (
                     <li
@@ -138,12 +138,12 @@ export default function InfoClientComponent() {
                                     className="border rounded-md p-1 text-sm flex-1 text-black"
                                 />
                                 <button
-                                    onClick={handleUpdateNote}
+                                    onClick={() => setEditingNoteId(null)}
                                     className="ml-2"
                                 >
                                     <img
-                                        src={'/svgs/save_green.svg'}
-                                        alt="Save note"
+                                        src={'/svgs/cancel_gray.svg'}
+                                        alt="Cancel edit"
                                         style={{
                                             width: '25px',
                                             height: '25px',
@@ -151,12 +151,12 @@ export default function InfoClientComponent() {
                                     />
                                 </button>
                                 <button
-                                    onClick={() => setEditingNoteId(null)}
+                                    onClick={handleUpdateNote}
                                     className="ml-2"
                                 >
                                     <img
-                                        src={'/svgs/cancel_gray.svg'}
-                                        alt="Cancel edit"
+                                        src={'/svgs/save_green.svg'}
+                                        alt="Save note"
                                         style={{
                                             width: '25px',
                                             height: '25px',
@@ -214,19 +214,32 @@ export default function InfoClientComponent() {
                                 <button
                                     onClick={handleSaveNote}
                                     disabled={isLoading}
-                                    style={{ backgroundColor: '#fac807' }}
-                                    className={`py-1 px-3 text-white rounded-md shadow-md text-xs ${isLoading
-                                        ? 'opacity-50 cursor-not-allowed'
-                                        : 'hover:bg-blue-500'
-                                        }`}
                                 >
-                                    {isLoading ? 'Saving...' : 'Save'}
+                                    {isLoading ? (
+                                        'Saving...'
+                                    ) : (
+                                        <img
+                                            src={'/svgs/save_green.svg'}
+                                            alt="Save note"
+                                            style={{
+                                                width: '25px',
+                                                height: '25px',
+                                            }}
+                                        />
+                                    )}
                                 </button>
                                 <button
-                                    onClick={() => signOut()}
-                                    className="py-1 px-3 bg-gray-600 hover:bg-gray-500 text-white rounded-md shadow-md text-xs"
+                                    onClick={() => setIsEditing(false)}
+                                    className="ml-2"
                                 >
-                                    Logout
+                                    <img
+                                        src={'/svgs/cancel_gray.svg'}
+                                        alt="Cancel edit"
+                                        style={{
+                                            width: '25px',
+                                            height: '25px',
+                                        }}
+                                    />
                                 </button>
                             </div>
                             {error && (
@@ -249,7 +262,16 @@ export default function InfoClientComponent() {
                     style={{ backgroundColor: '#fac807' }}
                     className="py-1 px-3 text-white rounded-md shadow-md hover:bg-yellow-400 text-xs"
                 >
-                    Change note
+                    Log in
+                </button>
+            )}
+
+            {session && (
+                <button
+                    onClick={() => signOut()}
+                    className="py-1 px-3 bg-gray-600 hover:bg-gray-500 text-white rounded-md shadow-md text-xs"
+                >
+                    Log out
                 </button>
             )}
         </div>
