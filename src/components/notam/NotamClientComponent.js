@@ -103,7 +103,22 @@ export default function NotamClientComponent() {
                         right: 15,
                     }}
                 >
-                    NOTAM Data from: lentopaikat.fi, CC BY 4.0
+                    {'NOTAM  Data from: '}
+                    <a
+                        style={{
+                            color: '#006699',
+                        }}
+                        href="https://lentopaikat.fi/notam/notam.php?a=EFPR"
+                    >
+                        lentopaikat.fi
+                    </a>
+                    {', '}
+                    <a
+                        style={{ color: '#006699' }}
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                    >
+                        CC BY 4.0
+                    </a>
                 </p>
             </div>
         </div>
