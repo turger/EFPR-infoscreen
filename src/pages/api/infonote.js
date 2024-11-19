@@ -35,6 +35,20 @@ export default async function handler(req, res) {
             //console.error(error);
             return res.status(500).json({ error: error.message });
         }
+    } else if (req.method === 'DELETE') {
+        try {
+            // Delete a note by its ID
+            const { id } = req.body;
+            if (!id) throw new Error('ID is required');
+
+            await sql`DELETE FROM notes WHERE id = ${id};`;
+
+            return res
+                .status(200)
+                .json({ message: 'Note deleted successfully' });
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
     }
 
     // Handle other request methods
