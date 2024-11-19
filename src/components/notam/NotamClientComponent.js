@@ -78,10 +78,34 @@ export default function NotamClientComponent() {
     }
 
     return (
-        <div style={{ fontSize: '0.75rem' }}>
-            <pre>{notam.title}</pre>
+        <div
+            style={{
+                overflow: 'auto',
+                height: '315px',
+                fontSize: '0.9rem',
+                position: 'relative',
+            }}
+        >
             <pre>{notam.content}</pre>
-            <p>Last updated: {timeSinceLastUpdate}</p>
+            <div style={{ fontSize: '0.6rem', top: 615 }}>
+                <p
+                    style={{
+                        position: 'fixed',
+                        top: 615,
+                    }}
+                >
+                    Last updated: {timeSinceLastUpdate}
+                </p>
+                <p
+                    style={{
+                        position: 'fixed',
+                        top: 615,
+                        right: 15,
+                    }}
+                >
+                    NOTAM Data from: lentopaikat.fi, CC BY 4.0
+                </p>
+            </div>
         </div>
     );
 }
