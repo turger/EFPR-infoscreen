@@ -167,34 +167,43 @@ export default function InfoClientComponent() {
                         ) : (
                             <>
                                 <span className="flex-1">{note.note}</span>
-                                <button
-                                    onClick={() => handleDeleteNote(note.id)}
-                                    className="ml-2"
-                                >
-                                    <img
-                                        src={'/svgs/delete_red.svg'}
-                                        alt="Delete note"
-                                        style={{
-                                            width: '25px',
-                                            height: '25px',
-                                        }}
-                                    />
-                                </button>
-                                <button
-                                    onClick={() =>
-                                        handleEditNote(note.id, note.note)
-                                    }
-                                    className="ml-2"
-                                >
-                                    <img
-                                        src={'/svgs/edit_yellow.svg'}
-                                        alt="Edit note"
-                                        style={{
-                                            width: '25px',
-                                            height: '25px',
-                                        }}
-                                    />
-                                </button>
+                                {session && (
+                                    <>
+                                        <button
+                                            onClick={() =>
+                                                handleDeleteNote(note.id)
+                                            }
+                                            className="ml-2"
+                                        >
+                                            <img
+                                                src={'/svgs/delete_red.svg'}
+                                                alt="Delete note"
+                                                style={{
+                                                    width: '25px',
+                                                    height: '25px',
+                                                }}
+                                            />
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                handleEditNote(
+                                                    note.id,
+                                                    note.note
+                                                )
+                                            }
+                                            className="ml-2"
+                                        >
+                                            <img
+                                                src={'/svgs/edit_yellow.svg'}
+                                                alt="Edit note"
+                                                style={{
+                                                    width: '25px',
+                                                    height: '25px',
+                                                }}
+                                            />
+                                        </button>
+                                    </>
+                                )}
                             </>
                         )}
                     </li>
