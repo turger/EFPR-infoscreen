@@ -43,6 +43,7 @@ export default function InfoClientComponent() {
 
     // Save the note to the database via the API
     const handleSaveNote = async () => {
+        if (!note) return;
         try {
             const response = await fetch('/api/infonote', {
                 method: 'POST',
@@ -88,6 +89,26 @@ export default function InfoClientComponent() {
             }
         } */
 
+    // Delete a note from the database via the API
+    const handleDeleteNote = async (id) => {
+        try {
+            const response = await fetch('/api/infonote', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete note');
+            }
+
+            // Refresh the notes list after deletion
+            await fetchNotes();
+        } catch (error) {
+            console.error('Error deleting note:', error);
+        }
+    };
+
     if (error) {
         return <ErrorComponent message={error?.message} />;
     }
@@ -101,9 +122,15 @@ export default function InfoClientComponent() {
             {/* <p className="my-4">{note || 'No notes'}</p> */}
             {Array.isArray(allNotes) && allNotes.length > 0 ? (
                 <ul>
-                    {allNotes.map((note, index) => (
-                        <li key={index} className="border-b py-2">
+                    {allNotes.map((note) => (
+                        <li key={note.id} className="border-b py-2">
                             {note.note}
+                            <button
+                                onClick={() => handleDeleteNote(note.id)}
+                                className="ml-4 py-1 px-2 bg-red-500 text-white rounded-md hover:bg-red-600 text-xs"
+                            >
+                                Delete
+                            </button>
                         </li>
                     ))}
                 </ul>
