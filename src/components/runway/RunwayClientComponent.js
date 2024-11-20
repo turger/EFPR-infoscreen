@@ -30,20 +30,6 @@ export default function RunwayClientComponent({ data }) {
     return (
         <div className={styles.fidgetContainer}>
             <div className={styles.fidget}>
-                <div className={styles.windIndicator}>
-                    <img
-                        src='/svgs/wind.svg'
-                        className={styles.windArrow}
-                        style={{ transform: `translate(-50%, -50%) rotate(${windData.angle + 180}deg)` }}
-                        alt="Wind indicator"
-                    />
-                    <div className={styles.windSpeed}>
-                        <span>{windData.knots} knots</span>
-                        <br />
-                        <span>{windData.angle}°</span>
-                    </div>
-                </div>
-                <img src='/svgs/runway.svg' alt="Airstrip" className={styles.airstripImage} />
                 <div className={styles.temperatureContainer}>
                     {['52280', '52437', '52281'].map(siteId => {
                         const station = getStationBySiteId(siteId);
@@ -57,14 +43,28 @@ export default function RunwayClientComponent({ data }) {
 
                         return (
                             <div key={siteId} className={styles.temperatureValue}>
-                                <span style={{fontWeight: 'bold'}}>{station.name}</span>
-                                <span style={{fontSize: 14, fontWeight: 'bold'}}>{temperature}</span>
+                                <span style={{ fontWeight: 'bold' }}>{station.name}</span>
+                                <span style={{ fontSize: 14, fontWeight: 'bold' }}>{temperature}</span>
                                 <span style={{ color: colorAndExplanation.color, fontWeight: 'bold' }}>
                                     {colorAndExplanation.explanation}
                                 </span>
                             </div>
                         );
                     })}
+                </div>
+                <img src='/svgs/runway.svg' alt="Airstrip" className={styles.airstripImage} />
+                <div className={styles.windIndicator}>
+                    <img
+                        src='/svgs/wind.svg'
+                        className={styles.windArrow}
+                        style={{ transform: `translate(-50%, -50%) rotate(${windData.angle + 180}deg)` }}
+                        alt="Wind indicator"
+                    />
+                    <div className={styles.windSpeed}>
+                        <span>{windData.knots} knots</span>
+                        <br />
+                        <span>{windData.angle}°</span>
+                    </div>
                 </div>
                 <div
                     className={styles.ball}
@@ -110,6 +110,9 @@ export default function RunwayClientComponent({ data }) {
                             {getTemperatureBySiteId('52281')}
                         </div>
                     )}
+                </div>
+                <div className={styles.footer}>
+                    <p style={{ fontSize: 10, textAlign: "center", color: "black", paddingTop: 3 }}>Data provided by: XAMK</p>
                 </div>
             </div>
         </div>
