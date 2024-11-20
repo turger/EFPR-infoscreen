@@ -105,7 +105,13 @@ export default function RadarServerComponent() {
     // Pass imagePaths to the RadarClientComponent
     return (
         <div>
-            <h1 className="text-white text-sm">Rain Radar</h1>
+            <div className="flex items-center justify-between">
+                <h1 className="text-white text-sm">Rain Radar</h1>
+                <div className="text-white text-sm justify-right">
+                    Images from FMIOpenData CC BY 4.0
+                </div>
+            </div>
+
             <RadarClientComponent data={imagePaths} />
         </div>
     );
