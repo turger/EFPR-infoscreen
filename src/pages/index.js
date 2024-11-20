@@ -67,7 +67,7 @@ export default function Home() {
                     </div>
 
                     {/* Bottom: Two components side by side, one small component under the right side component*/}
-                    <div className="w-3/7 h-[38%] flex space-x-2 h-full w-full">
+                    <div className="h-[38%] flex space-x-2 w-full">
                         <div className="bg-gray-700 rounded-lg shadow-lg p-2 w-1/2 h-full">
                             {/* Drone map here */}
                         </div>
