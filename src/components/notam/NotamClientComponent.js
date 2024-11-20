@@ -1,7 +1,7 @@
 // src/components/notam/NotamClientComponent.js
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function NotamClientComponent() {
     const [notam, setNotam] = useState(null);
@@ -69,6 +69,40 @@ export default function NotamClientComponent() {
         return () => clearInterval(intervalId);
     }, [lastUpdated]);
 
+    // autoscroll feature if the notams overflow the div
+    const scrollContainerRef = useRef(null);
+    const [maxHeight, setMaxHeight] = useState(0);
+    const [maxScreenWidth, setMaxScreenWidth] = useState(0);
+    const [maxScreenHeight, setMaxScreenHeight] = useState(0);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setMaxScreenWidth(window.screen.width);
+            setMaxScreenHeight(window.screen.height);
+        }
+    }, []);
+
+    // Calculate max height dynamically
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            const parentHeight = scrollContainerRef.current.clientHeight;
+            setMaxHeight(parentHeight); // Subtract footer or padding height
+        }
+    }, [scrollContainerRef.current?.clientHeight]);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [notam]);
+
+    const scrollToBottom = () => {
+        //scrollContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+        scrollContainerRef.current?.scrollTo({
+            top: scrollContainerRef.current?.scrollHeight,
+            left: 0,
+            behavior: 'smooth',
+        });
+    };
+
     if (error) {
         return <div>{error}</div>;
     }
@@ -78,10 +112,37 @@ export default function NotamClientComponent() {
     }
 
     return (
-        <div style={{ fontSize: '0.75rem' }}>
-            <pre>{notam.title}</pre>
-            <pre>{notam.content}</pre>
-            <p>Last updated: {timeSinceLastUpdate}</p>
+        <div className="flex flex-col h-full w-full">
+            {/* Main content area */}
+            <div className="flex-grow overflow-auto">
+                <pre className="text-sm">{notam.content}</pre>
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-between items-end text-xs">
+                {/* Bottom left: Last updated */}
+                <p className="text-gray-400">
+                    Last updated: {timeSinceLastUpdate}
+                </p>
+
+                {/* Bottom right: CC BY 4.0 */}
+                <p className="text-gray-400">
+                    NOTAM Data from:{' '}
+                    <a
+                        href="https://lentopaikat.fi/notam/notam.php?a=EFPR"
+                        className="text-blue-400"
+                    >
+                        lentopaikat.fi
+                    </a>
+                    ,{' '}
+                    <a
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        className="text-blue-400"
+                    >
+                        CC BY 4.0
+                    </a>
+                </p>
+            </div>
         </div>
     );
 }
