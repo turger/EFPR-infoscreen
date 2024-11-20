@@ -57,17 +57,17 @@ export default function Home() {
                     {/* Top: Two components stacked vertically */}
 
                     {/* Bottom: One component */}
-                    <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-3/5 w-full">
+                    <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-[24%] w-full">
                         <MetarServerComponent />
                         {/* Airport Notes here */}
                     </div>
-                    <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-4/5 w-full">
+                    <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-[38%] w-full">
                         <NotamClientComponent />
                         {/* Airport Notes here */}
                     </div>
 
                     {/* Bottom: Two components side by side, one small component under the right side component*/}
-                    <div className="w-3/7 h-full flex space-x-2 h-full w-full">
+                    <div className="w-3/7 h-[38%] flex space-x-2 h-full w-full">
                         <div className="bg-gray-700 rounded-lg shadow-lg p-2 w-1/2 h-full">
                             {/* Drone map here */}
                         </div>

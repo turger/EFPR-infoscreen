@@ -8,8 +8,8 @@ export default async function GET(req, res) {
 
     if (!lastFetchTime || Date.now() - lastFetchTime > oneHour) {
         const response = await fetch(
-            //'https://lentopaikat.fi/notam/notam.php?a=EFIV',
-            'https://lentopaikat.fi/notam/notam.php?a=EFPR',
+            'https://lentopaikat.fi/notam/notam.php?a=EFIV',
+            //'https://lentopaikat.fi/notam/notam.php?a=EFPR',
             {
                 headers: {
                     'Cache-Control': 'no-store',

@@ -112,14 +112,14 @@ export default function NotamClientComponent() {
     }
 
     return (
-        <div className="flex flex-col h-full w-full max-h-[30vh]">
+        <div className="flex flex-col h-full w-full">
             {/* Main content area */}
-            <div className="flex-grow overflow-auto p-2">
+            <div className="flex-grow overflow-auto">
                 <pre className="text-sm">{notam.content}</pre>
             </div>
 
             {/* Footer */}
-            <div className="flex justify-between items-end text-xs p-2">
+            <div className="flex justify-between items-end text-xs">
                 {/* Bottom left: Last updated */}
                 <p className="text-gray-400">
                     Last updated: {timeSinceLastUpdate}
