@@ -31,7 +31,7 @@ export default function Home() {
                         {/* Left Container: Two components stacked vertically */}
                         <div className="flex flex-col justify-between w-2/5 h-full space-y-2">
                             {/* Top Component */}
-                            <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-1/2">
+                            <div className="bg-gray-700 rounded-lg shadow-lg p-0 h-1/2">
                                 <RunwayServerComponent />
                                 {/*Runway here */}
                             </div>
