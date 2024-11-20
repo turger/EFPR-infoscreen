@@ -1,7 +1,7 @@
 // src/components/notam/NotamClientComponent.js
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function NotamClientComponent() {
     const [notam, setNotam] = useState(null);
@@ -69,6 +69,40 @@ export default function NotamClientComponent() {
         return () => clearInterval(intervalId);
     }, [lastUpdated]);
 
+    // autoscroll feature if the notams overflow the div
+    const scrollContainerRef = useRef(null);
+    const [maxHeight, setMaxHeight] = useState(0);
+    const [maxScreenWidth, setMaxScreenWidth] = useState(0);
+    const [maxScreenHeight, setMaxScreenHeight] = useState(0);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setMaxScreenWidth(window.screen.width);
+            setMaxScreenHeight(window.screen.height);
+        }
+    }, []);
+
+    // Calculate max height dynamically
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            const parentHeight = scrollContainerRef.current.clientHeight;
+            setMaxHeight(parentHeight); // Subtract footer or padding height
+        }
+    }, [scrollContainerRef.current?.clientHeight]);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [notam]);
+
+    const scrollToBottom = () => {
+        //scrollContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+        scrollContainerRef.current?.scrollTo({
+            top: scrollContainerRef.current?.scrollHeight,
+            left: 0,
+            behavior: 'smooth',
+        });
+    };
+
     if (error) {
         return <div>{error}</div>;
     }
@@ -78,44 +112,32 @@ export default function NotamClientComponent() {
     }
 
     return (
-        <div
-            style={{
-                overflow: 'auto',
-                height: '315px',
-                fontSize: '0.9rem',
-                position: 'relative',
-            }}
-        >
-            <pre>{notam.content}</pre>
-            <div style={{ fontSize: '0.6rem', top: 615 }}>
-                <p
-                    style={{
-                        position: 'fixed',
-                        top: 615,
-                    }}
-                >
+        <div className="flex flex-col h-full w-full max-h-[30vh]">
+            {/* Main content area */}
+            <div className="flex-grow overflow-auto p-2">
+                <pre className="text-sm">{notam.content}</pre>
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-between items-end text-xs p-2">
+                {/* Bottom left: Last updated */}
+                <p className="text-gray-400">
                     Last updated: {timeSinceLastUpdate}
                 </p>
-                <p
-                    style={{
-                        position: 'fixed',
-                        top: 615,
-                        right: 15,
-                    }}
-                >
-                    {'NOTAM  Data from: '}
+
+                {/* Bottom right: CC BY 4.0 */}
+                <p className="text-gray-400">
+                    NOTAM Data from:{' '}
                     <a
-                        style={{
-                            color: '#006699',
-                        }}
                         href="https://lentopaikat.fi/notam/notam.php?a=EFPR"
+                        className="text-blue-400"
                     >
                         lentopaikat.fi
                     </a>
-                    {', '}
+                    ,{' '}
                     <a
-                        style={{ color: '#006699' }}
                         href="https://creativecommons.org/licenses/by/4.0/"
+                        className="text-blue-400"
                     >
                         CC BY 4.0
                     </a>
