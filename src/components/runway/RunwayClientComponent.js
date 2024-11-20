@@ -31,33 +31,58 @@ export default function RunwayClientComponent({ data }) {
         <div className={styles.fidgetContainer}>
             <div className={styles.fidget}>
                 <div className={styles.temperatureContainer}>
-                    {['52280', '52437', '52281'].map(siteId => {
+                    {['52280', '52437', '52281'].map((siteId) => {
                         const station = getStationBySiteId(siteId);
                         const temperature = getTemperatureBySiteId(siteId);
                         const condition = station?.condition;
-                        const colorAndExplanation = getColorAndExplanationByCondition(condition);
+                        const colorAndExplanation =
+                            getColorAndExplanationByCondition(condition);
 
-                        if (!station || temperature === undefined || !colorAndExplanation) {
+                        if (
+                            !station ||
+                            temperature === undefined ||
+                            !colorAndExplanation
+                        ) {
                             return null;
                         }
 
                         return (
-                            <div key={siteId} className={styles.temperatureValue}>
-                                <span style={{ fontWeight: 'bold' }}>{station.name}</span>
-                                <span style={{ fontSize: 14, fontWeight: 'bold' }}>{temperature}</span>
-                                <span style={{ color: colorAndExplanation.color, fontWeight: 'bold' }}>
+                            <div
+                                key={siteId}
+                                className={styles.temperatureValue}
+                            >
+                                <span style={{ fontWeight: 'bold' }}>
+                                    {station.name}
+                                </span>
+                                <span
+                                    style={{ fontSize: 14, fontWeight: 'bold' }}
+                                >
+                                    {temperature}
+                                </span>
+                                <span
+                                    style={{
+                                        color: colorAndExplanation.color,
+                                        fontWeight: 'bold',
+                                    }}
+                                >
                                     {colorAndExplanation.explanation}
                                 </span>
                             </div>
                         );
                     })}
                 </div>
-                <img src='/svgs/runway.svg' alt="Airstrip" className={styles.airstripImage} />
+                <img
+                    src="/svgs/runway.svg"
+                    alt="Airstrip"
+                    className={styles.airstripImage}
+                />
                 <div className={styles.windIndicator}>
                     <img
-                        src='/svgs/wind.svg'
+                        src="/svgs/wind.svg"
                         className={styles.windArrow}
-                        style={{ transform: `translate(-50%, -50%) rotate(${windData.angle + 180}deg)` }}
+                        style={{
+                            transform: `translate(-50%, -50%) rotate(${windData.angle + 180}deg)`,
+                        }}
                         alt="Wind indicator"
                     />
                     <div className={styles.windSpeed}>
@@ -142,7 +167,16 @@ export default function RunwayClientComponent({ data }) {
                     )}
                 </div>
                 <div className={styles.footer}>
-                    <p style={{ fontSize: 10, textAlign: "center", color: "black", paddingTop: 3 }}>Data provided by: XAMK</p>
+                    <p
+                        style={{
+                            fontSize: 10,
+                            textAlign: 'center',
+                            color: 'black',
+                            paddingTop: 3,
+                        }}
+                    >
+                        Data provided by: XAMK
+                    </p>
                 </div>
             </div>
         </div>

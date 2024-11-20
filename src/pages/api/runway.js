@@ -4,7 +4,12 @@ let accessToken = null;
 let tokenExpirationTime = null;
 
 async function getAccessToken(forceNewToken = false) {
-    if (!forceNewToken && accessToken && tokenExpirationTime && new Date() < tokenExpirationTime) {
+    if (
+        !forceNewToken &&
+        accessToken &&
+        tokenExpirationTime &&
+        new Date() < tokenExpirationTime
+    ) {
         console.log('Using cached access token');
         return accessToken;
     }
@@ -37,7 +42,9 @@ async function getAccessToken(forceNewToken = false) {
 
     const data = await response.json();
     accessToken = data.access_token;
-    tokenExpirationTime = new Date(new Date().getTime() + data.expires_in * 1000); // seconds to milliseconds
+    tokenExpirationTime = new Date(
+        new Date().getTime() + data.expires_in * 1000
+    ); // seconds to milliseconds
 
     console.log('Fetched new access token');
     console.log(`Token expires in: ${data.expires_in} seconds`);
@@ -50,9 +57,9 @@ async function fetchDataWithToken(url, token) {
     const response = await fetch(url, {
         method: 'GET',
         headers: {
-            'accept': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        }
+            accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
     });
 
     if (!response.ok) {
@@ -64,7 +71,8 @@ async function fetchDataWithToken(url, token) {
 }
 
 export default async function handler(req, res) {
-    const apiUrl = 'https://api.eu.wxhorizon.vaisala.com/api/v1/station_observations?latest=true';
+    const apiUrl =
+        'https://api.eu.wxhorizon.vaisala.com/api/v1/station_observations?latest=true';
 
     try {
         let accessToken = await getAccessToken();
@@ -73,7 +81,9 @@ export default async function handler(req, res) {
         try {
             data = await fetchDataWithToken(apiUrl, accessToken);
         } catch (error) {
-            console.error('Initial fetch failed, fetching new token and retrying...');
+            console.error(
+                'Initial fetch failed, fetching new token and retrying...'
+            );
             accessToken = await getAccessToken(true); // Fetch a new token
             data = await fetchDataWithToken(apiUrl, accessToken); // Retry with new token
         }
@@ -81,6 +91,8 @@ export default async function handler(req, res) {
         res.status(200).json(data);
     } catch (error) {
         console.error(`Error in handler: ${error.message}`);
-        res.status(500).json({ error: `Error fetching data: ${error.message}` });
+        res.status(500).json({
+            error: `Error fetching data: ${error.message}`,
+        });
     }
 }
