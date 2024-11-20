@@ -169,10 +169,10 @@ export default function RunwayClientComponent({ data }) {
                 <div className={styles.footer}>
                     <p
                         style={{
-                            fontSize: 10,
+                            fontSize: 12,
                             textAlign: 'center',
                             color: 'black',
-                            paddingTop: 3,
+                            paddingTop: 6,
                         }}
                     >
                         Data provided by: XAMK
