@@ -237,8 +237,8 @@ export default function ReactLeafletMap({
                             ? '/svgs/drone_yellow.svg'
                             : '/svgs/drone_black.svg'
                         : isDarkMode
-                            ? '/svgs/plane_yellow.svg'
-                            : '/svgs/plane_black.svg';
+                          ? '/svgs/plane_yellow.svg'
+                          : '/svgs/plane_black.svg';
 
                     const rotation = flight.trk;
                     return (
