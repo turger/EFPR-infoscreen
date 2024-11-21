@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 // TEMp, Cloudcover, oneHourperc
 export default function WeatherIcon({ data }) {
     const [weatherData, setWeatherData] = useState(null);
-
+    
     useEffect(() => {
         if (data) {
             setWeatherData(data); // Aseta data vain, jos sitä on olemassa
@@ -18,12 +18,12 @@ const mockweatherData = {
     temperatureOBSERVATION: -1,
     tenMinPrecipitationOBSERVATION: 3,
 };
-
 export const weatherImg = (weatherData) => {
+
     let iconName = 'default';
     
     let { CloudCoverageOBSERVATION, tenMinPrecipitationOBSERVATION, temperatureOBSERVATION } =
-    weatherData;
+    mockweatherData;
     try {
         
         const hourlyPrecipitationOBSERVATION = tenMinPrecipitationOBSERVATION * 6; //tenMin is some time more accurate and doesnot give NaN so often
