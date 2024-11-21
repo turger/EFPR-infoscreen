@@ -22,27 +22,26 @@ const mockweatherData = {
 export const weatherImg = (weatherData) => {
     let iconName = 'default';
     
-    const { CloudCoverageOBSERVATION, hourlyPrecipitationOBSERVATION, temperatureOBSERVATION } =
+    let { CloudCoverageOBSERVATION, tenMinPrecipitationOBSERVATION, temperatureOBSERVATION } =
     weatherData;
     try {
         
         const hourlyPrecipitationOBSERVATION = tenMinPrecipitationOBSERVATION * 6; //tenMin is some time more accurate and doesnot give NaN so often
 
-            console.log(weatherData, "weatherIcon")
-
-            if (isNaN(CloudCoverageOBSERVATION || isNaN(hourlyPrecipitationOBSERVATION))) {
-                console.warn('CloudCoverageOBSERVATION or oneHourPrecipitationOBSERVATION is NaN, using fallback icon.');
-                return 'default'; // Return "storm" or any fallback icon
+        
+        if (isNaN(CloudCoverageOBSERVATION || isNaN(hourlyPrecipitationOBSERVATION))) {
+            console.warn('CloudCoverageOBSERVATION or oneHourPrecipitationOBSERVATION is NaN, using fallback icon.');
+            return 'default'; // Return "storm" or any fallback icon
             }
 
         if (CloudCoverageOBSERVATION === 0) {
             iconName = 'clear';
         }
-
+        
         if (CloudCoverageOBSERVATION === 1 || CloudCoverageOBSERVATION === 2) {
             // Default to 'fair' weather first
             iconName = 'fair'; 
-        
+            
             if (hourlyPrecipitationOBSERVATION <= 2.5) {
                 if (temperatureOBSERVATION >= 0) {
                     // Light rain (above freezing)
@@ -72,7 +71,7 @@ export const weatherImg = (weatherData) => {
         if (CloudCoverageOBSERVATION === 3 || CloudCoverageOBSERVATION === 4 || CloudCoverageOBSERVATION === 5) {
             // Default to 'partlycloudy' weather first
             iconName = 'partlycloudy'; 
-        
+            
             if (hourlyPrecipitationOBSERVATION <= 2.5) {
                 if (temperatureOBSERVATION >= 0) {
                     // Light rain (above freezing)
@@ -132,7 +131,7 @@ export const weatherImg = (weatherData) => {
         if (CloudCoverageOBSERVATION === 8) {
             console.log("Overcast icon selected");
             iconName = 'overcast'; // Default icon for overcast
-        
+            
             if (hourlyPrecipitationOBSERVATION <= 2.5) {
                 if (temperatureOBSERVATION >= 0) {
                     // Light rain (above freezing)
@@ -159,8 +158,9 @@ export const weatherImg = (weatherData) => {
                 }
             }
         }
-        
-
+        console.log(CloudCoverageOBSERVATION, "weathericon cloud")
+        console.log(temperatureOBSERVATION, "weather icon temperature")
+        console.log(tenMinPrecipitationOBSERVATION, "weatherIcon precipitation")
         console.log({"icondatatest": weatherData});
         console.log('Determined iconName:', iconName);
         return iconName;
