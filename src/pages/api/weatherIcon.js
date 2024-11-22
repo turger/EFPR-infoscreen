@@ -2,13 +2,12 @@ import { useState, useEffect } from 'react';
 // TEMp, Cloudcover, oneHourperc
 export default function WeatherIcon({ data }) {
     const [weatherData, setWeatherData] = useState(null);
-    
+
     useEffect(() => {
         if (data) {
             setWeatherData(data); // Aseta data vain, jos sitä on olemassa
         }
     }, [data]); // Suorita vain, kun `data` muuttuu
-    
 }
 
 ///FOR TESTING PURPOSES :
@@ -19,29 +18,37 @@ const mockweatherData = {
     tenMinPrecipitationOBSERVATION: 3,
 };
 export const weatherImg = (weatherData) => {
-
     let iconName = 'default';
-    
-    let { CloudCoverageOBSERVATION, tenMinPrecipitationOBSERVATION, temperatureOBSERVATION } =
-    mockweatherData;
-    try {
-        
-        const hourlyPrecipitationOBSERVATION = tenMinPrecipitationOBSERVATION * 6; //tenMin is some time more accurate and doesnot give NaN so often
 
-        
-        if (isNaN(CloudCoverageOBSERVATION || isNaN(hourlyPrecipitationOBSERVATION))) {
-            console.warn('CloudCoverageOBSERVATION or oneHourPrecipitationOBSERVATION is NaN, using fallback icon.');
+    let {
+        CloudCoverageOBSERVATION,
+        tenMinPrecipitationOBSERVATION,
+        temperatureOBSERVATION,
+    } = mockweatherData;
+    try {
+        const hourlyPrecipitationOBSERVATION =
+            tenMinPrecipitationOBSERVATION * 6; //tenMin is some time more accurate and doesnot give NaN so often
+
+        if (
+            isNaN(
+                CloudCoverageOBSERVATION ||
+                    isNaN(hourlyPrecipitationOBSERVATION)
+            )
+        ) {
+            console.warn(
+                'CloudCoverageOBSERVATION or oneHourPrecipitationOBSERVATION is NaN, using fallback icon.'
+            );
             return 'default'; // Return "storm" or any fallback icon
-            }
+        }
 
         if (CloudCoverageOBSERVATION === 0) {
             iconName = 'clear';
         }
-        
+
         if (CloudCoverageOBSERVATION === 1 || CloudCoverageOBSERVATION === 2) {
             // Default to 'fair' weather first
-            iconName = 'fair'; 
-            
+            iconName = 'fair';
+
             if (hourlyPrecipitationOBSERVATION <= 2.5) {
                 if (temperatureOBSERVATION >= 0) {
                     // Light rain (above freezing)
@@ -68,10 +75,14 @@ export const weatherImg = (weatherData) => {
                 }
             }
         }
-        if (CloudCoverageOBSERVATION === 3 || CloudCoverageOBSERVATION === 4 || CloudCoverageOBSERVATION === 5) {
+        if (
+            CloudCoverageOBSERVATION === 3 ||
+            CloudCoverageOBSERVATION === 4 ||
+            CloudCoverageOBSERVATION === 5
+        ) {
             // Default to 'partlycloudy' weather first
-            iconName = 'partlycloudy'; 
-            
+            iconName = 'partlycloudy';
+
             if (hourlyPrecipitationOBSERVATION <= 2.5) {
                 if (temperatureOBSERVATION >= 0) {
                     // Light rain (above freezing)
@@ -100,7 +111,7 @@ export const weatherImg = (weatherData) => {
         }
         if (CloudCoverageOBSERVATION === 6 || CloudCoverageOBSERVATION === 7) {
             iconName = 'mostlycloudy'; // Default icon for mostly cloudy
-        
+
             if (hourlyPrecipitationOBSERVATION <= 2.5) {
                 if (temperatureOBSERVATION >= 0) {
                     // Light rain (above freezing)
@@ -127,11 +138,11 @@ export const weatherImg = (weatherData) => {
                 }
             }
         }
-        
+
         if (CloudCoverageOBSERVATION === 8) {
-            console.log("Overcast icon selected");
+            console.log('Overcast icon selected');
             iconName = 'overcast'; // Default icon for overcast
-            
+
             if (hourlyPrecipitationOBSERVATION <= 2.5) {
                 if (temperatureOBSERVATION >= 0) {
                     // Light rain (above freezing)
@@ -158,10 +169,13 @@ export const weatherImg = (weatherData) => {
                 }
             }
         }
-        console.log(CloudCoverageOBSERVATION, "weathericon cloud")
-        console.log(temperatureOBSERVATION, "weather icon temperature")
-        console.log(tenMinPrecipitationOBSERVATION, "weatherIcon precipitation")
-        console.log({"icondatatest": weatherData});
+        console.log(CloudCoverageOBSERVATION, 'weathericon cloud');
+        console.log(temperatureOBSERVATION, 'weather icon temperature');
+        console.log(
+            tenMinPrecipitationOBSERVATION,
+            'weatherIcon precipitation'
+        );
+        console.log({ icondatatest: weatherData });
         console.log('Determined iconName:', iconName);
         return iconName;
     } catch (error) {
@@ -169,6 +183,3 @@ export const weatherImg = (weatherData) => {
         return 'default';
     }
 };
-
-    
-    

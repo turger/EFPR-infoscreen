@@ -7,16 +7,13 @@ import forecast from '@/pages/api/forecast';
 import observation from '@/pages/api/observation';
 import Image from 'next/image';
 import { weatherImg } from '@/pages/api/weatherIcon';
-
-
 import WeatherIcon from '@/pages/api/weatherIcon';
 
 export default function WeatherServerComponent() {
     // Use the fetched weather data from CloudCover
     const [weatherData, setWeatherData] = useState(null);
     //const iconName = weatherImg(weatherData); // icon names
-    const [iconName, seticonName] =useState('default');
-  
+    const [iconName, seticonName] = useState('default');
 
     //Observationdata and Forecastdata added together
     console.log(weatherData);
@@ -40,18 +37,16 @@ export default function WeatherServerComponent() {
 
                     seticonName(weatherImg(weatherData)); // Pass observation data
                     console.log('Icon Name:', iconName);
-                    console.log('Resolved Image Path:', `/svg/weatherIcons/${iconName}.svg`);
-                    
-                    
-
+                    console.log(
+                        'Resolved Image Path:',
+                        `/svg/weatherIcons/${iconName}.svg`
+                    );
                 } else {
                     console.error(
                         'Invalid observation data received:',
                         observationdata
                     );
-                    
                 }
-
             } else {
                 console.error('Invalid forecast data received:', forecastdata);
             }
@@ -72,8 +67,6 @@ export default function WeatherServerComponent() {
         return () => clearInterval(intervalId);
     }, []); // Empty dependency array ensures the effect runs only once at mount
 
-    
-
     // Display loading state while data is being fetched
     if (!weatherData) {
         return <div>Loading...</div>; //basic loading screen
@@ -81,17 +74,16 @@ export default function WeatherServerComponent() {
 
     return (
         <div className={styles.box}>
-            
             <WeatherIcon data={weatherData} />
             {/* <div>{weatherData.observation.suomiAika}</div> */}
             <div className={styles.imgcontainer}>
-            <Image
-                 //src="/svgs/weatherIcons/default.svg"
-                 src={`/svgs/weatherIcons/${iconName }.svg`}
-                 alt={iconName}
-                 width={80}
-                 height={80}
-            />
+                <Image
+                    //src="/svgs/weatherIcons/default.svg"
+                    src={`/svgs/weatherIcons/${iconName}.svg`}
+                    alt={iconName}
+                    width={80}
+                    height={80}
+                />
             </div>
             <div className={styles.infocontainer}>
                 <div className={styles.left}>
@@ -118,7 +110,10 @@ export default function WeatherServerComponent() {
                         {weatherData.observation.windDirectionOBSERVATION}°
                     </div>
                     <div className={styles.fade}>
-                        {weatherData.observation.oneHourPrecipitationOBSERVATION}{' '}
+                        {
+                            weatherData.observation
+                                .oneHourPrecipitationOBSERVATION
+                        }{' '}
                         MM
                     </div>
                     <div className={styles.fade}>
