@@ -10,14 +10,14 @@ const RunwayClientComponent = dynamic(() => import('./RunwayClientComponent'), {
 
 export default function RunwayServerComponent() {
     const { data, error } = useSWR('/api/runway', fetcher, {
-        refreshInterval: 30000,
-        dedupingInterval: 30000,
+        refreshInterval: 60000,
+        dedupingInterval: 60000,
     });
 
     if (error) return <ErrorComponent message="Failed to load data" />;
     if (!data) return <LoadingSpinner />;
 
-    const stationsData = Object.keys(data.stations).map(stationId => {
+    const stationsData = Object.keys(data.stations).map((stationId) => {
         const station = data.stations[stationId][0];
         const site = station[8][0];
         return {
