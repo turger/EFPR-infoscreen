@@ -26,7 +26,7 @@ export default function InfoClientComponent() {
             const response = await fetch('/api/infonote');
             const data = await response.json();
             if (response.ok) {
-                setAllNotes(data.notes.rows);
+                setAllNotes(data.response);
             } else {
                 console.error(data.error);
             }

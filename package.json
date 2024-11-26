@@ -11,6 +11,7 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md,mjs}\""
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
     "@vercel/blob": "^0.25.1",
     "@vercel/postgres": "^0.10.0",
     "cheerio": "^1.0.0",
