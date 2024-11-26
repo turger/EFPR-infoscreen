@@ -19,7 +19,7 @@ export default function DroneServerComponent() {
     const [isLoading, setIsLoading] = useState(true);
     const aerodomeLocation = [60.48075888598088, 26.59665436528449];
     const initialLocation = [60.48075888598088, 26.59665436528449];
-    const initialZoom = 11;
+    const initialZoom = 12;
 
     /*     const droneTest = [
             {
@@ -116,13 +116,13 @@ export default function DroneServerComponent() {
                     flight.lat != null &&
                     flight.lon != null &&
                     index ===
-                        self.findIndex(
-                            (f) =>
-                                (f.src === flight.src ||
-                                    f.cat === flight.cat) &&
-                                f.lat === flight.lat &&
-                                f.lon === flight.lon
-                        )
+                    self.findIndex(
+                        (f) =>
+                            (f.src === flight.src ||
+                                f.cat === flight.cat) &&
+                            f.lat === flight.lat &&
+                            f.lon === flight.lon
+                    )
             );
 
             setDrones(uniqueDrones);
@@ -153,6 +153,7 @@ export default function DroneServerComponent() {
                 initialLocation={initialLocation}
                 flights={drones}
                 initialZoom={initialZoom}
+                mapHeight="34vh"
             />
         </div>
     );

@@ -77,12 +77,14 @@ export default function Home() {
                         <div className="h-[38%] flex space-x-2 w-full">
                             <div className="bg-gray-700 rounded-lg shadow-lg p-2 w-1/2 h-full">
                                 {/* Drone map here */}
+                                <DroneServerComponent />
                             </div>
                             {/* Bottom Right two components vertically stacked */}
                             <div className="w-1/2 flex flex-col space-y-2">
                                 {/* Top Component */}
                                 <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-4/5">
-                                    <CameraServerComponent />
+                                    {/* <CameraServerComponent /> */}
+                                    <InfoClientComponent />
                                 </div>
                                 {/* Bottom Component */}
                                 <div className="flex space-x-2  p-2">

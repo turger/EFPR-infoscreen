@@ -122,6 +122,7 @@ export default function ReactLeafletMap({
     initialZoom,
     flights = [],
     airspaces = [],
+    mapHeight = '45vh',
 }) {
     const [iconSize, setIconSize] = useState(6);
     const [isDarkMode, setIsDarkMode] = useState(true);
@@ -162,7 +163,7 @@ export default function ReactLeafletMap({
         <MapContainer
             center={initialLocation}
             zoom={initialZoom}
-            style={{ height: '41vh', width: '100%' }}
+            style={{ height: mapHeight, width: '100%' }}
         >
             <ZoomHandler initialZoom={initialZoom} />
             <TileLayer
@@ -237,8 +238,8 @@ export default function ReactLeafletMap({
                             ? '/svgs/drone_yellow.svg'
                             : '/svgs/drone_black.svg'
                         : isDarkMode
-                          ? '/svgs/plane_yellow.svg'
-                          : '/svgs/plane_black.svg';
+                            ? '/svgs/plane_yellow.svg'
+                            : '/svgs/plane_black.svg';
 
                     const rotation = flight.trk;
                     return (
