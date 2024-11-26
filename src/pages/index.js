@@ -23,34 +23,47 @@ export default function Home() {
                     <title>Info Demo</title>
                     <meta name="description" content="Information Board Demo" />
                 </Head>
+                <DataProvider>
+                    <div className="min-h-screen bg-gray-900 text-white">
+                        <Head>
+                            <title>Info Demo</title>
+                            <meta name="description" content="Information Board Demo" />
+                        </Head>
 
-                {/* Main container with two main divs side by side */}
-                <div className="h-screen w-full flex justify-center items-center p-2 space-x-2">
-                    {/* Left Div */}
-                    <div className="w-3/5 h-full flex flex-row space-x-2">
-                        {/* Left Container: Two components stacked vertically */}
-                        <div className="flex flex-col justify-between w-2/5 h-full space-y-2">
-                            {/* Top Component */}
-                            <div className="bg-gray-700 rounded-lg shadow-lg p-0 h-1/2">
-                                <RunwayServerComponent />
-                                {/*Runway here */}
+                        {/* Main container with two main divs side by side */}
+                        <div className="h-screen w-full flex justify-center items-center p-2 space-x-2">
+                            {/* Left Div */}
+                            <div className="w-3/5 h-full flex flex-row space-x-2">
+                                {/* Left Container: Two components stacked vertically */}
+                                <div className="flex flex-col justify-between w-2/5 h-full space-y-2">
+                                    {/* Top Component */}
+                                    <div className="bg-gray-700 rounded-lg shadow-lg p-0 h-1/2">
+                                        <RunwayServerComponent />
+                                        {/*Runway here */}
+                                    </div>
+
+                                    {/* Bottom Component */}
+                                    <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-1/2">
+                                        <WeatherServerComponent />
+                                        {/* Weather here */}
+                                    </div>
+                                </div>
+
+                                {/*  Middle Container: Two components stacked vertically */}
+                                <div className="flex flex-col justify-between w-3/5 h-full space-y-2">
+                                    {/* Top Component */}
+                                    <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-1/2">
+                                        <RadarServerComponent />
+                                        {/*Radar here */}
+                                    </div>
+
+                                    {/* Bottom Component */}
+                                    <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-1/2">
+                                        <AdsbServerComponent />
+                                        {/* ads-B here */}
+                                    </div>
+                                </div>
                             </div>
-
-                            {/* Bottom Component */}
-                            <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-1/2">
-                                <WeatherServerComponent />
-                                {/* Weather here */}
-                            </div>
-                        </div>
-
-                        {/*  Middle Container: Two components stacked vertically */}
-                        <div className="flex flex-col justify-between w-3/5 h-full space-y-2">
-                            {/* Top Component */}
-                            <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-1/2">
-                                <RadarServerComponent />
-                                {/*Radar here */}
-                            </div>
-
                             {/* Bottom Component */}
                             <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-1/2">
                                 <AdsbServerComponent />
@@ -108,8 +121,8 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
-        </DataProvider>
+        </div>
+        </DataProvider >
     );
 }
