@@ -122,11 +122,13 @@ export default function InfoClientComponent() {
     return (
         <div className="p-1">
             <ul>
+                {/* Render all notes */}
                 {allNotes.map((note) => (
                     <li
                         key={note.id}
                         className="py-1 text-sm flex items-center"
                     >
+                        {/* Render field to edit an existing note with save and cancel buttons */}
                         {editingNoteId === note.id ? (
                             <>
                                 <input
@@ -156,7 +158,7 @@ export default function InfoClientComponent() {
                                 >
                                     <img
                                         src={'/svgs/save_green.svg'}
-                                        alt="Save note"
+                                        alt="Save edited note"
                                         style={{
                                             width: '25px',
                                             height: '25px',
@@ -166,6 +168,8 @@ export default function InfoClientComponent() {
                             </>
                         ) : (
                             <>
+                                {/* If user is not logged in, render notes only */}
+                                {/* If user is logged in, render notes with edit and delete buttons */}
                                 <span className="flex-1">{note.note}</span>
                                 {session && (
                                     <>
@@ -209,6 +213,7 @@ export default function InfoClientComponent() {
                     </li>
                 ))}
             </ul>
+            {/* Conditional rendering to add new note - only logged in user can create a new note */}
             {session ? (
                 <div>
                     {isEditing ? (
@@ -256,6 +261,7 @@ export default function InfoClientComponent() {
                             )}
                         </div>
                     ) : (
+                        /* Add a new note button */
                         <button
                             onClick={() => setIsEditing(true)} // Shows textarea when adding a new note
                             style={{ backgroundColor: '#fac807' }}
@@ -266,6 +272,7 @@ export default function InfoClientComponent() {
                     )}
                 </div>
             ) : (
+                /* log in button */
                 <button
                     onClick={() => signIn()}
                     style={{ backgroundColor: '#fac807' }}
@@ -274,7 +281,7 @@ export default function InfoClientComponent() {
                     Log in
                 </button>
             )}
-
+            {/* Conditional rendering for log out button */}
             {session && (
                 <button
                     onClick={() => signOut()}
