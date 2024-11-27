@@ -120,8 +120,8 @@ export default function InfoClientComponent() {
     }
 
     return (
-        <div className="p-1">
-            <ul>
+        <div className="p-1 relative h-full">
+            <ul className="overflow-auto">
                 {/* Render all notes */}
                 {allNotes.map((note) => (
                     <li
@@ -273,22 +273,26 @@ export default function InfoClientComponent() {
                 </div>
             ) : (
                 /* log in button */
-                <button
-                    onClick={() => signIn()}
-                    style={{ backgroundColor: '#fac807' }}
-                    className="py-1 px-3 text-white rounded-md shadow-md hover:bg-yellow-400 text-xs"
-                >
-                    Log in
-                </button>
+                <div className="absolute bottom-0 left-0 w-full flex items-center">
+                    <button
+                        onClick={() => signIn()}
+                        style={{ backgroundColor: '#fac807' }}
+                        className="py-1 px-3 text-white rounded-md shadow-md hover:bg-yellow-400 text-xs"
+                    >
+                        Log in
+                    </button>
+                </div>
             )}
             {/* Conditional rendering for log out button */}
             {session && (
-                <button
-                    onClick={() => signOut()}
-                    className="py-1 px-3 bg-gray-600 hover:bg-gray-500 text-white rounded-md shadow-md text-xs"
-                >
-                    Log out
-                </button>
+                <div className="absolute bottom-0 left-0 w-full flex items-center">
+                    <button
+                        onClick={() => signOut()}
+                        className="py-1 px-3 bg-gray-600 hover:bg-gray-500 text-white rounded-md shadow-md text-xs mt-2"
+                    >
+                        Log out
+                    </button>
+                </div>
             )}
         </div>
     );

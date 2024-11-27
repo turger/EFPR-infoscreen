@@ -86,26 +86,7 @@ export default function DroneServerComponent() {
         return finnishTime;
     };
 
-    // Handles filtering drones and sets adsbTime when ADS-B data changes
-    /*     useEffect(() => {
-            if (adsbData && Array.isArray(adsbData)) {
-                const uniqueDrones = adsbData.filter(
-                    (flight, index, self) =>
-                        (flight.src === 'RID' ||
-                            flight.cat === 'B7' ||
-                            flight.cat === 'O13') &&
-                        index === self.findIndex((f) => f.hex === flight.hex)
-                );
-    
-                setDrones(uniqueDrones);
-    
-                if (uniqueDrones.length > 0 && uniqueDrones[0].tim) {
-                    const adjustedTime = getFinnishTime(uniqueDrones[0].dat);
-                    setAdsbTime(adjustedTime);
-                }
-                setIsLoading(false);
-            }
-        }, [adsbData]); */
+    // Handles filtering drones from all flights and sets adsbTime when ADS-B data changes
     useEffect(() => {
         if (adsbData && Array.isArray(adsbData)) {
             const uniqueDrones = adsbData.filter(
@@ -144,10 +125,6 @@ export default function DroneServerComponent() {
     }
     return (
         <div>
-            <p className="text-white text-sm">
-                ADS-B - Drones - {adsbTime}{' '}
-                {adsbTime === '--:--:--' && ' No drones'}
-            </p>
             <MapComponent
                 aerodomeLocation={aerodomeLocation}
                 initialLocation={initialLocation}
@@ -155,6 +132,23 @@ export default function DroneServerComponent() {
                 initialZoom={initialZoom}
                 mapHeight="34vh"
             />
+
+            <div className="flex justify-between items-end text-xs">
+                {/* Bottom left: Last updated or No drones */}
+                <p className="text-gray-400">
+                    {adsbTime === '--:--:--'
+                        ? 'No drones'
+                        : `Last updated: ${adsbTime}`}
+                </p>
+
+                {/* Bottom right: ADS-B, AUP/UUP */}
+                <p className="text-gray-400">
+                    ADS-B Data from:{' '}
+                    <a href="https://www.xamk.fi/" className="text-blue-400">
+                        XAMK
+                    </a>
+                </p>
+            </div>
         </div>
     );
 }

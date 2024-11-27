@@ -87,21 +87,39 @@ export default function AdsbServerComponent() {
         return <LoadingSpinner />;
     }
     return (
-        <div>
-            <p className="text-white text-sm">
-                ADS-B - Flights And Airspaces - {adsbTime}
-            </p>
-            {/*  <AdsbClientComponent
+        <>
+            <div>
+                {/* <p className="text-white text-sm">
+                    ADS-B - Flights And Airspaces - {adsbTime}
+                </p> */}
+                {/*  <AdsbClientComponent
                 flights={flights}
                 airspaces={airspacesData.features}
-            /> */}
-            <MapComponent
-                aerodomeLocation={aerodomeLocation}
-                initialLocation={initialLocation}
-                flights={flights}
-                airspaces={airspacesData.features}
-                initialZoom={initialZoom}
-            />
-        </div>
+                /> */}
+                <MapComponent
+                    aerodomeLocation={aerodomeLocation}
+                    initialLocation={initialLocation}
+                    flights={flights}
+                    airspaces={airspacesData.features}
+                    initialZoom={initialZoom}
+                />
+            </div>
+            <div className="flex justify-between items-end text-xs">
+                {/* Bottom left: Last updated */}
+                <p className="text-gray-400">Last updated: {adsbTime}</p>
+
+                {/* Bottom right: ADS-B, AUP/UUP */}
+                <p className="text-gray-400">
+                    ADS-B Data from:{' '}
+                    <a href="https://www.xamk.fi/" className="text-blue-400">
+                        XAMK
+                    </a>
+                    , AUP/UUP{' '}
+                    <a href="https://flyk.com" className="text-blue-400">
+                        Flyk.com
+                    </a>
+                </p>
+            </div>
+        </>
     );
 }
