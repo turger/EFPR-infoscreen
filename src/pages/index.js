@@ -33,7 +33,7 @@ export default function Home() {
 
                         {/* Bottom Component */}
                         <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-1/2">
-                            <WeatherServerComponent/>
+                            <WeatherServerComponent />
                             {/* Weather here */}
                         </div>
                     </div>
