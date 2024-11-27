@@ -30,16 +30,6 @@ export const weatherImg = (weatherData) => {
         const hourlyPrecipitationOBSERVATION =
             tenMinPrecipitationOBSERVATION * 6; //tenMin is some time more accurate and doesnot give NaN so often
 
-
-        if (
-            isNaN(
-                CloudCoverageOBSERVATION ||
-                    isNaN(hourlyPrecipitationOBSERVATION)
-            )
-        ) {
-            console.warn(
-                'CloudCoverageOBSERVATION or oneHourPrecipitationOBSERVATION is NaN, using fallback icon.'
-            );
         if (
             isNaN(
                 CloudCoverageOBSERVATION ||
@@ -50,7 +40,6 @@ export const weatherImg = (weatherData) => {
                 'CloudCoverageOBSERVATION or oneHourPrecipitationOBSERVATION is NaN, using fallback icon.'
             );
             return 'default'; // Return "storm" or any fallback icon
-        }
         }
 
         if (CloudCoverageOBSERVATION === 0) {
