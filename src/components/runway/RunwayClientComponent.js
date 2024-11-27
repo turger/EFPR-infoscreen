@@ -3,8 +3,7 @@
 import { useState } from 'react';
 import styles from './runwayTemp.module.css';
 
-export default function RunwayClientComponent({ data }) {
-    const [windData, setWindData] = useState({ knots: 'N/A', angle: 0 }); // TBD: get real data
+export default function RunwayClientComponent({ data, windDirection, windGust }) {
     const [visibleTooltip, setVisibleTooltip] = useState(null);
 
     const getTemperatureBySiteId = (siteId) => {
@@ -81,14 +80,14 @@ export default function RunwayClientComponent({ data }) {
                         src="/svgs/wind.svg"
                         className={styles.windArrow}
                         style={{
-                            transform: `translate(-50%, -50%) rotate(${windData.angle + 180}deg)`,
+                            transform: `translate(-50%, -50%) rotate(${Number(windDirection) + 90}deg)`,
                         }}
                         alt="Wind indicator"
                     />
                     <div className={styles.windSpeed}>
-                        <span>{windData.knots} knots</span>
+                        <span>{windGust} m/s</span>
                         <br />
-                        <span>{windData.angle}°</span>
+                        <span>{windDirection}°</span>
                     </div>
                 </div>
                 <div

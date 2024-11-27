@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
-import useSWR from 'swr';
-import { fetcher } from '@/lib/fetcher';
+import useWeatherData from '@/lib/weatherData';
+import useStationData from '@/lib/useStationData';
 import LoadingSpinner from '../LoadingSpinner';
 import ErrorComponent from '../ErrorComponent';
 
@@ -9,16 +9,18 @@ const RunwayClientComponent = dynamic(() => import('./RunwayClientComponent'), {
 });
 
 export default function RunwayServerComponent() {
-    const { data, error } = useSWR('/api/runway', fetcher, {
-        refreshInterval: 60000,
-        dedupingInterval: 60000,
-    });
+    const { weatherData, isLoading: weatherLoading, isError: weatherError } = useWeatherData();
+    const { stationData, isLoading: stationLoading, isError: stationError } = useStationData();
 
-    if (error) return <ErrorComponent message="Failed to load data" />;
-    if (!data) return <LoadingSpinner />;
+    if (weatherLoading || stationLoading) return <LoadingSpinner />;
+    if (weatherError || stationError || !weatherData || !stationData)
+        return <ErrorComponent message="Failed to load data" />;
 
-    const stationsData = Object.keys(data.stations).map((stationId) => {
-        const station = data.stations[stationId][0];
+    const windDirection = weatherData.observation.windDirectionOBSERVATION;
+    const windGust = weatherData.observation.WindGustOBSERVATION;
+
+    const stationsData = Object.keys(stationData.stations).map((stationId) => {
+        const station = stationData.stations[stationId][0];
         const site = station[8][0];
         return {
             id: stationId,
@@ -29,5 +31,11 @@ export default function RunwayServerComponent() {
         };
     });
 
-    return <RunwayClientComponent data={stationsData} />;
+    return (
+        <RunwayClientComponent
+            windDirection={windDirection}
+            windGust={windGust}
+            data={stationsData}
+        />
+    );
 }
