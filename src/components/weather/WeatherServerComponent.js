@@ -2,74 +2,27 @@
 
 import { useEffect, useState, React } from 'react';
 import styles from './cloud.module.css';
-
-import forecast from '@/pages/api/forecast';
-import observation from '@/pages/api/observation';
+import useWeatherData from '@/lib/weatherData';
 import Image from 'next/image';
 import { weatherImg } from '@/pages/api/weatherIcon';
 import WeatherIcon from '@/pages/api/weatherIcon';
 
 export default function WeatherServerComponent() {
-    // Use the fetched weather data from CloudCover
-    const [weatherData, setWeatherData] = useState(null);
-    //const iconName = weatherImg(weatherData); // icon names
-    const [iconName, seticonName] = useState('default');
-
-    //Observationdata and Forecastdata added together
-    console.log(weatherData);
-
-    const fetchData = async () => {
-        try {
-            const observationdata = await observation(); // Await the Promise
-            const forecastdata = await forecast(); // Await the second Promise
-
-            console.log('Fetched forecast data:', forecastdata);
-            console.log('Fetched observation data:', observationdata);
-
-            // Tarkistetaan, että forecastdata on olio
-            if (forecastdata && typeof forecastdata === 'object') {
-                if (observationdata && typeof observationdata === 'object') {
-                    // Yhdistetään observationdata ja forecastdata yhteen objektiin ja päivitetään tila
-                    setWeatherData({
-                        forecast: forecastdata,
-                        observation: observationdata,
-                    });
-
-                    seticonName(weatherImg(weatherData)); // Pass observation data
-                    console.log('Icon Name:', iconName);
-                    console.log(
-                        'Resolved Image Path:',
-                        `/svg/weatherIcons/${iconName}.svg`
-                    );
-                } else {
-                    console.error(
-                        'Invalid observation data received:',
-                        observationdata
-                    );
-                }
-            } else {
-                console.error('Invalid forecast data received:', forecastdata);
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error); // Handle any errors
-        }
-    };
+    const { weatherData, isLoading, isError } = useWeatherData();
+    const [iconName, setIconName] = useState('default');
 
     useEffect(() => {
-        fetchData(); // Fetch data initially once
+        if (weatherData) {
+            setIconName(weatherImg(weatherData));
+        }
+    }, [weatherData]);
 
-        // Set interval to refetch observation data every 10 minutes (600000 ms)
-        const intervalId = setInterval(() => {
-            fetchData();
-        }, 60000); // 1 minutes in milliseconds
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
-        // Clear the interval when component unmounts
-        return () => clearInterval(intervalId);
-    }, []); // Empty dependency array ensures the effect runs only once at mount
-
-    // Display loading state while data is being fetched
-    if (!weatherData) {
-        return <div>Loading...</div>; //basic loading screen
+    if (isError || !weatherData) {
+        return <div>Error loading data</div>;
     }
 
     return (
