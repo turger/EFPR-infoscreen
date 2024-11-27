@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 export default function WeatherIcon({ data }) {
     const [weatherData, setWeatherData] = useState(null);
 
-
     useEffect(() => {
         if (data) {
             setWeatherData(data); // Aseta data vain, jos sitä on olemassa
@@ -45,7 +44,6 @@ export const weatherImg = (weatherData) => {
         if (CloudCoverageOBSERVATION === 0) {
             iconName = 'clear';
         }
-
 
         if (CloudCoverageOBSERVATION === 1 || CloudCoverageOBSERVATION === 2) {
             // Default to 'fair' weather
@@ -149,7 +147,6 @@ export const weatherImg = (weatherData) => {
                 }
             }
         }
-
 
         if (CloudCoverageOBSERVATION === 8) {
             iconName = 'overcast'; // Default icon for overcast

@@ -7,7 +7,7 @@ export default async function fetchAndCalculateAverages() {
 
     //fetch data from fmi
     const url = `https://opendata.fmi.fi/wfs?request=getFeature&storedquery_id=fmi::forecast::harmonie::surface::point::timevaluepair&place=Pyhtää&starttime=${startTime.toISOString()}&endtime=${endTime.toISOString()}`;
-    console.log(startTime,endTime)
+    console.log(startTime, endTime);
     try {
         //fetch the data fron api
         const response = await fetch(url);
@@ -75,7 +75,6 @@ export default async function fetchAndCalculateAverages() {
 
         //calculate averages for each parameter temperature, CloudCover, rain by date
         const averages = Object.entries(dailyData).map(([date, data]) => {
-
             const validTemps = data.Temperature.filter((t) => t !== null);
             const avgTemp =
                 validTemps.length > 0
@@ -85,7 +84,7 @@ export default async function fetchAndCalculateAverages() {
                       ).toFixed(0)
                     : null;
 
-            const validCloud = data.CloudCover.filter((c)=> c !==null);
+            const validCloud = data.CloudCover.filter((c) => c !== null);
             const avgCloud =
                 validCloud.length > 0
                     ? validCloud.reduce((sum, c) => sum + c, 0) /
@@ -96,7 +95,7 @@ export default async function fetchAndCalculateAverages() {
             const avgCloudOkta =
                 avgCloud !== null ? convertToOkta(avgCloud) : null;
 
-            const validRain = data.Rain.filter((r)=> r !== null);
+            const validRain = data.Rain.filter((r) => r !== null);
             const avgRain =
                 validRain.length > 0
                     ? (
@@ -150,7 +149,7 @@ async function startDailyUpdate() {
     const averages = await fetchAndCalculateAverages();
     console.log('Stored averagesss', averages);
     return averages;
-};
+}
 
 // daily update
 function scheduleDailyUpdate() {

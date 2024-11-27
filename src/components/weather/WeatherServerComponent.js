@@ -3,7 +3,6 @@
 import { useEffect, useState, React } from 'react';
 import styles from './cloud.module.css';
 
-
 import observation from '@/pages/api/observation';
 import Image from 'next/image';
 import { weatherImg } from '@/pages/api/weatherIcon';
@@ -33,7 +32,7 @@ export default function WeatherServerComponent() {
     const fetchData = async () => {
         try {
             const observationdata = await observation(); // Await the Promise
-            
+
             const avaragesData = await fetchAndCalculateAvarage();
 
             console.log('Fetched Averages Data:', avaragesData);
@@ -41,37 +40,35 @@ export default function WeatherServerComponent() {
             // console.log('Fetched observation data:', observationdata);
 
             // Tarkistetaan, että forecastdata on olio
-            
-                if (observationdata && typeof observationdata === 'object') {
-                    // Yhdistetään observationdata ja forecastdata yhteen objektiin ja päivitetään tila
-                    setWeatherData({
-                    
-                        observation: observationdata,
-                    });
 
-                    const { firstDay, secondDay } =
-                        extractFirstAndSecondAverage(avaragesData);
-                    setFirstDayAverage(firstDay);
-                    setSecondDayAverage(secondDay);
+            if (observationdata && typeof observationdata === 'object') {
+                // Yhdistetään observationdata ja forecastdata yhteen objektiin ja päivitetään tila
+                setWeatherData({
+                    observation: observationdata,
+                });
 
-                    seticonName(weatherImg(weatherData)); // Pass observation data
+                const { firstDay, secondDay } =
+                    extractFirstAndSecondAverage(avaragesData);
+                setFirstDayAverage(firstDay);
+                setSecondDayAverage(secondDay);
 
-                    console.log('First Day Average:', firstDay);
-                    console.log('Second Day Average:', secondDay);
+                seticonName(weatherImg(weatherData)); // Pass observation data
 
-                    console.log('First Average:', firstDayAverage);
+                console.log('First Day Average:', firstDay);
+                console.log('Second Day Average:', secondDay);
 
-                    console.log(
-                        'server comp test for avarages',
-                        weatherData.observation
-                    );
-                } else {
-                    console.error(
-                        'Invalid observation data received:',
-                        observationdata
-                    );
-                }
-            
+                console.log('First Average:', firstDayAverage);
+
+                console.log(
+                    'server comp test for avarages',
+                    weatherData.observation
+                );
+            } else {
+                console.error(
+                    'Invalid observation data received:',
+                    observationdata
+                );
+            }
         } catch (error) {
             console.error('Error fetching data:', error); // Handle any errors
         }
@@ -208,8 +205,10 @@ export default function WeatherServerComponent() {
                             {weatherData.observation.windDirectionOBSERVATION}°
                         </div>
                         <div>
-                            {(weatherData.observation
-                                .tenMinPrecipitationOBSERVATION * 6).toFixed(0)}
+                            {(
+                                weatherData.observation
+                                    .tenMinPrecipitationOBSERVATION * 6
+                            ).toFixed(0)}
                             mm
                         </div>
                         <div>
