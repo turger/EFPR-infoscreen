@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 export default function WeatherIcon({ data }) {
     const [weatherData, setWeatherData] = useState(null);
 
+
     useEffect(() => {
         if (data) {
             setWeatherData(data); // Aseta data vain, jos sitä on olemassa
@@ -29,6 +30,16 @@ export const weatherImg = (weatherData) => {
         const hourlyPrecipitationOBSERVATION =
             tenMinPrecipitationOBSERVATION * 6; //tenMin is some time more accurate and doesnot give NaN so often
 
+
+        if (
+            isNaN(
+                CloudCoverageOBSERVATION ||
+                    isNaN(hourlyPrecipitationOBSERVATION)
+            )
+        ) {
+            console.warn(
+                'CloudCoverageOBSERVATION or oneHourPrecipitationOBSERVATION is NaN, using fallback icon.'
+            );
         if (
             isNaN(
                 CloudCoverageOBSERVATION ||
@@ -40,10 +51,12 @@ export const weatherImg = (weatherData) => {
             );
             return 'default'; // Return "storm" or any fallback icon
         }
+        }
 
         if (CloudCoverageOBSERVATION === 0) {
             iconName = 'clear';
         }
+
 
         if (CloudCoverageOBSERVATION === 1 || CloudCoverageOBSERVATION === 2) {
             // Default to 'fair' weather
@@ -148,6 +161,7 @@ export const weatherImg = (weatherData) => {
             }
         }
 
+
         if (CloudCoverageOBSERVATION === 8) {
             iconName = 'overcast'; // Default icon for overcast
 
@@ -180,7 +194,6 @@ export const weatherImg = (weatherData) => {
                 }
             }
         }
-
         return iconName;
     } catch (error) {
         console.error('Error in determining weather icon:', error);

@@ -18,14 +18,6 @@ export default async function GET(req, res) {
         );
 
         if (!response.ok) {
-            /*return new Response(
-                JSON.stringify({ message: 'Failed to fetch NOTAM data' }),
-                {
-                    status: 500,
-                    headers: { 'Content-Type': 'application/json' },
-                }
-            );
-            */
             res.status(500).json({ message: 'Failed to fetch NOTAM data' });
         }
 
@@ -36,16 +28,14 @@ export default async function GET(req, res) {
             .text()
             .trim()
             .replaceAll('?', '')
-            .replaceAll('�', ' ');
+            .replaceAll('�', ' ')
+            .replace('\n\n+\n', '\n\n')
+            .replace('EFPR - REDSTONE AERO\n\n', '')
+            .replace('\n', '')
+            .replaceAll('\n\n', '\n');
         cachedData = { title, content };
         lastFetchTime = Date.now();
     }
 
-    /*return new Response(JSON.stringify({ data: cachedData }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-    });*/
-    res.status(200)
-        //.setHeaders({ 'Content-Type': 'application/json' })
-        .json({ data: cachedData });
+    res.status(200).json({ data: cachedData });
 }
