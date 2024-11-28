@@ -26,7 +26,7 @@ export default function InfoClientComponent() {
             const response = await fetch('/api/infonote');
             const data = await response.json();
             if (response.ok) {
-                setAllNotes(data.response);
+                setAllNotes(data.notes);
             } else {
                 console.error(data.error);
             }
@@ -123,95 +123,98 @@ export default function InfoClientComponent() {
         <div className="p-1 relative h-full">
             <ul className="overflow-auto">
                 {/* Render all notes */}
-                {allNotes.map((note) => (
-                    <li
-                        key={note.id}
-                        className="py-1 text-sm flex items-center"
-                    >
-                        {/* Render field to edit an existing note with save and cancel buttons */}
-                        {editingNoteId === note.id ? (
-                            <>
-                                <input
-                                    type="text"
-                                    value={editText}
-                                    onChange={(e) =>
-                                        setEditText(e.target.value)
-                                    }
-                                    className="border rounded-md p-1 text-sm flex-1 text-black"
-                                />
-                                <button
-                                    onClick={() => setEditingNoteId(null)}
-                                    className="ml-2"
-                                >
-                                    <img
-                                        src={'/svgs/cancel_gray.svg'}
-                                        alt="Cancel edit"
-                                        style={{
-                                            width: '25px',
-                                            height: '25px',
-                                        }}
+                {Array.isArray(allNotes) &&
+                    allNotes.map((note) => (
+                        <li
+                            key={note.id}
+                            className="py-1 text-sm flex items-center"
+                        >
+                            {/* If edit-button is clicked, render input field to edit a note with save and cancel buttons */}
+                            {editingNoteId === note.id ? (
+                                <>
+                                    <input
+                                        type="text"
+                                        value={editText}
+                                        onChange={(e) =>
+                                            setEditText(e.target.value)
+                                        }
+                                        className="border rounded-md p-1 text-sm flex-1 text-black"
                                     />
-                                </button>
-                                <button
-                                    onClick={handleUpdateNote}
-                                    className="ml-2"
-                                >
-                                    <img
-                                        src={'/svgs/save_green.svg'}
-                                        alt="Save edited note"
-                                        style={{
-                                            width: '25px',
-                                            height: '25px',
-                                        }}
-                                    />
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                {/* If user is not logged in, render notes only */}
-                                {/* If user is logged in, render notes with edit and delete buttons */}
-                                <span className="flex-1">{note.note}</span>
-                                {session && (
-                                    <>
-                                        <button
-                                            onClick={() =>
-                                                handleDeleteNote(note.id)
-                                            }
-                                            className="ml-2"
-                                        >
-                                            <img
-                                                src={'/svgs/delete_red.svg'}
-                                                alt="Delete note"
-                                                style={{
-                                                    width: '25px',
-                                                    height: '25px',
-                                                }}
-                                            />
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                handleEditNote(
-                                                    note.id,
-                                                    note.note
-                                                )
-                                            }
-                                            className="ml-2"
-                                        >
-                                            <img
-                                                src={'/svgs/edit_yellow.svg'}
-                                                alt="Edit note"
-                                                style={{
-                                                    width: '25px',
-                                                    height: '25px',
-                                                }}
-                                            />
-                                        </button>
-                                    </>
-                                )}
-                            </>
-                        )}
-                    </li>
-                ))}
+                                    <button
+                                        onClick={() => setEditingNoteId(null)}
+                                        className="ml-2"
+                                    >
+                                        <img
+                                            src={'/svgs/cancel_gray.svg'}
+                                            alt="Cancel edit"
+                                            style={{
+                                                width: '25px',
+                                                height: '25px',
+                                            }}
+                                        />
+                                    </button>
+                                    <button
+                                        onClick={handleUpdateNote}
+                                        className="ml-2"
+                                    >
+                                        <img
+                                            src={'/svgs/save_green.svg'}
+                                            alt="Save edited note"
+                                            style={{
+                                                width: '25px',
+                                                height: '25px',
+                                            }}
+                                        />
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    {/* If user is not logged in, render notes only */}
+                                    {/* If user is logged in, render notes with edit and delete buttons */}
+                                    <span className="flex-1">{note.note}</span>
+                                    {session && (
+                                        <>
+                                            <button
+                                                onClick={() =>
+                                                    handleDeleteNote(note.id)
+                                                }
+                                                className="ml-2"
+                                            >
+                                                <img
+                                                    src={'/svgs/delete_red.svg'}
+                                                    alt="Delete note"
+                                                    style={{
+                                                        width: '25px',
+                                                        height: '25px',
+                                                    }}
+                                                />
+                                            </button>
+                                            <button
+                                                onClick={() =>
+                                                    handleEditNote(
+                                                        note.id,
+                                                        note.note
+                                                    )
+                                                }
+                                                className="ml-2"
+                                            >
+                                                <img
+                                                    src={
+                                                        '/svgs/edit_yellow.svg'
+                                                    }
+                                                    alt="Edit note"
+                                                    style={{
+                                                        width: '25px',
+                                                        height: '25px',
+                                                    }}
+                                                />
+                                            </button>
+                                        </>
+                                    )}
+                                </>
+                            )}
+                        </li>
+                    ))}
             </ul>
             {/* Conditional rendering to add new note - only logged in user can create a new note */}
             {session ? (

@@ -1,6 +1,8 @@
-import { neon } from '@neondatabase/serverless';
+import { createClient } from '@supabase/supabase-js';
 
-const sql = neon(process.env.DATABASE_URL);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default async function handler(req, res) {
     try {
@@ -8,25 +10,48 @@ export default async function handler(req, res) {
             // Insert a new note
             const { note } = req.body;
             if (!note) throw new Error('Note is required');
-            await sql(`INSERT INTO notes (note) VALUES ($1)`, [note]);
-            return res.status(200).json({ message: 'Note saved successfully' });
+            const { data, error } = await supabase
+                .from('notes')
+                .insert([{ note }]);
+            if (error) {
+                return res.status(500).json({ error: error.message });
+            }
+            return res
+                .status(200)
+                .json({ message: 'Note saved successfully', data });
         } else if (req.method === 'GET') {
             // Fetch all notes
-            const response = await sql`SELECT * FROM notes;`;
-            return res.status(200).json({ response });
+            const { data, error } = await supabase.from('notes').select('*');
+            if (error) {
+                return res.status(500).json({ error: error.message });
+            }
+            return res.status(200).json({ notes: data });
         } else if (req.method === 'PATCH') {
             // Edit a note
             const { id, note } = req.body;
             if (!id || !note) throw new Error('ID and Note are required');
-            await sql(`UPDATE notes SET note = $1 WHERE id = $2`, [note, id]);
-            return res
-                .status(200)
-                .json({ message: 'Note updated successfully' });
+            const { data, error } = await supabase
+                .from('notes')
+                .update({ note })
+                .eq('id', id);
+            if (error) {
+                return res.status(500).json({ error: error.message });
+            }
+            return res.status(200).json({
+                message: 'Note updated successfully with message',
+                data,
+            });
         } else if (req.method === 'DELETE') {
             // Delete a note
             const { id } = req.body;
             if (!id) throw new Error('ID is required');
-            await sql(`DELETE FROM notes WHERE id = $1`, [id]);
+            const { data, error } = await supabase
+                .from('notes')
+                .delete()
+                .eq('id', id);
+            if (error) {
+                return res.status(500).json({ error: error.message });
+            }
             return res
                 .status(200)
                 .json({ message: 'Note deleted successfully' });

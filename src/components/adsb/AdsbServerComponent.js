@@ -104,17 +104,21 @@ export default function AdsbServerComponent() {
                     initialZoom={initialZoom}
                 />
             </div>
+
+            {/* Footer */}
             <div className="flex justify-between items-end text-xs">
-                {/* Bottom left: Last updated */}
                 <p className="text-gray-400">Last updated: {adsbTime}</p>
 
-                {/* Bottom right: ADS-B, AUP/UUP */}
                 <p className="text-gray-400">
                     ADS-B Data from:{' '}
                     <a href="https://www.xamk.fi/" className="text-blue-400">
                         XAMK
                     </a>
-                    , AUP/UUP{' '}
+                    ,{' '}
+                    <a href="https://avionix.eu/" className="text-blue-400">
+                        Avionix
+                    </a>
+                    . AUP/UUP Data from:{' '}
                     <a href="https://flyk.com" className="text-blue-400">
                         Flyk.com
                     </a>

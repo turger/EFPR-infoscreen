@@ -133,19 +133,22 @@ export default function DroneServerComponent() {
                 mapHeight="34vh"
             />
 
+            {/* Footer */}
             <div className="flex justify-between items-end text-xs">
-                {/* Bottom left: Last updated or No drones */}
                 <p className="text-gray-400">
                     {adsbTime === '--:--:--'
                         ? 'No drones'
                         : `Last updated: ${adsbTime}`}
                 </p>
 
-                {/* Bottom right: ADS-B, AUP/UUP */}
                 <p className="text-gray-400">
                     ADS-B Data from:{' '}
                     <a href="https://www.xamk.fi/" className="text-blue-400">
                         XAMK
+                    </a>
+                    ,{' '}
+                    <a href="https://avionix.eu/" className="text-blue-400">
+                        Avionix
                     </a>
                 </p>
             </div>
