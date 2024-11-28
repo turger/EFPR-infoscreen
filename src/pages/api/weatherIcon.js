@@ -24,7 +24,7 @@ export const weatherImg = (weatherData) => {
         CloudCoverageOBSERVATION,
         tenMinPrecipitationOBSERVATION,
         temperatureOBSERVATION,
-    } = mockweatherData;
+    } = weatherData;
     try {
         const hourlyPrecipitationOBSERVATION =
             tenMinPrecipitationOBSERVATION * 6; //tenMin is some time more accurate and doesnot give NaN so often
@@ -46,10 +46,13 @@ export const weatherImg = (weatherData) => {
         }
 
         if (CloudCoverageOBSERVATION === 1 || CloudCoverageOBSERVATION === 2) {
-            // Default to 'fair' weather first
+            // Default to 'fair' weather
             iconName = 'fair';
 
-            if (hourlyPrecipitationOBSERVATION <= 2.5) {
+            if (hourlyPrecipitationOBSERVATION === 0) {
+                // No precipitation
+                iconName = 'fair'; // No additional suffix for no precipitation
+            } else if (hourlyPrecipitationOBSERVATION <= 2.5) {
                 if (temperatureOBSERVATION >= 0) {
                     // Light rain (above freezing)
                     iconName = 'partlycloudy-light';
@@ -58,7 +61,7 @@ export const weatherImg = (weatherData) => {
                     iconName = 'partlycloudy-light-snow';
                 }
             } else if (hourlyPrecipitationOBSERVATION <= 7.5) {
-                if (temperatureOBSERVATION > 0) {
+                if (temperatureOBSERVATION >= 0) {
                     // Moderate rain (above freezing)
                     iconName = 'partlycloudy-moderate';
                 } else if (temperatureOBSERVATION < 0) {
@@ -80,10 +83,13 @@ export const weatherImg = (weatherData) => {
             CloudCoverageOBSERVATION === 4 ||
             CloudCoverageOBSERVATION === 5
         ) {
-            // Default to 'partlycloudy' weather first
+            // Default to 'partlycloudy' weather
             iconName = 'partlycloudy';
 
-            if (hourlyPrecipitationOBSERVATION <= 2.5) {
+            if (hourlyPrecipitationOBSERVATION === 0) {
+                // No precipitation
+                iconName = 'partlycloudy'; // No additional suffix for no precipitation
+            } else if (hourlyPrecipitationOBSERVATION <= 2.5) {
                 if (temperatureOBSERVATION >= 0) {
                     // Light rain (above freezing)
                     iconName += '-light';
@@ -112,7 +118,10 @@ export const weatherImg = (weatherData) => {
         if (CloudCoverageOBSERVATION === 6 || CloudCoverageOBSERVATION === 7) {
             iconName = 'mostlycloudy'; // Default icon for mostly cloudy
 
-            if (hourlyPrecipitationOBSERVATION <= 2.5) {
+            if (hourlyPrecipitationOBSERVATION === 0) {
+                // No precipitation
+                iconName = 'mostlycloudy'; // No additional suffix for no precipitation
+            } else if (hourlyPrecipitationOBSERVATION <= 2.5) {
                 if (temperatureOBSERVATION >= 0) {
                     // Light rain (above freezing)
                     iconName += '-light';
@@ -140,10 +149,12 @@ export const weatherImg = (weatherData) => {
         }
 
         if (CloudCoverageOBSERVATION === 8) {
-            console.log('Overcast icon selected');
             iconName = 'overcast'; // Default icon for overcast
 
-            if (hourlyPrecipitationOBSERVATION <= 2.5) {
+            if (hourlyPrecipitationOBSERVATION === 0) {
+                // No precipitation
+                iconName = 'overcast'; // No additional suffix for no precipitation
+            } else if (hourlyPrecipitationOBSERVATION <= 2.5) {
                 if (temperatureOBSERVATION >= 0) {
                     // Light rain (above freezing)
                     iconName += '-light';
@@ -169,14 +180,6 @@ export const weatherImg = (weatherData) => {
                 }
             }
         }
-        console.log(CloudCoverageOBSERVATION, 'weathericon cloud');
-        console.log(temperatureOBSERVATION, 'weather icon temperature');
-        console.log(
-            tenMinPrecipitationOBSERVATION,
-            'weatherIcon precipitation'
-        );
-        console.log({ icondatatest: weatherData });
-        console.log('Determined iconName:', iconName);
         return iconName;
     } catch (error) {
         console.error('Error in determining weather icon:', error);

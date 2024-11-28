@@ -97,13 +97,13 @@ export default function DroneServerComponent() {
                     flight.lat != null &&
                     flight.lon != null &&
                     index ===
-                    self.findIndex(
-                        (f) =>
-                            (f.src === flight.src ||
-                                f.cat === flight.cat) &&
-                            f.lat === flight.lat &&
-                            f.lon === flight.lon
-                    )
+                        self.findIndex(
+                            (f) =>
+                                (f.src === flight.src ||
+                                    f.cat === flight.cat) &&
+                                f.lat === flight.lat &&
+                                f.lon === flight.lon
+                        )
             );
 
             setDrones(uniqueDrones);

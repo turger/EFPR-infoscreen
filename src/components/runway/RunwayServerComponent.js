@@ -9,8 +9,17 @@ const RunwayClientComponent = dynamic(() => import('./RunwayClientComponent'), {
 });
 
 export default function RunwayServerComponent() {
-    const { weatherData, isLoading: weatherLoading, isError: weatherError } = useWeatherData();
-    const { stationData, isLoading: stationLoading, isError: stationError } = useStationData();
+    const {
+        weatherData,
+        isLoading: weatherLoading,
+        isError: weatherError,
+    } = useWeatherData();
+    const {
+        stationData,
+        isLoading: stationLoading,
+        isError: stationError,
+        lastUpdated: stationLastUpdated,
+    } = useStationData();
 
     if (weatherLoading || stationLoading) return <LoadingSpinner />;
     if (weatherError || stationError || !weatherData || !stationData)
@@ -36,6 +45,7 @@ export default function RunwayServerComponent() {
             windDirection={windDirection}
             windGust={windGust}
             data={stationsData}
+            stationLastUpdated={stationLastUpdated}
         />
     );
 }

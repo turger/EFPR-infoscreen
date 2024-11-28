@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import observation from '@/pages/api/observation';
-import forecast from '@/pages/api/forecast';
+import forecast from '@/pages/api/fetchForecast';
 
 const fetcher = async () => {
     try {
@@ -14,7 +14,10 @@ const fetcher = async () => {
                     observation: observationData,
                 };
             } else {
-                console.error('Invalid observation data received:', observationData);
+                console.error(
+                    'Invalid observation data received:',
+                    observationData
+                );
                 return null;
             }
         } else {

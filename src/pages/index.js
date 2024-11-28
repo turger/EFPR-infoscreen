@@ -59,7 +59,6 @@ export default function Home() {
                         </div>
                     </div>
 
-
                     {/* Right Div */}
                     <div className="w-2/5 h-full flex flex-col justify-between space-y-2">
                         {/* Top: Two components stacked vertically */}

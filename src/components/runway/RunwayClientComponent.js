@@ -3,7 +3,12 @@
 import { useState } from 'react';
 import styles from './runwayTemp.module.css';
 
-export default function RunwayClientComponent({ data, windDirection, windGust }) {
+export default function RunwayClientComponent({
+    data,
+    windDirection,
+    windGust,
+    stationLastUpdated,
+}) {
     const [visibleTooltip, setVisibleTooltip] = useState(null);
 
     const getTemperatureBySiteId = (siteId) => {
@@ -166,6 +171,19 @@ export default function RunwayClientComponent({ data, windDirection, windGust })
                     )}
                 </div>
                 <div className={styles.footer}>
+                    <p
+                        style={{
+                            fontSize: 12,
+                            textAlign: 'center',
+                            color: 'black',
+                            paddingTop: 6,
+                        }}
+                    >
+                        Last updated:{' '}
+                        {stationLastUpdated
+                            ? stationLastUpdated.toLocaleTimeString()
+                            : 'N/A'}
+                    </p>
                     <p
                         style={{
                             fontSize: 12,
