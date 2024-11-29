@@ -48,8 +48,8 @@ export const fetchAndSaveImage = async (url, timestamp) => {
         //Saving locally
         if (process.env.NODE_ENV === 'development') {
             //Process the image with Sharp
-            const processedBuffer = await processImage(buffer);
-            await fsPromises.writeFile(savePath, processedBuffer);
+            //const processedBuffer = await processImage(buffer);
+            await fsPromises.writeFile(savePath, buffer); //change to processedBuffer if you want to process Images
             return `${localUrl}${fileName}`;
         }
         const blobResult = await uploadImageToBlob(buffer, fileName);
@@ -107,6 +107,7 @@ async function doesBlobExist(fileName) {
 }
 
 //Image processing logic
+/*
 const processImage = async (buffer) => {
     const { data, info } = await sharp(buffer)
         .ensureAlpha()
@@ -140,3 +141,4 @@ const processImage = async (buffer) => {
         .png()
         .toBuffer();
 };
+*/
