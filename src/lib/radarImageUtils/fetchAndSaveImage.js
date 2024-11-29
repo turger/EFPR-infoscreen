@@ -1,4 +1,4 @@
-//import sharp from 'sharp';
+import sharp from 'sharp';
 import path from 'path';
 import { promises as fsPromises } from 'fs';
 import { list } from '@vercel/blob';
@@ -48,8 +48,8 @@ export const fetchAndSaveImage = async (url, timestamp) => {
         //Saving locally
         if (process.env.NODE_ENV === 'development') {
             //Process the image with Sharp
-            //const processedBuffer = await processImage(buffer);
-            await fsPromises.writeFile(savePath, buffer); //change to processedBuffer if you want to process Images
+            const processedBuffer = await processImage(buffer);
+            await fsPromises.writeFile(savePath, processedBuffer);
             return `${localUrl}${fileName}`;
         }
         const blobResult = await uploadImageToBlob(buffer, fileName);
@@ -65,7 +65,7 @@ export const fetchAndSaveImage = async (url, timestamp) => {
 const uploadImageToBlob = async (imageBuffer, filename) => {
     try {
         // Convert the image buffer to a Blob
-        //const blob = new Blob([imageBuffer], { type: 'image/png' });
+        const blob = new Blob([imageBuffer], { type: 'image/png' });
 
         const response = await fetch(`${uploadBlobUrl}?filename=${filename}`, {
             method: 'POST',
@@ -107,7 +107,6 @@ async function doesBlobExist(fileName) {
 }
 
 //Image processing logic
-/*
 const processImage = async (buffer) => {
     const { data, info } = await sharp(buffer)
         .ensureAlpha()
@@ -141,4 +140,3 @@ const processImage = async (buffer) => {
         .png()
         .toBuffer();
 };
-*/
