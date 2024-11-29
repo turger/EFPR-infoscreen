@@ -2,8 +2,14 @@
 
 import { useState } from 'react';
 import styles from './runwayTemp.module.css';
+import WindAnimation from './WindAnimation';
 
-export default function RunwayClientComponent({ data, windDirection, windGust }) {
+export default function RunwayClientComponent({
+    data,
+    windDirection,
+    windGust,
+    stationLastUpdated,
+}) {
     const [visibleTooltip, setVisibleTooltip] = useState(null);
 
     const getTemperatureBySiteId = (siteId) => {
@@ -76,13 +82,9 @@ export default function RunwayClientComponent({ data, windDirection, windGust })
                     className={styles.airstripImage}
                 />
                 <div className={styles.windIndicator}>
-                    <img
-                        src="/svgs/wind.svg"
-                        className={styles.windArrow}
-                        style={{
-                            transform: `translate(-50%, -50%) rotate(${Number(windDirection) + 90}deg)`,
-                        }}
-                        alt="Wind indicator"
+                    <WindAnimation
+                        windDirection={Number(windDirection) + 90}
+                        windGust={windGust}
                     />
                     <div className={styles.windSpeed}>
                         <span>{windGust} m/s</span>
@@ -166,6 +168,19 @@ export default function RunwayClientComponent({ data, windDirection, windGust })
                     )}
                 </div>
                 <div className={styles.footer}>
+                    <p
+                        style={{
+                            fontSize: 12,
+                            textAlign: 'center',
+                            color: 'black',
+                            paddingTop: 6,
+                        }}
+                    >
+                        Last updated:{' '}
+                        {stationLastUpdated
+                            ? stationLastUpdated.toLocaleTimeString()
+                            : 'N/A'}
+                    </p>
                     <p
                         style={{
                             fontSize: 12,
