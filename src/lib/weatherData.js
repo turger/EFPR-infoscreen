@@ -1,11 +1,11 @@
 import useSWR from 'swr';
 import observation from '@/pages/api/observation';
-import forecast from '@/pages/api/fetchForecast';
+import fetchAndCalculateAverages from '@/pages/api/fetchForecast';
 
 const fetcher = async () => {
     try {
         const observationData = await observation();
-        const forecastData = await forecast();
+        const forecastData = await fetchAndCalculateAverages();
 
         if (forecastData && typeof forecastData === 'object') {
             if (observationData && typeof observationData === 'object') {
@@ -32,7 +32,7 @@ const fetcher = async () => {
 
 export default function useWeatherData() {
     const { data, error } = useSWR('weatherData', fetcher, {
-        refreshInterval: 60000, // Refresh every 1 minute
+        refreshInterval: 600000, // Refresh every 10 minute
     });
 
     return {

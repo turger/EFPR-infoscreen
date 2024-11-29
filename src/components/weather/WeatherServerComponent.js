@@ -1,97 +1,35 @@
 // components/notam/WeatherServerComponent.js
-
-import { useEffect, useState, React } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './cloud.module.css';
-
-import observation from '@/pages/api/observation';
 import Image from 'next/image';
 import { weatherImg } from '@/pages/api/weatherIcon';
-import fetchAndCalculateAvarage from '@/pages/api/fetchForecast.js';
-import {
-    transformDailyAverages,
-    extractFirstAndSecondAverage,
-} from '@/pages/api/fetchForecast';
 import LoadingSpinner from '../LoadingSpinner';
-
 import WeatherIcon from '@/pages/api/weatherIcon';
+import { extractFirstAndSecondAverage } from '@/pages/api/fetchForecast';
+
+import useWeatherData from '@/lib/weatherData';
 
 export default function WeatherServerComponent() {
-    // Use the fetched weather data from CloudCover
-    const [weatherData, setWeatherData] = useState(null);
-    //const iconName = weatherImg(weatherData); // icon names
+    const { weatherData, isLoading, isError } = useWeatherData();
+
     const [iconName, seticonName] = useState('default');
-
-    const [dailyAverages, setDailyAvarages] = useState(null);
-
     const [firstDayAverage, setFirstDayAverage] = useState(null);
     const [secondDayAverage, setSecondDayAverage] = useState(null);
-
     const [firstDayName, setFirstDayName] = useState(null);
     const [secondDayName, setSecondDayName] = useState(null);
 
-    const fetchData = async () => {
-        try {
-            const observationdata = await observation(); // Await the Promise
-
-            const avaragesData = await fetchAndCalculateAvarage();
-
-            console.log('Fetched Averages Data:', avaragesData);
-            // console.log('Fetched forecast data:', forecastdata);
-            // console.log('Fetched observation data:', observationdata);
-
-            // Tarkistetaan, että forecastdata on olio
-
-            if (observationdata && typeof observationdata === 'object') {
-                // Yhdistetään observationdata ja forecastdata yhteen objektiin ja päivitetään tila
-                setWeatherData({
-                    observation: observationdata,
-                });
-
-                const { firstDay, secondDay } =
-                    extractFirstAndSecondAverage(avaragesData);
-                setFirstDayAverage(firstDay);
-                setSecondDayAverage(secondDay);
-
-                seticonName(weatherImg(weatherData)); // Pass observation data
-
-                console.log('First Day Average:', firstDay);
-                console.log('Second Day Average:', secondDay);
-
-                console.log('First Average:', firstDayAverage);
-
-                console.log(
-                    'server comp test for avarages',
-                    weatherData.observation
-                );
-            } else {
-                console.error(
-                    'Invalid observation data received:',
-                    observationdata
-                );
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error); // Handle any errors
-        }
-    };
-
-    useEffect(() => {
-        fetchData(); // Fetch data initially once
-
-        // Set interval to refetch observation data every 10 minutes (600000 ms)
-        const intervalId = setInterval(() => {
-            fetchData();
-        }, 60000); // 1 minutes in milliseconds
-
-        // Clear the interval when component unmounts
-        return () => clearInterval(intervalId);
-    }, []); // Empty dependency array ensures the effect runs only once at mount
-
     useEffect(() => {
         if (weatherData) {
-            // Pass only observation data (or whichever part of the data is needed for the icon)
-            const icon = weatherImg(weatherData.observation); // Using only the observation data here
-            seticonName(icon); // Update the icon state
-            //console.log('Icon Name:', icon);
+            // Update the icon name based on the observation data
+            const icon = weatherImg(weatherData.observation);
+            seticonName(icon);
+
+            // Extract averages from the forecast data
+            const { firstDay, secondDay } = extractFirstAndSecondAverage(
+                weatherData.forecast
+            );
+            setFirstDayAverage(firstDay);
+            setSecondDayAverage(secondDay);
         }
     }, [weatherData]);
 
@@ -112,9 +50,12 @@ export default function WeatherServerComponent() {
         }
     }, [firstDayAverage, secondDayAverage]);
 
-    // Display loading state while data is being fetched
-    if (!weatherData) {
-        return LoadingSpinner(); //basic loading screen
+    if (isLoading) {
+        return <LoadingSpinner />;
+    }
+
+    if (isError || !weatherData) {
+        return <div>Error loading data</div>;
     }
 
     return (
@@ -190,7 +131,7 @@ export default function WeatherServerComponent() {
                     <div className={styles.infocontainerLeft}>
                         <div>Temperature</div>
                         <div>Humidity</div>
-                        <div>Wind diection</div>
+                        <div>Wind direction</div>
                         <div>Precipitation</div>
                         <div>CloudCover </div>
                     </div>
