@@ -13,15 +13,21 @@
     justify-content: flex-end; 
 }
 
+.runwayContainer {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 90%;
+    margin-top: 15%;
+}
+
 .airstripImage {
-    width: 86%;
-    height: auto;
-    display: block;
     position: absolute;
-    top: 42%; 
-    left: 60%;
-    transform: translate(-50%, -50%) rotate(-111deg); 
-    box-shadow: 0px 0px 20px 2px rgba(253, 253, 246, 0.178);
+    top: 30%;
+    left: 40%;
+    width: 35vh;
+    height: auto;
+    transform: translate(-50%, -50%) rotate(-107deg);
 }
 
 .temperatureContainer {
@@ -34,8 +40,8 @@
     z-index: 1;
     width: 20%;
     box-shadow: 0px 0px 5px 1px rgba(236, 236, 97, 0.555);
-    margin-top: 7%;
-    margin-right: 76%;
+    margin-top: 8%;
+    margin-left: 3%;
 }
 
 .temperatureValue {
@@ -54,7 +60,7 @@
 
 .windIndicator {
     position: absolute;
-    top: 6%;
+    top: 8%;
     right: 3%;
     width: 25%;
     height: 30%;
@@ -93,18 +99,18 @@
 }
 
 .ball[data-siteid="52280"] {
-    top: 16%;
-    left: 47%;
+    top: calc(30% - 25%); /* Adjust values to position relative to airstripImage */
+    left: calc(40% - 10%);
 }
 
 .ball[data-siteid="52437"] {
-    top: 39%;
-    left: 57%;
+    top: 30%;
+    left: 39%;
 }
 
 .ball[data-siteid="52281"] {
-    top: 63%;
-    left: 68%;
+    top: calc(30% + 20%);
+    left: calc(40% + 7%);
 }
 
 .tooltip {

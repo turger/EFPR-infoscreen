@@ -31,13 +31,19 @@ export default function Home() {
                         {/* Left Container: Two components stacked vertically */}
                         <div className="flex flex-col justify-between w-2/5 h-full space-y-2">
                             {/* Top Component */}
-                            <div className="bg-gray-700 rounded-lg shadow-lg p-0 h-1/2">
+                            <div className="flex items-center justify-center h-[3%] p-0">
+                                <h1 className="text-center text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-[#fac807]">
+                                    Helsinki East Aerodrome Info
+                                </h1>
+                            </div>
+
+                            <div className="bg-gray-700 rounded-lg shadow-lg p-0 h-[45.5%]">
                                 <RunwayServerComponent />
                                 {/*Runway here */}
                             </div>
 
                             {/* Bottom Component */}
-                            <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-1/2">
+                            <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-[49.5%]">
                                 <WeatherServerComponent />
                                 {/* Weather here */}
                             </div>
