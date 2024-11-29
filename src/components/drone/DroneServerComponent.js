@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import LoadingSpinner from '../LoadingSpinner';
@@ -131,6 +132,7 @@ export default function DroneServerComponent() {
                 flights={drones}
                 initialZoom={initialZoom}
                 mapHeight="34vh"
+                isDarkMode={false}
             />
 
             {/* Footer */}

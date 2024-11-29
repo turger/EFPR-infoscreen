@@ -123,9 +123,10 @@ export default function ReactLeafletMap({
     flights = [],
     airspaces = [],
     mapHeight = '45vh',
+    isDarkMode: initialDarkMode = true,
 }) {
     const [iconSize, setIconSize] = useState(6);
-    const [isDarkMode, setIsDarkMode] = useState(true);
+    const [isDarkMode, setIsDarkMode] = useState(initialDarkMode);
 
     /* Changes chosen mode for map (light/dark) */
     const toggleMapStyle = () => {

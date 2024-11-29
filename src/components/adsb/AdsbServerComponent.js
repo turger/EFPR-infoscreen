@@ -38,7 +38,7 @@ export default function AdsbServerComponent() {
     const [adsbTime, setAdsbTime] = useState('--:--:--');
     const [isLoading, setIsLoading] = useState(true);
     const aerodomeLocation = [60.48075888598088, 26.59665436528449];
-    const initialLocation = [61.1, 23.0];
+    const initialLocation = [61.038865, 25.217097];
     const initialZoom = 6;
 
     // Adjusts time (JSON time -3h)
