@@ -66,14 +66,14 @@ export const fetchAndSaveImage = async (url, timestamp) => {
 const uploadImageToBlob = async (imageBuffer, filename) => {
     try {
         // Convert the image buffer to a Blob
-        const blob = new Blob([imageBuffer], { type: 'image/png' });
+        //const blob = new Blob([imageBuffer], { type: 'image/png' });
 
         const response = await fetch(`${uploadBlobUrl}?filename=${filename}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'image/png',
             },
-            body: blob,
+            body: imageBuffer,
         });
 
         if (!response.ok) {
