@@ -8,6 +8,10 @@ export default function NotamClientComponent() {
     const [error, setError] = useState(null);
     const [lastUpdated, setLastUpdated] = useState(null);
     const [timeSinceLastUpdate, setTimeSinceLastUpdate] = useState('');
+    const scrollContainerRef = useRef(null);
+    const scrollingIntervalRef = useRef(null);
+    const pauseTime = 2000;
+    let paused = false;
 
     // Function to retrieve NOTAM data
     async function fetchNotam() {
@@ -70,38 +74,54 @@ export default function NotamClientComponent() {
     }, [lastUpdated]);
 
     // autoscroll feature if the notams overflow the div
-    const scrollContainerRef = useRef(null);
-    const [maxHeight, setMaxHeight] = useState(0);
-    const [maxScreenWidth, setMaxScreenWidth] = useState(0);
-    const [maxScreenHeight, setMaxScreenHeight] = useState(0);
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setMaxScreenWidth(window.screen.width);
-            setMaxScreenHeight(window.screen.height);
-        }
-    }, []);
-
-    // Calculate max height dynamically
     useEffect(() => {
         if (scrollContainerRef.current) {
-            const parentHeight = scrollContainerRef.current.clientHeight;
-            setMaxHeight(parentHeight); // Subtract footer or padding height
+            const scrollElement = scrollContainerRef.current;
+
+            // pixel scrolled
+            const scrollStep = 3;
+            // ms between each scroll
+            const intervalTime = 300;
+            let direction = 'down';
+
+            // clear previous intervals (if any)
+            if (scrollingIntervalRef.current) {
+                clearInterval(scrollingIntervalRef.current);
+            }
+
+            scrollingIntervalRef.current = setInterval(() => {
+                if (direction === 'down') {
+                    // scroll down
+                    if (
+                        scrollElement.scrollTop + scrollElement.clientHeight >=
+                        scrollElement.scrollHeight
+                    ) {
+                        // pause to let user read last lines and flag change to signal scroll direction
+                        paused = true;
+                        setTimeout(() => {
+                            paused = false;
+                            direction = 'up';
+                        }, pauseTime);
+                    } else {
+                        scrollElement.scrollTop += scrollStep;
+                    }
+                } else if (direction === 'up') {
+                    // scroll up quickly
+                    // reset to top immediatly
+                    scrollElement.scrollTop = 0;
+                    // flag change to signal scroll direction
+                    direction = 'down';
+                }
+            }, intervalTime);
         }
-    }, [scrollContainerRef.current?.clientHeight]);
 
-    useEffect(() => {
-        scrollToBottom();
+        return () => {
+            // Clear interval on component unmount
+            if (scrollingIntervalRef.current) {
+                clearInterval(scrollingIntervalRef.current);
+            }
+        };
     }, [notam]);
-
-    const scrollToBottom = () => {
-        //scrollContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
-        scrollContainerRef.current?.scrollTo({
-            top: scrollContainerRef.current?.scrollHeight,
-            left: 0,
-            behavior: 'smooth',
-        });
-    };
 
     if (error) {
         return <div>{error}</div>;
@@ -114,7 +134,7 @@ export default function NotamClientComponent() {
     return (
         <div className="flex flex-col h-full w-full">
             {/* Main content area */}
-            <div className="flex-grow overflow-auto">
+            <div className="flex-grow overflow-auto" ref={scrollContainerRef}>
                 <pre className="text-sm">{notam.content}</pre>
             </div>
 
