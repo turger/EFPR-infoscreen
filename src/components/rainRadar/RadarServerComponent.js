@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import LoadingSpinner from '../LoadingSpinner';
 import ErrorComponent from '../ErrorComponent';
 import { generateRadarFrameTimestamps } from '@/lib/fmiQueryData';
+import { sendTimestampsToAPI } from '@/lib/radarImageUtils/sendTimestampsToAPI';
 
 const RadarClientComponent = dynamic(() => import('./RadarClientComponent'), {
     ssr: false,
@@ -12,10 +13,10 @@ export default function RadarServerComponent() {
     const [imagePaths, setImagePaths] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(false);
-    const [hasFetched, setHasFetched] = useState(false); // Flag to track if data has been fetched
+    //const [hasFetched, setHasFetched] = useState(false); // Flag to track if data has been fetched
 
     // Function to send timestamps to the server every 10 minutes
-    const sendTimestampsToAPI = async () => {
+    /*const sendTimestampsToAPI = async () => {
         setError(false);
         const newTimestamps = generateRadarFrameTimestamps(12); // Generate the new timestamps for radar images,
 
@@ -38,12 +39,13 @@ export default function RadarServerComponent() {
             const data = await response.json();
             setImagePaths(data.imagePaths);
             setIsLoading(false);
-            setHasFetched(true);
+            //setHasFetched(true);
         } catch (error) {
             setError(true);
         }
     };
-
+    */
+    /*
     // Call the function every 10 minutes
     useEffect(() => {
         if (!hasFetched) {
@@ -62,6 +64,28 @@ export default function RadarServerComponent() {
 
         return () => clearInterval(intervalId); // Clean up the interval on unmount
     }, [hasFetched]);
+*/
+    useEffect(() => {
+        const fetchRadarImages = async () => {
+            setError(false);
+            const newTimestamps = generateRadarFrameTimestamps(12);
+
+            try {
+                setIsLoading(true);
+                const paths = await sendTimestampsToAPI(newTimestamps);
+                setImagePaths(paths);
+                setIsLoading(false);
+            } catch (err) {
+                console.error('Error fetching radar images: ', err);
+                setError(true);
+                setIsLoading(false);
+            }
+        };
+
+        fetchRadarImages();
+        const intervalId = setInterval(fetchRadarImages, 5 * 60 * 1000);
+        return () => clearInterval(intervalId);
+    }, []);
 
     // Function to trigger blob deletion every hour
     const deleteOldBlobs = async () => {
@@ -94,7 +118,7 @@ export default function RadarServerComponent() {
         return () => clearInterval(deleteInterval); // Clean up the interval on unmount
     }, []);
 
-    if (!imagePaths || isLoading) {
+    if (isLoading) {
         return <LoadingSpinner />; // Show loading spinner while fetching
     }
 
@@ -105,14 +129,27 @@ export default function RadarServerComponent() {
     // Pass imagePaths to the RadarClientComponent
     return (
         <div>
-            <div className="flex items-center justify-between">
-                <h1 className="text-white text-sm">Rain Radar</h1>
-                <div className="text-white text-sm justify-right">
-                    Images from FMIOpenData CC BY 4.0
-                </div>
-            </div>
-
             <RadarClientComponent data={imagePaths} />
+
+            <div className="flex justify-between items-end text-xs">
+                <p className="text-gray-400">Rain Radar</p>
+                <p className="text-gray-400">
+                    Rain radar Images from:{' '}
+                    <a
+                        href="https://en.ilmatieteenlaitos.fi/open-data"
+                        className="text-blue-400"
+                    >
+                        FMIOpenData
+                    </a>
+                    ,{' '}
+                    <a
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        className="text-blue-400"
+                    >
+                        CC BY 4.0
+                    </a>
+                </p>
+            </div>
         </div>
     );
 }
