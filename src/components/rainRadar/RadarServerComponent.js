@@ -118,7 +118,7 @@ export default function RadarServerComponent() {
         return () => clearInterval(deleteInterval); // Clean up the interval on unmount
     }, []);
 
-    if (isLoading) {
+    if (!imagePaths || isLoading) {
         return <LoadingSpinner />; // Show loading spinner while fetching
     }
 
