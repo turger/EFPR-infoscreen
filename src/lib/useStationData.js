@@ -6,7 +6,7 @@ export default function useStationData() {
     const [lastUpdated, setLastUpdated] = useState(null);
 
     const { data, error } = useSWR('/api/runway', fetcher, {
-        refreshInterval: 60000, // Refresh every 1 minute
+        refreshInterval: 600000, // Refresh every 10 minute
     });
 
     useEffect(() => {
