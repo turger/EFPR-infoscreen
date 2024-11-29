@@ -17,8 +17,8 @@
     position: relative;
     width: 100%;
     height: 0;
-    padding-bottom: 90%;
-    margin-top: 15%;
+    padding-bottom: 100%;
+    margin-top: 8vh;
 }
 
 .airstripImage {
@@ -27,7 +27,7 @@
     left: 40%;
     width: 35vh;
     height: auto;
-    transform: translate(-50%, -50%) rotate(-107deg);
+    transform: translate(-50%, -50%) rotate(-108deg);
 }
 
 .temperatureContainer {
