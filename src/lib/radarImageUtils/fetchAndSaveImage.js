@@ -7,7 +7,8 @@ const storageDir = path.join(process.cwd(), 'storage', 'radarImages');
 
 const localUrl = '/api/getRadarImage?filename=';
 // Adjust this to match your uploadBlob.js path
-const uploadBlobUrl = '/api/uploadBlob';
+const uploadBlobUrl =
+    `https://${process.env.VERCEL_URL}/api/uploadBlob` || '/api/uploadBlob';
 
 export const fetchAndSaveImage = async (url, timestamp) => {
     // Format timestamp to exclude unallowed characters
