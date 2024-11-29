@@ -6,12 +6,12 @@ import { list } from '@vercel/blob';
 const storageDir = path.join(process.cwd(), 'storage', 'radarImages');
 
 const localUrl = '/api/getRadarImage?filename=';
-/*const baseUrl =
+const baseUrl =
     process.env.VERCEL_ENV === 'production'
         ? 'https://redstone-infoscreen.vercel.app'
-        : `https://${process.env.VERCEL_URL}`; */
+        : `https://${process.env.VERCEL_URL}`;
 // Adjust this to match your uploadBlob.js path
-const uploadBlobUrl = `https://redstone-infoscreen.vercel.app/api/uploadBlob`;
+const uploadBlobUrl = `${baseUrl}/api/uploadBlob`;
 
 export const fetchAndSaveImage = async (url, timestamp) => {
     // Format timestamp to exclude unallowed characters
