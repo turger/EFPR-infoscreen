@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import styles from './runwayTemp.module.css';
+import WindAnimation from './WindAnimation';
 
 export default function RunwayClientComponent({
     data,
@@ -81,13 +82,9 @@ export default function RunwayClientComponent({
                     className={styles.airstripImage}
                 />
                 <div className={styles.windIndicator}>
-                    <img
-                        src="/svgs/wind.svg"
-                        className={styles.windArrow}
-                        style={{
-                            transform: `translate(-50%, -50%) rotate(${Number(windDirection) + 90}deg)`,
-                        }}
-                        alt="Wind indicator"
+                    <WindAnimation
+                        windDirection={Number(windDirection) + 90}
+                        windGust={windGust}
                     />
                     <div className={styles.windSpeed}>
                         <span>{windGust} m/s</span>
