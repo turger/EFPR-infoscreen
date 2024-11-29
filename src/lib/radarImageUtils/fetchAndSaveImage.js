@@ -1,4 +1,4 @@
-import sharp from 'sharp';
+//import sharp from 'sharp';
 import path from 'path';
 import { promises as fsPromises } from 'fs';
 import { list } from '@vercel/blob';
@@ -7,8 +7,7 @@ const storageDir = path.join(process.cwd(), 'storage', 'radarImages');
 
 const localUrl = '/api/getRadarImage?filename=';
 // Adjust this to match your uploadBlob.js path
-const uploadBlobUrl =
-    `https://${process.env.VERCEL_URL}/api/uploadBlob` || '/api/uploadBlob';
+const uploadBlobUrl = '/api/uploadBlob';
 
 export const fetchAndSaveImage = async (url, timestamp) => {
     // Format timestamp to exclude unallowed characters
