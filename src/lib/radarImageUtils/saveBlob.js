@@ -1,11 +1,8 @@
 import { list, put } from '@vercel/blob';
 
 export const saveImageToBlob = async (url, timestamp) => {
-    console.log('Timestamp from input: ', timestamp);
-    console.log('URL from input: ', url);
     const formattedTimestamp = timestamp.replace(/[:?&/\\]/g, '-');
     const fileName = `radar-image-${formattedTimestamp}.png`;
-    console.log('fileName: ', fileName);
 
     const blobExistsUrl = await doesBlobExist(fileName);
     if (blobExistsUrl) {
@@ -26,10 +23,7 @@ export const saveImageToBlob = async (url, timestamp) => {
     try {
         const res = await Promise.race([fetchPromise, timeoutPromise]);
 
-        console.log('Response Content-Type:', res.headers.get('Content-Type'));
-
         const arrayBuffer = await res.arrayBuffer();
-        console.log('ArrayBuffer length:', arrayBuffer.byteLength);
 
         const buffer = Buffer.from(arrayBuffer);
 
@@ -37,9 +31,7 @@ export const saveImageToBlob = async (url, timestamp) => {
             access: 'public',
             contentType: 'image/png',
         });
-        console.log('Blob result from put: ', blobResult);
 
-        console.log(`Image saved to: ${blobResult.url}`);
         return blobResult.url;
     } catch (error) {
         throw new Error(`Error saving image to blob: ${error.message}`);
