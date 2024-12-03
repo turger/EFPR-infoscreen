@@ -4,67 +4,19 @@ import LoadingSpinner from '../LoadingSpinner';
 import ErrorComponent from '../ErrorComponent';
 import { generateRadarFrameTimestamps } from '@/lib/fmiQueryData';
 import { sendTimestampsToAPI } from '@/lib/radarImageUtils/sendTimestampsToAPI';
+import { sendTimestampsToBlobAPI } from '@/lib/radarImageUtils/sendTimestampsToBlobAPI';
 
 const RadarClientComponent = dynamic(() => import('./RadarClientComponent'), {
     ssr: false,
 });
+//Checks if deployed to Vercel
+const isDeploymentApi = process.env.NEXT_PUBLIC_USE_DEPLOY_API === 'true';
 
 export default function RadarServerComponent() {
     const [imagePaths, setImagePaths] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(false);
-    //const [hasFetched, setHasFetched] = useState(false); // Flag to track if data has been fetched
 
-    // Function to send timestamps to the server every 10 minutes
-    /*const sendTimestampsToAPI = async () => {
-        setError(false);
-        const newTimestamps = generateRadarFrameTimestamps(12); // Generate the new timestamps for radar images,
-
-        try {
-            setIsLoading(true);
-            const response = await fetch('/api/processRadarImages', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ timestamps: newTimestamps }),
-            });
-
-            if (!response.ok) {
-                throw new Error(
-                    'Failed to send timestamps to processRadarImages API'
-                );
-            }
-
-            const data = await response.json();
-            setImagePaths(data.imagePaths);
-            setIsLoading(false);
-            //setHasFetched(true);
-        } catch (error) {
-            setError(true);
-        }
-    };
-    */
-    /*
-    // Call the function every 10 minutes
-    useEffect(() => {
-        if (!hasFetched) {
-            sendTimestampsToAPI(); // Call it on initial load
-        }
-
-        // Interval, change first number to change minutes
-        const intervalId = setInterval(
-            () => {
-                if (hasFetched) {
-                    sendTimestampsToAPI(); // Called only if the initial fetch has completed
-                }
-            },
-            5 * 60 * 1000
-        );
-
-        return () => clearInterval(intervalId); // Clean up the interval on unmount
-    }, [hasFetched]);
-*/
     useEffect(() => {
         const fetchRadarImages = async () => {
             setError(false);
@@ -72,9 +24,15 @@ export default function RadarServerComponent() {
 
             try {
                 setIsLoading(true);
-                const paths = await sendTimestampsToAPI(newTimestamps);
-                setImagePaths(paths);
-                setIsLoading(false);
+                if (!isDeploymentApi) {
+                    const paths = await sendTimestampsToAPI(newTimestamps);
+                    setImagePaths(paths);
+                    setIsLoading(false);
+                } else {
+                    const paths = await sendTimestampsToBlobAPI(newTimestamps);
+                    setImagePaths(paths);
+                    setIsLoading(false);
+                }
             } catch (err) {
                 console.error('Error fetching radar images: ', err);
                 setError(true);
