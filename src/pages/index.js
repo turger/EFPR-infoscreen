@@ -71,7 +71,7 @@ export default function Home() {
 
                         {/* Bottom: One component */}
                         <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-[24%] w-full">
-                            {/* <MetarServerComponent /> */}
+                            {<MetarServerComponent />}
                             {/* Airport Notes here */}
                         </div>
                         <div className="bg-gray-700 rounded-lg shadow-lg p-2 h-[38%] w-full">

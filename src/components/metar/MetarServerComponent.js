@@ -410,7 +410,7 @@ export default function MetarServerComponent() {
             : '/';
 
     const windDir =
-        windDirWeather !== null
+        windDirWeather !== null && !isNaN(windDirWeather)
             ? String(Math.round(windDirWeather / 10) * 10).padStart(3, '0')
             : '/';
 
@@ -442,7 +442,7 @@ export default function MetarServerComponent() {
                             <li key={report.id}>{report.report_data}</li>
                         ))
                     ) : (
-                        <li>No reports available.</li>
+                        <li>No data available yet.</li>
                     )}
                 </ul>
             </div>
@@ -454,13 +454,30 @@ export default function MetarServerComponent() {
                             <li key={report.id}>{report.report_data}</li>
                         ))
                     ) : (
-                        <li>No reports available.</li>
+                        <li>No data available yet.</li>
                     )}
                 </ul>
                 <br></br>
-                <p style={{ fontSize: '12px' }}>
-                    Not suitable for official flight preparation
-                </p>
+                <div className="flex justify-between items-end text-xs w-full h-full">
+                    <p
+                        className="text-gray-400"
+                        style={{ marginBottom: '0px', textAlign: 'left' }}
+                    >
+                        Not suitable for official flight preparation
+                    </p>
+                    <p
+                        className="text-gray-400"
+                        style={{ marginBottom: '0px', textAlign: 'right' }}
+                    >
+                        Weather data from:{' '}
+                        <a
+                            href="https://en.ilmatieteenlaitos.fi/open-data"
+                            className="text-blue-400"
+                        >
+                            en.ilmatieteenlaitos.fi/open-data
+                        </a>
+                    </p>
+                </div>
             </div>
         </div>
     );
