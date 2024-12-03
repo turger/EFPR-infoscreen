@@ -1,13 +1,17 @@
 // src/components/notam/NotamClientComponent.js
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function NotamClientComponent() {
     const [notam, setNotam] = useState(null);
     const [error, setError] = useState(null);
     const [lastUpdated, setLastUpdated] = useState(null);
     const [timeSinceLastUpdate, setTimeSinceLastUpdate] = useState('');
+    const scrollContainerRef = useRef(null);
+    const scrollingIntervalRef = useRef(null);
+    const pauseTime = 2000;
+    let paused = false;
 
     // Function to retrieve NOTAM data
     async function fetchNotam() {
@@ -69,6 +73,56 @@ export default function NotamClientComponent() {
         return () => clearInterval(intervalId);
     }, [lastUpdated]);
 
+    // autoscroll feature if the notams overflow the div
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            const scrollElement = scrollContainerRef.current;
+
+            // pixel scrolled
+            const scrollStep = 3;
+            // ms between each scroll
+            const intervalTime = 300;
+            let direction = 'down';
+
+            // clear previous intervals (if any)
+            if (scrollingIntervalRef.current) {
+                clearInterval(scrollingIntervalRef.current);
+            }
+
+            scrollingIntervalRef.current = setInterval(() => {
+                if (direction === 'down') {
+                    // scroll down
+                    if (
+                        scrollElement.scrollTop + scrollElement.clientHeight >=
+                        scrollElement.scrollHeight
+                    ) {
+                        // pause to let user read last lines and flag change to signal scroll direction
+                        paused = true;
+                        setTimeout(() => {
+                            paused = false;
+                            direction = 'up';
+                        }, pauseTime);
+                    } else {
+                        scrollElement.scrollTop += scrollStep;
+                    }
+                } else if (direction === 'up') {
+                    // scroll up quickly
+                    // reset to top immediatly
+                    scrollElement.scrollTop = 0;
+                    // flag change to signal scroll direction
+                    direction = 'down';
+                }
+            }, intervalTime);
+        }
+
+        return () => {
+            // Clear interval on component unmount
+            if (scrollingIntervalRef.current) {
+                clearInterval(scrollingIntervalRef.current);
+            }
+        };
+    }, [notam]);
+
     if (error) {
         return <div>{error}</div>;
     }
@@ -78,10 +132,37 @@ export default function NotamClientComponent() {
     }
 
     return (
-        <div style={{ fontSize: '0.75rem' }}>
-            <pre>{notam.title}</pre>
-            <pre>{notam.content}</pre>
-            <p>Last updated: {timeSinceLastUpdate}</p>
+        <div className="flex flex-col h-full w-full">
+            {/* Main content area */}
+            <div className="flex-grow overflow-auto" ref={scrollContainerRef}>
+                <pre className="text-sm">{notam.content}</pre>
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-between items-end text-xs">
+                {/* Bottom left: Last updated */}
+                <p className="text-gray-400">
+                    Last updated: {timeSinceLastUpdate}
+                </p>
+
+                {/* Bottom right: CC BY 4.0 */}
+                <p className="text-gray-400">
+                    NOTAM Data from:{' '}
+                    <a
+                        href="https://lentopaikat.fi/notam/notam.php?a=EFPR"
+                        className="text-blue-400"
+                    >
+                        lentopaikat.fi
+                    </a>
+                    ,{' '}
+                    <a
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        className="text-blue-400"
+                    >
+                        CC BY 4.0
+                    </a>
+                </p>
+            </div>
         </div>
     );
 }
