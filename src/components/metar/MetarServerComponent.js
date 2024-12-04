@@ -21,7 +21,6 @@ async function saveMetarReport(reportData) {
 
         if (!response.ok)
             throw new Error(result.error || 'Error saving report');
-        console.log('METAR report saved:', result.message);
     } catch (error) {
         console.error('Failed to save METAR report:', error);
     }
@@ -74,8 +73,6 @@ export default function MetarServerComponent() {
                 if (!response.ok) {
                     throw new Error('Failed to delete reports');
                 }
-
-                console.log('Old reports deleted successfully');
             } catch (error) {
                 console.error('Failed to delete reports:', error);
             }
@@ -431,10 +428,12 @@ export default function MetarServerComponent() {
     }
 
     return (
-        <div>
-            <p>{metarReport}</p>
-            <div>
-                <br></br>
+        <div className="flex flex-col h-full w-full">
+            {/* Main content area */}
+            <div className="flex-grow overflow-auto">
+                <p>{metarReport}</p>
+
+                <br />
 
                 <ul>
                     {reportsFifteenMinutesAgo.length > 0 ? (
@@ -445,9 +444,9 @@ export default function MetarServerComponent() {
                         <li>No data available yet.</li>
                     )}
                 </ul>
-            </div>
-            <div>
-                <br></br>
+
+                <br />
+
                 <ul>
                     {reportsOneHourAgo.length > 0 ? (
                         reportsOneHourAgo.map((report) => (
@@ -457,27 +456,26 @@ export default function MetarServerComponent() {
                         <li>No data available yet.</li>
                     )}
                 </ul>
-                <br></br>
-                <div className="flex justify-between items-end text-xs w-full h-full">
-                    <p
-                        className="text-gray-400"
-                        style={{ marginBottom: '0px', textAlign: 'left' }}
+                <br />
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-between items-end text-xs">
+                {/* Bottom left */}
+                <p className="text-gray-400">
+                    Not suitable for official flight preparation
+                </p>
+
+                {/* Bottom right */}
+                <p className="text-gray-400">
+                    Weather data from:{' '}
+                    <a
+                        href="https://en.ilmatieteenlaitos.fi/open-data"
+                        className="text-blue-400"
                     >
-                        Not suitable for official flight preparation
-                    </p>
-                    <p
-                        className="text-gray-400"
-                        style={{ marginBottom: '0px', textAlign: 'right' }}
-                    >
-                        Weather data from:{' '}
-                        <a
-                            href="https://en.ilmatieteenlaitos.fi/open-data"
-                            className="text-blue-400"
-                        >
-                            en.ilmatieteenlaitos.fi/open-data
-                        </a>
-                    </p>
-                </div>
+                        en.ilmatieteenlaitos.fi/open-data
+                    </a>
+                </p>
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-// TEMp, Cloudcover, oneHourperc
+
 export default function WeatherIcon({ data }) {
     const [weatherData, setWeatherData] = useState(null);
 
@@ -13,11 +13,10 @@ export default function WeatherIcon({ data }) {
 ///FOR TESTING PURPOSES :
 const mockweatherData = {
     CloudCoverageOBSERVATION: 7, // You can change this value to test different cases (0-8)
-    oneHourPrecipitationOBSERVATION: 2, // You can change this value to test different rain levels
     temperatureOBSERVATION: -1,
     tenMinPrecipitationOBSERVATION: 3,
 };
-export const weatherImg = (weatherData) => {
+export const weatherImg = (weatherData, isNight) => {
     let iconName = 'default';
 
     let {
@@ -25,6 +24,7 @@ export const weatherImg = (weatherData) => {
         tenMinPrecipitationOBSERVATION,
         temperatureOBSERVATION,
     } = weatherData;
+
     try {
         const hourlyPrecipitationOBSERVATION =
             tenMinPrecipitationOBSERVATION * 6; //tenMin is some time more accurate and doesnot give NaN so often
@@ -180,6 +180,7 @@ export const weatherImg = (weatherData) => {
                 }
             }
         }
+        iconName = isNight ? `${iconName}-night` : iconName;
         return iconName;
     } catch (error) {
         console.error('Error in determining weather icon:', error);
