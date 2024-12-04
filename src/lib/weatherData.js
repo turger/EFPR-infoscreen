@@ -1,6 +1,6 @@
 import useSWR from 'swr';
-import observation from '@/pages/api/observation';
-import fetchAndCalculateAverages from '@/pages/api/fetchForecast';
+import observation from '@/lib/observation';
+import fetchAndCalculateAverages from '@/lib/fetchForecast';
 
 const fetcher = async () => {
     try {
