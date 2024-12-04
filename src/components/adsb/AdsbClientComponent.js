@@ -1,4 +1,3 @@
-// AdsbClientComponent.js
 'use client';
 import {
     MapContainer,
@@ -7,10 +6,12 @@ import {
     useMap,
     Tooltip,
     Popup,
+    Polygon,
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useState, useEffect } from 'react';
+import styles from '../reactLeafletMap/mapDataStyles.module.css';
 
 function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
     const map = useMap();
@@ -26,7 +27,6 @@ function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
                 bottom: '30px',
                 zIndex: 1000,
                 padding: '5px 10px',
-                //backgroundColor: '#fac807',
                 color: 'white',
                 border: 'none',
                 borderRadius: '30px',
@@ -56,7 +56,6 @@ function ToggleButton({ toggleMapStyle, isDarkMode }) {
                 bottom: '60px',
                 zIndex: 1000,
                 padding: '5px 10px',
-                //backgroundColor: '#fac807',
                 color: 'white',
                 border: '3px',
                 borderRadius: '30px',
@@ -88,11 +87,35 @@ const rotatedIcon = (iconUrl, rotation, iconSize) => {
     });
 };
 
-export default function AdsbClientComponent({ flights }) {
+function ZoomHandler({ initialZoom }) {
+    const map = useMap();
+
+    useEffect(() => {
+        const handleZoom = () => {
+            const zoomLevel = map.getZoom();
+            const fontSize = 0.5 + (zoomLevel - initialZoom) * 0.05; // Adjust the multiplier as needed
+            document.documentElement.style.setProperty(
+                '--tooltip-font-size',
+                `${fontSize}rem`
+            );
+        };
+
+        map.on('zoomend', handleZoom);
+        handleZoom(); // Set initial font size
+
+        return () => {
+            map.off('zoomend', handleZoom);
+        };
+    }, [map, initialZoom]);
+
+    return null;
+}
+
+export default function AdsbClientComponent({ flights, airspaces }) {
     const aerodome_location = [60.48075888598088, 26.59665436528449];
-    const initial_location = [60.410626266897054, 22.867355506576178];
+    const initial_location = [61.1, 23.0];
     const initial_zoom = 6;
-    const [iconSize, setIconSize] = useState(16);
+    const [iconSize, setIconSize] = useState(6);
     const [isDarkMode, setIsDarkMode] = useState(true);
 
     const toggleMapStyle = () => {
@@ -102,7 +125,7 @@ export default function AdsbClientComponent({ flights }) {
     useEffect(() => {
         const handleResize = () => {
             // Adjusts iconSize based on window width
-            setIconSize(window.innerWidth / 53);
+            setIconSize(window.innerWidth / 130);
         };
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -111,13 +134,29 @@ export default function AdsbClientComponent({ flights }) {
         };
     }, []);
 
+    const getColorByAirspaceClass = (airspaceClass) => {
+        switch (airspaceClass) {
+            case 'Danger':
+                return '#de990e'; // yellow
+            case 'Prohibited':
+                return '#bb0304'; // red
+            case 'Restricted':
+                return '#e74604'; // orange
+            case 'Other':
+                return '#5a4735'; // brown
+            case 'TSA':
+                return '#0e6bde'; // blue
+        }
+    };
+
     return (
         <div className="relative w-full h-full">
             <MapContainer
                 center={initial_location}
                 zoom={initial_zoom}
-                style={{ height: '100%', width: '100%' }}
+                style={{ height: '41vh', width: '100%' }}
             >
+                <ZoomHandler initialZoom={initial_zoom} />
                 {isDarkMode ? (
                     <TileLayer
                         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
@@ -138,24 +177,43 @@ export default function AdsbClientComponent({ flights }) {
                         0,
                         iconSize
                     )}
-                >
-                    <Tooltip
-                        className="custom-tooltip"
-                        direction="top"
-                        offset={[0, -12]}
-                        opacity={1}
-                        permanent={true} // true: name always visible, false: shows while hovered
+                ></Marker>
+
+                {airspaces.map((feature, index) => (
+                    <Polygon
+                        key={index}
+                        positions={feature.geometry.coordinates[0].map(
+                            (coord) => [coord[1], coord[0]]
+                        )}
+                        color={getColorByAirspaceClass(
+                            feature.properties.airspaceclass
+                        )}
+                        dashArray={
+                            feature.properties.alwaysActive === 'true'
+                                ? '5,5'
+                                : '0'
+                        }
                     >
-                        Helsinki East Aerodome
-                    </Tooltip>
-                </Marker>
+                        {/* <Tooltip
+                            direction="center"
+                            offset={[0, 0]}
+                            opacity={1}
+                            permanent
+                            className={styles.airspaceTooltip}
+                        >
+                            <span style={{ color: getColorByAirspaceClass(feature.properties.airspaceclass) }}>
+                                {feature.properties.code}
+                            </span>
+                        </Tooltip> */}
+                    </Polygon>
+                ))}
 
                 {flights.map((flight) => {
                     const isValidFlight =
                         flight.lat != null && flight.lon != null && flight.fli;
 
                     if (!isValidFlight) {
-                        console.log('invalid flight data:', flight);
+                        //console.log('invalid flight data:', flight);
                         return null;
                     }
 
@@ -173,13 +231,15 @@ export default function AdsbClientComponent({ flights }) {
                             )}
                         >
                             <Tooltip
-                                className="custom-tooltip"
-                                direction="top"
-                                offset={[0, -18]}
+                                className={styles.airplaneTooltip}
+                                direction="center"
+                                offset={[0, -12]}
                                 opacity={1}
-                                permanent={true} // true: flight number always visible, false: shows while hovered
+                                permanent={true}
                             >
-                                {flight.fli}
+                                <span style={{ color: 'yellow' }}>
+                                    {flight.fli}
+                                </span>
                             </Tooltip>
 
                             <Popup>

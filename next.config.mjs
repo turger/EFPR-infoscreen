@@ -7,7 +7,7 @@ const nextConfig = {
                 protocol: 'https',
                 hostname:
                     //change to actual hostname when known
-                    'https://arqjb24dvkuh91jo.public.blob.vercel-storage.com',
+                    'slgrxbwf84wyxoj6.public.blob.vercel-storage.com',
                 port: '',
             },
         ],
