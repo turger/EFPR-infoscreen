@@ -2,9 +2,14 @@
 
 import { useState } from 'react';
 import styles from './runwayTemp.module.css';
+import WindAnimation from './WindAnimation';
 
-export default function RunwayClientComponent({ data }) {
-    const [windData, setWindData] = useState({ knots: 'N/A', angle: 0 }); // TBD: get real data
+export default function RunwayClientComponent({
+    data,
+    windDirection,
+    windGust,
+    stationLastUpdated,
+}) {
     const [visibleTooltip, setVisibleTooltip] = useState(null);
 
     const getTemperatureBySiteId = (siteId) => {
@@ -21,7 +26,7 @@ export default function RunwayClientComponent({ data }) {
             case 1:
                 return { color: 'Green', explanation: 'Dry' };
             case 13:
-                return { color: 'White', explanation: 'Not dry' };
+                return { color: 'blue', explanation: 'Not dry' };
             default:
                 return { color: 'black', explanation: 'N/A' };
         }
@@ -30,123 +35,164 @@ export default function RunwayClientComponent({ data }) {
     return (
         <div className={styles.fidgetContainer}>
             <div className={styles.fidget}>
-                <div className={styles.windIndicator}>
-                    <img
-                        src="/svgs/wind.svg"
-                        className={styles.windArrow}
-                        style={{
-                            transform: `translate(-50%, -50%) rotate(${windData.angle + 180}deg)`,
-                        }}
-                        alt="Wind indicator"
-                    />
-                    <div className={styles.windSpeed}>
-                        <span>{windData.knots} knots</span>
-                        <br />
-                        <span>{windData.angle}°</span>
-                    </div>
-                </div>
-                <img
-                    src="/svgs/runway.svg"
-                    alt="Airstrip"
-                    className={styles.airstripImage}
-                />
                 <div className={styles.temperatureContainer}>
+                    {['52280', '52437', '52281'].map((siteId) => {
+                        const station = getStationBySiteId(siteId);
+                        const temperature = getTemperatureBySiteId(siteId);
+                        const condition = station?.condition;
+                        const colorAndExplanation =
+                            getColorAndExplanationByCondition(condition);
+
+                        if (
+                            !station ||
+                            temperature === undefined ||
+                            !colorAndExplanation
+                        ) {
+                            return null;
+                        }
+
+                        return (
+                            <div
+                                key={siteId}
+                                className={styles.temperatureValue}
+                            >
+                                <span style={{ fontWeight: 'bold' }}>
+                                    {station.name}
+                                </span>
+                                <span
+                                    style={{ fontSize: 14, fontWeight: 'bold' }}
+                                >
+                                    {temperature}
+                                </span>
+                                <span
+                                    style={{
+                                        color: colorAndExplanation.color,
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    {colorAndExplanation.explanation}
+                                </span>
+                            </div>
+                        );
+                    })}
+                </div>
+                <div className={styles.runwayContainer}>
+                    <img
+                        src="/svgs/runway.svg"
+                        alt="Airstrip"
+                        className={styles.airstripImage}
+                    />
                     <div
-                        className={styles.temperatureValue}
+                        className={styles.ball}
+                        data-siteid="52280"
                         onMouseEnter={() => setVisibleTooltip('52280')}
                         onMouseLeave={() => setVisibleTooltip(null)}
+                        style={{
+                            backgroundColor: getColorAndExplanationByCondition(
+                                getStationBySiteId('52280')?.condition
+                            ).color,
+                        }}
                     >
-                        <span>{getTemperatureBySiteId('52280')}</span>
+                        {visibleTooltip === '52280' && (
+                            <div className={styles.tooltip}>
+                                {getStationBySiteId('52280')?.name}
+                                <br />
+                                {
+                                    getColorAndExplanationByCondition(
+                                        getStationBySiteId('52280')?.condition
+                                    ).explanation
+                                }
+                                <br />
+                                {getTemperatureBySiteId('52280')}
+                            </div>
+                        )}
                     </div>
                     <div
-                        className={styles.temperatureValue}
+                        className={styles.ball}
+                        data-siteid="52437"
                         onMouseEnter={() => setVisibleTooltip('52437')}
                         onMouseLeave={() => setVisibleTooltip(null)}
+                        style={{
+                            backgroundColor: getColorAndExplanationByCondition(
+                                getStationBySiteId('52437')?.condition
+                            ).color,
+                        }}
                     >
-                        <span>{getTemperatureBySiteId('52437')}</span>
+                        {visibleTooltip === '52437' && (
+                            <div className={styles.tooltip}>
+                                {getStationBySiteId('52437')?.name}
+                                <br />
+                                {
+                                    getColorAndExplanationByCondition(
+                                        getStationBySiteId('52437')?.condition
+                                    ).explanation
+                                }
+                                <br />
+                                {getTemperatureBySiteId('52437')}
+                            </div>
+                        )}
                     </div>
                     <div
-                        className={styles.temperatureValue}
+                        className={styles.ball}
+                        data-siteid="52281"
                         onMouseEnter={() => setVisibleTooltip('52281')}
                         onMouseLeave={() => setVisibleTooltip(null)}
+                        style={{
+                            backgroundColor: getColorAndExplanationByCondition(
+                                getStationBySiteId('52281')?.condition
+                            ).color,
+                        }}
                     >
-                        <span>{getTemperatureBySiteId('52281')}</span>
+                        {visibleTooltip === '52281' && (
+                            <div className={styles.tooltip}>
+                                {getStationBySiteId('52281')?.name}
+                                <br />
+                                {
+                                    getColorAndExplanationByCondition(
+                                        getStationBySiteId('52281')?.condition
+                                    ).explanation
+                                }
+                                <br />
+                                {getTemperatureBySiteId('52281')}
+                            </div>
+                        )}
                     </div>
                 </div>
-                <div
-                    className={styles.ball}
-                    data-siteid="52280"
-                    onMouseEnter={() => setVisibleTooltip('52280')}
-                    onMouseLeave={() => setVisibleTooltip(null)}
-                    style={{
-                        backgroundColor: getColorAndExplanationByCondition(
-                            getStationBySiteId('52280')?.condition
-                        ).color,
-                    }}
-                >
-                    {visibleTooltip === '52280' && (
-                        <div className={styles.tooltip}>
-                            {getStationBySiteId('52280')?.name}
-                            <br />
-                            {
-                                getColorAndExplanationByCondition(
-                                    getStationBySiteId('52280')?.condition
-                                ).explanation
-                            }
-                            <br />
-                            {getTemperatureBySiteId('52280')}
-                        </div>
-                    )}
+                <div className={styles.windIndicator}>
+                    <WindAnimation
+                        windDirection={Number(windDirection) + 90}
+                        windGust={windGust}
+                    />
+                    <div className={styles.windSpeed}>
+                        <span>{windGust} m/s</span>
+                        <br />
+                        <span>{windDirection}°</span>
+                    </div>
                 </div>
-                <div
-                    className={styles.ball}
-                    data-siteid="52437"
-                    onMouseEnter={() => setVisibleTooltip('52437')}
-                    onMouseLeave={() => setVisibleTooltip(null)}
-                    style={{
-                        backgroundColor: getColorAndExplanationByCondition(
-                            getStationBySiteId('52437')?.condition
-                        ).color,
-                    }}
-                >
-                    {visibleTooltip === '52437' && (
-                        <div className={styles.tooltip}>
-                            {getStationBySiteId('52437')?.name}
-                            <br />
-                            {
-                                getColorAndExplanationByCondition(
-                                    getStationBySiteId('52437')?.condition
-                                ).explanation
-                            }
-                            <br />
-                            {getTemperatureBySiteId('52437')}
-                        </div>
-                    )}
-                </div>
-                <div
-                    className={styles.ball}
-                    data-siteid="52281"
-                    onMouseEnter={() => setVisibleTooltip('52281')}
-                    onMouseLeave={() => setVisibleTooltip(null)}
-                    style={{
-                        backgroundColor: getColorAndExplanationByCondition(
-                            getStationBySiteId('52281')?.condition
-                        ).color,
-                    }}
-                >
-                    {visibleTooltip === '52281' && (
-                        <div className={styles.tooltip}>
-                            {getStationBySiteId('52281')?.name}
-                            <br />
-                            {
-                                getColorAndExplanationByCondition(
-                                    getStationBySiteId('52281')?.condition
-                                ).explanation
-                            }
-                            <br />
-                            {getTemperatureBySiteId('52281')}
-                        </div>
-                    )}
+                <div className={styles.footer}>
+                    <p
+                        style={{
+                            fontSize: 12,
+                            textAlign: 'center',
+                            color: 'black',
+                            paddingTop: 6,
+                        }}
+                    >
+                        Last updated:{' '}
+                        {stationLastUpdated
+                            ? stationLastUpdated.toLocaleTimeString()
+                            : 'N/A'}
+                    </p>
+                    <p
+                        style={{
+                            fontSize: 12,
+                            textAlign: 'center',
+                            color: 'black',
+                            paddingTop: 6,
+                        }}
+                    >
+                        Data provided by: XAMK
+                    </p>
                 </div>
             </div>
         </div>
