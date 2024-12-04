@@ -30,7 +30,7 @@ export default async function handler(req, res) {
             const { data: existingReports, error: fetchError } = await supabase
                 .from('metar_reports')
                 .select('id')
-                .gte('created_at', minuteStart) // gte = >= subabase stuff i guess
+                .gte('created_at', minuteStart) // gte = >= 
                 .lte('created_at', minuteEnd); // lte = <=
 
             if (fetchError) {
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
             if (existingReports.length > 0) {
                 return res
                     .status(200)
-                    .json({ message: 'Report for this minute already exists' });
+                    .json({});
             }
 
             // Insert the report into the metar_reports table
@@ -67,7 +67,7 @@ export default async function handler(req, res) {
 
             return res
                 .status(200)
-                .json({ message: 'Report saved successfully' });
+                .json({});
         } catch (error) {
             console.error('Error saving report:', error);
             return res.status(500).json({ error: 'Failed to save report' });

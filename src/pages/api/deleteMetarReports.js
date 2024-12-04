@@ -22,7 +22,7 @@ export default async function deleteHandler(req, res) {
 
             return res
                 .status(200)
-                .json({ message: 'Old reports deleted successfully' });
+                .json();
         } catch (error) {
             console.error('Error deleting reports:', error);
             return res.status(500).json({ error: 'Failed to delete reports' });
