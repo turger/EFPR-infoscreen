@@ -3,6 +3,10 @@
 Infoscreen for East Helsinki Airport
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Contributors
+
+  - [Serica](https://github.com/sericakitty)
+
 ## Getting Started
 
 First, run the development server:
