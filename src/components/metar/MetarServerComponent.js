@@ -21,7 +21,6 @@ async function saveMetarReport(reportData) {
 
         if (!response.ok)
             throw new Error(result.error || 'Error saving report');
-        
     } catch (error) {
         console.error('Failed to save METAR report:', error);
     }
@@ -74,8 +73,6 @@ export default function MetarServerComponent() {
                 if (!response.ok) {
                     throw new Error('Failed to delete reports');
                 }
-
-               
             } catch (error) {
                 console.error('Failed to delete reports:', error);
             }
@@ -102,7 +99,7 @@ export default function MetarServerComponent() {
     const endTimeForWindDirection = formatDateUTC(threeMinutesAgo);
 
     const windApiUrl = `https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::simple&fmisid=${weatherStation}&starttime=${startTimeForWindDirection}&endtime=${endTimeForWindDirection}&parameters=winddirection&format=application/xml`;
-    
+
     threeMinutesAgo.setSeconds(0, 0);
 
     const startTime = formatDateUTC(threeMinutesAgo);
@@ -435,9 +432,9 @@ export default function MetarServerComponent() {
             {/* Main content area */}
             <div className="flex-grow overflow-auto">
                 <p>{metarReport}</p>
-                
+
                 <br />
-    
+
                 <ul>
                     {reportsFifteenMinutesAgo.length > 0 ? (
                         reportsFifteenMinutesAgo.map((report) => (
@@ -447,9 +444,9 @@ export default function MetarServerComponent() {
                         <li>No data available yet.</li>
                     )}
                 </ul>
-                
+
                 <br />
-    
+
                 <ul>
                     {reportsOneHourAgo.length > 0 ? (
                         reportsOneHourAgo.map((report) => (
@@ -461,14 +458,14 @@ export default function MetarServerComponent() {
                 </ul>
                 <br />
             </div>
-    
+
             {/* Footer */}
             <div className="flex justify-between items-end text-xs">
                 {/* Bottom left */}
                 <p className="text-gray-400">
                     Not suitable for official flight preparation
                 </p>
-                
+
                 {/* Bottom right */}
                 <p className="text-gray-400">
                     Weather data from:{' '}
@@ -482,5 +479,4 @@ export default function MetarServerComponent() {
             </div>
         </div>
     );
-    
 }
