@@ -7,7 +7,6 @@ export default async function fetchAndCalculateAverages() {
 
     //fetch data from fmi
     const url = `https://opendata.fmi.fi/wfs?request=getFeature&storedquery_id=fmi::forecast::harmonie::surface::point::timevaluepair&place=Pyhtää&starttime=${startTime.toISOString()}&endtime=${endTime.toISOString()}`;
-    console.log(startTime, endTime);
     try {
         //fetch the data fron api
         const response = await fetch(url);
@@ -22,6 +21,16 @@ export default async function fetchAndCalculateAverages() {
 
         //object to store daily data
         const dailyData = {};
+
+        // *************TEST DATA************
+        /*const dailyData = { 
+        "2024-12-01": {
+            Temperature: [20, 22, NaN, 25, 18, null, 19, NaN, 21, 23, 22, 24, null, NaN, 20, 19, 21, 23, 22, NaN, 20, 19, null, 21],
+            CloudCover: [2, 3, NaN, 4, null, 5, 6, 3, NaN, null, 2, 3, 4, 5, 6, NaN, 2, 3, 4, 5, NaN, null, 3, 4],
+            Rain: [0, 0.5, 1, NaN, null, 0, 0.2, NaN, 0.4, 0.6, NaN, null, 0, 0.1, 0.3, 0.5, 0, 0.2, NaN, 0, 0, 0.4, null, 0.1],
+        },
+        
+    };*/
 
         // loop through member and extract data
         for (const member of members) {
@@ -75,27 +84,31 @@ export default async function fetchAndCalculateAverages() {
 
         //calculate averages for each parameter temperature, CloudCover, rain by date
         const averages = Object.entries(dailyData).map(([date, data]) => {
-            const validTemps = data.Temperature.filter((t) => t !== null);
+            const validTemps = data.Temperature.filter(
+                (t) => t !== null && !isNaN(t)
+            );
             const avgTemp =
                 validTemps.length > 0
                     ? (
                           validTemps.reduce((sum, t) => sum + t, 0) /
                           validTemps.length
-                      ).toFixed(0)
+                      ) // Use the actual count of valid entries
+                          .toFixed(0)
                     : null;
 
-            const validCloud = data.CloudCover.filter((c) => c !== null);
+            const validCloud = data.CloudCover.filter(
+                (c) => c !== null && !isNaN(c)
+            );
             const avgCloud =
                 validCloud.length > 0
                     ? validCloud.reduce((sum, c) => sum + c, 0) /
                       validCloud.length
                     : null;
 
-            //Convert the calculated average cloud cover to Okta
             const avgCloudOkta =
                 avgCloud !== null ? convertToOkta(avgCloud) : null;
 
-            const validRain = data.Rain.filter((r) => r !== null);
+            const validRain = data.Rain.filter((r) => r !== null && !isNaN(r));
             const avgRain =
                 validRain.length > 0
                     ? (
@@ -147,7 +160,6 @@ function convertToOkta(cloudCoverage) {
 //fetch the data
 async function startDailyUpdate() {
     const averages = await fetchAndCalculateAverages();
-    console.log('Stored averagesss', averages);
     return averages;
 }
 
@@ -176,11 +188,8 @@ export function transformDailyAverages(dailyAverages) {
 }
 
 export function extractFirstAndSecondAverage(dailyAverages) {
-    console.log('Input to extractFirstAndSecondAverage:', dailyAverages); //for testing
-
     // transform the daily averages data
     const transformedAverages = transformDailyAverages(dailyAverages);
-    console.log('Transformed Averages:', transformedAverages); // Log transformed data
 
     // if there are not enough days, return null for both days
     if (transformedAverages.length < 2) {

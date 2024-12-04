@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { weatherImg } from '@/pages/api/weatherIcon';
 import LoadingSpinner from '../LoadingSpinner';
 import WeatherIcon from '@/pages/api/weatherIcon';
-import { extractFirstAndSecondAverage } from '@/pages/api/fetchForecast';
+import { extractFirstAndSecondAverage } from '@/lib/fetchForecast';
 
 import useWeatherData from '@/lib/weatherData';
 
@@ -17,11 +17,12 @@ export default function WeatherServerComponent() {
     const [secondDayAverage, setSecondDayAverage] = useState(null);
     const [firstDayName, setFirstDayName] = useState(null);
     const [secondDayName, setSecondDayName] = useState(null);
+    const [isNight, setIsNight] = useState(false);
 
     useEffect(() => {
         if (weatherData) {
             // Update the icon name based on the observation data
-            const icon = weatherImg(weatherData.observation);
+            const icon = weatherImg(weatherData.observation, isNight);
             seticonName(icon);
 
             // Extract averages from the forecast data
@@ -31,7 +32,7 @@ export default function WeatherServerComponent() {
             setFirstDayAverage(firstDay);
             setSecondDayAverage(secondDay);
         }
-    }, [weatherData]);
+    }, [weatherData, isNight]);
 
     useEffect(() => {
         function getDayName(dateString) {
@@ -49,6 +50,17 @@ export default function WeatherServerComponent() {
             setSecondDayName(getDayName(secondDayAverage.date));
         }
     }, [firstDayAverage, secondDayAverage]);
+
+    useEffect(() => {
+        const today = new Date();
+        const sunrise = new Date(today);
+        sunrise.setHours(7, 0, 0, 0);
+        const sunset = new Date(today);
+        sunset.setHours(18, 0, 0, 0);
+
+        const isNightTime = today < sunrise || today > sunset;
+        setIsNight(isNightTime); // Update the isNight state
+    }, []);
 
     if (isLoading) {
         return <LoadingSpinner />;
@@ -140,7 +152,7 @@ export default function WeatherServerComponent() {
                             {weatherData.observation.temperatureOBSERVATION}°C
                         </div>
                         <div>
-                            {weatherData.observation.humidityOBSERVATION}%
+                            {weatherData.observation.humidityOBSERVATION} %
                         </div>
                         <div>
                             {weatherData.observation.windDirectionOBSERVATION}°
@@ -150,7 +162,7 @@ export default function WeatherServerComponent() {
                                 weatherData.observation
                                     .tenMinPrecipitationOBSERVATION * 6
                             ).toFixed(0)}
-                            mm
+                            &nbsp;mm
                         </div>
                         <div>
                             {weatherData.observation.CloudCoverageOBSERVATION}/8
@@ -170,14 +182,16 @@ export default function WeatherServerComponent() {
                         <div>
                             {weatherData.observation.dewPointOBSERVATION}°C
                         </div>
-                        <div>{weatherData.observation.WindOBSERVATION}m/s</div>
+                        <div>{weatherData.observation.WindOBSERVATION} m/s</div>
                         <div>
-                            {weatherData.observation.WindGustOBSERVATION}m/s
+                            {weatherData.observation.WindGustOBSERVATION} m/s
                         </div>
                         <div>
-                            {weatherData.observation.visibilityOBSERVATION} KM
+                            {weatherData.observation.visibilityOBSERVATION} km
                         </div>
-                        <div>{weatherData.observation.p_seaOBSERVATION}hPa</div>
+                        <div>
+                            {weatherData.observation.p_seaOBSERVATION} hPa
+                        </div>
                     </div>
                 </div>
             </div>
