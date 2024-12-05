@@ -19,8 +19,8 @@ export default async function handler(req, res) {
                 return false; // Skip blobs without names
             }
 
-            const match = blob.name.match(
-                /radar-image-(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}\.\d{3}Z)-/
+            const match = blob.pathname.match(
+                /radar-image-(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}\.\d{3}Z)\.png/
             );
 
             if (!match) return false; // Skip if the naming format doesn't match
@@ -28,6 +28,9 @@ export default async function handler(req, res) {
             const blobTimestamp = new Date(
                 match[1].replace(/-/g, ':').replace(/T/, ' ')
             ).getTime();
+            console.log(
+                `Blob: ${blob.name}, Timestamp: ${blobTimestamp}, Current Time: ${currentTime}`
+            );
             return blobTimestamp < threeHoursAgo;
         });
 
