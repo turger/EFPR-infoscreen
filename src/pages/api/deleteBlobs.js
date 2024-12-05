@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
         // Filter blobs based on the timestamp in their names
         const blobsToDelete = blobs.filter((blob) => {
-            if (!blob.name) {
+            if (!blob.pathname) {
                 console.warn('Blob has no name:', blob); // Log blobs without names
                 return false; // Skip blobs without names
             }
@@ -26,10 +26,13 @@ export default async function handler(req, res) {
             if (!match) return false; // Skip if the naming format doesn't match
 
             const blobTimestamp = new Date(
-                match[1].replace(/-/g, ':').replace(/T/, ' ')
+                match[1].replace(
+                    /T(\d{2})-(\d{2})-(\d{2}\.\d{3}Z)/,
+                    'T$1:$2:$3'
+                )
             ).getTime();
             console.log(
-                `Blob: ${blob.name}, Timestamp: ${blobTimestamp}, Current Time: ${currentTime}`
+                `Blob: ${blob.pathname}, Timestamp: ${blobTimestamp}, Current Time: ${currentTime}`
             );
             return blobTimestamp < threeHoursAgo;
         });
