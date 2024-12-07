@@ -10,6 +10,7 @@ If you have questions about this project, please contact us at olli.salo@myy.haa
   - [Serica](https://github.com/sericakitty)
   - [Edoardo](https://github.com/edoardovac/)
   - [Miikka](https://github.com/MiikkaSa)
+  - [Arttu](https://github.com/ArttuuS)
 
 
 
