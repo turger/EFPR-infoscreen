@@ -11,6 +11,7 @@ If you have questions about this project, please contact us at olli.salo@myy.haa
   - [Edoardo](https://github.com/edoardovac/)
   - [Miikka](https://github.com/MiikkaSa)
   - [Arttu](https://github.com/ArttuuS)
+  - [Suvi](https://github.com/SuviAnnina)
 
 
 
