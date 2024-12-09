@@ -141,12 +141,12 @@ export default function NotamClientComponent() {
             {/* Footer */}
             <div className="flex justify-between items-end text-xs">
                 {/* Bottom left: Last updated */}
-                <p className="text-gray-400">
+                <p className="text-white">
                     Last updated: {timeSinceLastUpdate}
                 </p>
 
                 {/* Bottom right: CC BY 4.0 */}
-                <p className="text-gray-400">
+                <p className="text-white">
                     NOTAM Data from:{' '}
                     <a
                         href="https://lentopaikat.fi/notam/notam.php?a=EFPR"

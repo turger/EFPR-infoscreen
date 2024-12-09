@@ -4,10 +4,15 @@ import { useState } from 'react';
 import styles from './runwayTemp.module.css';
 import WindAnimation from './WindAnimation';
 
+function formatWindDirection(degrees) {
+    const rounded = Math.round(degrees / 10) * 10;
+    return String(rounded).padStart(3, '0');
+}
+
 export default function RunwayClientComponent({
     data,
     windDirection,
-    windGust,
+    wind,
     stationLastUpdated,
 }) {
     const [visibleTooltip, setVisibleTooltip] = useState(null);
@@ -161,12 +166,14 @@ export default function RunwayClientComponent({
                 <div className={styles.windIndicator}>
                     <WindAnimation
                         windDirection={Number(windDirection) + 90}
-                        windGust={windGust}
+                        windGust={wind}
                     />
                     <div className={styles.windSpeed}>
-                        <span>{windGust} m/s</span>
+                        <span>{wind} m/s</span>
                         <br />
-                        <span>{windDirection}°</span>
+                        <span>
+                            {formatWindDirection(Number(windDirection))}°
+                        </span>
                     </div>
                 </div>
                 <div className={styles.footer}>

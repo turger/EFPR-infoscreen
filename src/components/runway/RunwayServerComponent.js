@@ -26,7 +26,7 @@ export default function RunwayServerComponent() {
         return <ErrorComponent message="Failed to load data" />;
 
     const windDirection = weatherData.observation.windDirectionOBSERVATION;
-    const windGust = weatherData.observation.WindGustOBSERVATION;
+    const wind = weatherData.observation.WindOBSERVATION;
 
     const stationsData = Object.keys(stationData.stations).map((stationId) => {
         const station = stationData.stations[stationId][0];
@@ -43,7 +43,7 @@ export default function RunwayServerComponent() {
     return (
         <RunwayClientComponent
             windDirection={windDirection}
-            windGust={windGust}
+            wind={wind}
             data={stationsData}
             stationLastUpdated={stationLastUpdated}
         />
