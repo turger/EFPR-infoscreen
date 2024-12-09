@@ -107,9 +107,9 @@ export default function AdsbServerComponent() {
 
             {/* Footer */}
             <div className="flex justify-between items-end text-xs">
-                <p className="text-gray-400">Last updated: {adsbTime}</p>
+                <p className="text-white">Last updated: {adsbTime}</p>
 
-                <p className="text-gray-400">
+                <p className="text-white">
                     ADS-B Data from:{' '}
                     <a href="https://www.xamk.fi/" className="text-blue-400">
                         XAMK

@@ -462,12 +462,12 @@ export default function MetarServerComponent() {
             {/* Footer */}
             <div className="flex justify-between items-end text-xs">
                 {/* Bottom left */}
-                <p className="text-gray-400">
+                <p className="text-white">
                     Not suitable for official flight preparation
                 </p>
 
                 {/* Bottom right */}
-                <p className="text-gray-400">
+                <p className="text-white">
                     Weather data from:{' '}
                     <a
                         href="https://en.ilmatieteenlaitos.fi/open-data"

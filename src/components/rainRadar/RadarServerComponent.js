@@ -90,8 +90,8 @@ export default function RadarServerComponent() {
             <RadarClientComponent data={imagePaths} />
 
             <div className="flex justify-between items-end text-xs">
-                <p className="text-gray-400">Rain Radar</p>
-                <p className="text-gray-400">
+                <p className="text-white">Rain Radar</p>
+                <p className="text-white">
                     Rain radar Images from:{' '}
                     <a
                         href="https://en.ilmatieteenlaitos.fi/open-data"
