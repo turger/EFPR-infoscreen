@@ -1,3 +1,5 @@
+import {DOMParser} from 'xmldom';
+
 export default async function observation() {
     const currentTime = new Date(); // Alustetaan nykyinen aika Date-objektina
     const oneHourAgo = new Date(currentTime.getTime() - 1 * 60 * 60 * 1000); // Tallennetaan aikaleima 1h sitten

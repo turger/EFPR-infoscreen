@@ -1,6 +1,6 @@
 import sharp from 'sharp';
 import path from 'path';
-import { promises as fsPromises } from 'fs';
+import {promises as fsPromises} from 'fs';
 
 const storageDir = path.join(process.cwd(), 'storage', 'radarImages');
 
@@ -47,12 +47,12 @@ export const fetchAndSaveImage = async (url, timestamp) => {
 
 //Image processing logic
 const processImage = async (buffer) => {
-    const { data, info } = await sharp(buffer)
+    const {data, info} = await sharp(buffer)
         .ensureAlpha()
         .raw()
-        .toBuffer({ resolveWithObject: true });
+        .toBuffer({resolveWithObject: true});
 
-    const { width, height, channels } = info;
+    const {width, height, channels} = info;
     const outputData = Buffer.alloc(data.length);
 
     for (let i = 0; i < data.length; i += channels) {
@@ -75,7 +75,5 @@ const processImage = async (buffer) => {
         }
     }
 
-    return sharp(outputData, { raw: { width, height, channels } })
-        .png()
-        .toBuffer();
+    return sharp(outputData, {raw: {width, height, channels}}).png().toBuffer();
 };

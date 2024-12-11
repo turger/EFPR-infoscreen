@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import dynamic from 'next/dynamic';
 import useSWR from 'swr';
-import { fetcher } from '@/lib/fetcher';
+import {fetcher} from '@/lib/fetcher';
 import LoadingSpinner from '../LoadingSpinner';
 import ErrorComponent from '../ErrorComponent';
-import { useData } from '@/lib/DataContext';
+import {useData} from '@/lib/DataContext';
 
 /* const AdsbClientComponent = dynamic(() => import('./AdsbClientComponent'), {
     ssr: false,
@@ -19,13 +19,13 @@ const MapComponent = dynamic(
 
 export default function AdsbServerComponent() {
     /* ADS-B data is fetched in lib/DataContext.js */
-    const { adsbData, adsbError } = useData();
+    const {adsbData, adsbError} = useData();
     /*     const { data: adsbData, error: adsbError } = useSWR('/api/adsb', fetcher, {
             refreshInterval: 4000, // 4 seconds
             dedupingInterval: 4000, // Prevent SWR from sending multiple requests at the same time
         }); */
 
-    const { data: airspacesData, error: airspacesError } = useSWR(
+    const {data: airspacesData, error: airspacesError} = useSWR(
         '/api/airspaces',
         fetcher,
         {

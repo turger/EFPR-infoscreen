@@ -1,6 +1,7 @@
-import { signIn } from 'next-auth/react';
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+/* prettier-ignore */
+import {signIn} from 'next-auth/react';
+import {useState} from 'react';
+import {useRouter} from 'next/router';
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
@@ -64,7 +65,7 @@ export default function LoginPage() {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        style={{ backgroundColor: '#fac807', color: '#000000' }}
+                        style={{backgroundColor: '#fac807', color: '#000000'}}
                         className="w-full py-2 px-4 hover:bg-indigo-700 rounded-md font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                         Login

@@ -1,3 +1,5 @@
+import {DOMParser} from 'xmldom';
+
 export const fetcherXML = async (urls) => {
     try {
         const responses = await Promise.all(
@@ -28,7 +30,6 @@ export const fetcherXML = async (urls) => {
 
         const parser = new DOMParser();
         return {
-            windXmlDoc: parser.parseFromString(responses[0], 'text/xml'),
             weatherXmlDoc: parser.parseFromString(responses[1], 'text/xml'),
         };
     } catch (error) {

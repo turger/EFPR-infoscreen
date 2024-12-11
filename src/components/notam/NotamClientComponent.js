@@ -1,7 +1,7 @@
 // src/components/notam/NotamClientComponent.js
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 export default function NotamClientComponent() {
     const [notam, setNotam] = useState(null);

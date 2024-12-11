@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import dynamic from 'next/dynamic';
 import LoadingSpinner from '../LoadingSpinner';
 import ErrorComponent from '../ErrorComponent';
-import { useData } from '@/lib/DataContext';
+import {useData} from '@/lib/DataContext';
 
 const MapComponent = dynamic(
     () => import('../reactLeafletMap/ReactLeafletMap'),
@@ -13,7 +13,7 @@ const MapComponent = dynamic(
 );
 
 export default function DroneServerComponent() {
-    const { adsbData, adsbError } = useData();
+    const {adsbData, adsbError} = useData();
 
     const [drones, setDrones] = useState([]);
     const [adsbTime, setAdsbTime] = useState('--:--:--');

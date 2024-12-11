@@ -1,16 +1,15 @@
 // components/notam/WeatherServerComponent.js
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import styles from './cloud.module.css';
 import Image from 'next/image';
-import { weatherImg } from '@/pages/api/weatherIcon';
+import {weatherImg} from '@/pages/api/weatherIcon';
 import LoadingSpinner from '../LoadingSpinner';
-import WeatherIcon from '@/pages/api/weatherIcon';
-import { extractFirstAndSecondAverage } from '@/lib/fetchForecast';
+import {extractFirstAndSecondAverage} from '@/lib/fetchForecast';
 
 import useWeatherData from '@/lib/weatherData';
 
 export default function WeatherServerComponent() {
-    const { weatherData, isLoading, isError } = useWeatherData();
+    const {weatherData, isLoading, isError} = useWeatherData();
 
     const [iconName, seticonName] = useState('default');
     const [firstDayAverage, setFirstDayAverage] = useState(null);
@@ -26,7 +25,7 @@ export default function WeatherServerComponent() {
             seticonName(icon);
 
             // Extract averages from the forecast data
-            const { firstDay, secondDay } = extractFirstAndSecondAverage(
+            const {firstDay, secondDay} = extractFirstAndSecondAverage(
                 weatherData.forecast
             );
             setFirstDayAverage(firstDay);
@@ -38,7 +37,7 @@ export default function WeatherServerComponent() {
         function getDayName(dateString) {
             if (!dateString) return 'Invalid Date';
             const dateObject = new Date(dateString);
-            const options = { weekday: 'long' };
+            const options = {weekday: 'long'};
             return new Intl.DateTimeFormat('en-US', options).format(dateObject);
         }
 
@@ -72,7 +71,6 @@ export default function WeatherServerComponent() {
 
     return (
         <div className={styles.box}>
-            <WeatherIcon data={weatherData} />
             {/* <div>{weatherData.observation.suomiAika}</div> */}
             <div className={styles.weatherInfo}>
                 <div className={styles.LocationAndTemp}>

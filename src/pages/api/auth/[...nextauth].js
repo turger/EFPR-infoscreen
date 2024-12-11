@@ -11,7 +11,7 @@ export default NextAuth({
                     type: 'text',
                     placeholder: 'Enter username',
                 },
-                password: { label: 'Password', type: 'password' },
+                password: {label: 'Password', type: 'password'},
             },
             authorize(credentials) {
                 const isAuthorized =
@@ -19,7 +19,7 @@ export default NextAuth({
                     credentials.password === process.env.AUTH_PASSWORD;
 
                 if (isAuthorized) {
-                    return { id: 1, name: 'Authorized User' };
+                    return {id: 1, name: 'Authorized User'};
                 } else {
                     return null;
                 }
@@ -30,11 +30,11 @@ export default NextAuth({
         signIn: '/login',
     },
     callbacks: {
-        async session({ session, token }) {
+        async session({session, token}) {
             session.user = token.user;
             return session;
         },
-        async jwt({ token, user }) {
+        async jwt({token, user}) {
             if (user) {
                 token.user = user;
             }

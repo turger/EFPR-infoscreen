@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import {useState} from 'react';
 import styles from './runwayTemp.module.css';
 import WindAnimation from './WindAnimation';
 
@@ -29,11 +29,11 @@ export default function RunwayClientComponent({
     const getColorAndExplanationByCondition = (condition) => {
         switch (condition) {
             case 1:
-                return { color: 'Green', explanation: 'Dry' };
+                return {color: 'Green', explanation: 'Dry'};
             case 13:
-                return { color: 'blue', explanation: 'Not dry' };
+                return {color: 'blue', explanation: 'Not dry'};
             default:
-                return { color: 'black', explanation: 'N/A' };
+                return {color: 'black', explanation: 'N/A'};
         }
     };
 
@@ -61,11 +61,11 @@ export default function RunwayClientComponent({
                                 key={siteId}
                                 className={styles.temperatureValue}
                             >
-                                <span style={{ fontWeight: 'bold' }}>
+                                <span style={{fontWeight: 'bold'}}>
                                     {station.name}
                                 </span>
                                 <span
-                                    style={{ fontSize: 14, fontWeight: 'bold' }}
+                                    style={{fontSize: 14, fontWeight: 'bold'}}
                                 >
                                     {temperature}
                                 </span>

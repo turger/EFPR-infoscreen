@@ -6,7 +6,7 @@ export const sendTimestampsToBlobAPI = async (newTimestamps) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ timestamps: newTimestamps }),
+            body: JSON.stringify({timestamps: newTimestamps}),
         });
 
         if (!response.ok) {

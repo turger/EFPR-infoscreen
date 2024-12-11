@@ -1,4 +1,4 @@
-import { fetchAndSaveImage } from './saveLocal';
+import {fetchAndSaveImage} from './saveLocal';
 
 // Function to introduce a delay
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

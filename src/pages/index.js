@@ -13,7 +13,7 @@ import WeatherServerComponent from '@/components/weather/WeatherServerComponent'
 
 import InfoClientComponent from '@/components/Info/InfoClientComponent';
 import DroneServerComponent from '@/components/drone/DroneServerComponent';
-import { DataProvider } from '@/lib/DataContext';
+import {DataProvider} from '@/lib/DataContext';
 
 export default function Home() {
     return (
@@ -42,13 +42,11 @@ export default function Home() {
 
                             <div className="bg-[#6c7460] rounded-lg shadow-lg p-0 h-[45.5%]">
                                 <RunwayServerComponent />
-                                {/*Runway here */}
                             </div>
 
                             {/* Bottom Component */}
                             <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 h-[49.5%]">
                                 <WeatherServerComponent />
-                                {/* Weather here */}
                             </div>
                         </div>
 
@@ -57,13 +55,11 @@ export default function Home() {
                             {/* Top Component */}
                             <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 h-1/2">
                                 <RadarServerComponent />
-                                {/*Radar here */}
                             </div>
 
                             {/* Bottom Component */}
                             <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 h-1/2">
                                 <AdsbServerComponent />
-                                {/* ads-B here */}
                             </div>
                         </div>
                     </div>
@@ -75,17 +71,14 @@ export default function Home() {
                         {/* Bottom: One component */}
                         <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 h-[24%] w-full">
                             {<MetarServerComponent />}
-                            {/* Airport Notes here */}
                         </div>
                         <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 h-[38%] w-full">
                             <NotamClientComponent />
-                            {/* Airport Notes here */}
                         </div>
 
                         {/* Bottom: Two components side by side, one small component under the right side component*/}
                         <div className="h-[38%] flex space-x-2 w-full">
                             <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 w-1/2 h-full">
-                                {/* Drone map here */}
                                 <DroneServerComponent />
                             </div>
                             {/* Bottom Right two components vertically stacked */}

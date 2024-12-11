@@ -1,41 +1,40 @@
 name: Sync with Personal Fork
 
 on:
-  push:
-    branches:
-      - main
-      - dev
+    push:
+        branches:
+            - main
+            - dev
 
 jobs:
-  sync:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
+    sync:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v3
 
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+            - name: Configure Git
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Pull from upstream
-        run: |
-          git remote add upstream https://github.com/EHA-Display-Terminal-Team/eha-infoscreen.git
-          git fetch upstream
-          git checkout ${{ github.ref_name }}
-          git merge upstream/${{ github.ref_name }} --no-edit
+            - name: Pull from upstream
+              run: |
+                  git remote add upstream https://github.com/EHA-Display-Terminal-Team/eha-infoscreen.git
+                  git fetch upstream
+                  git checkout ${{ github.ref_name }}
+                  git merge upstream/${{ github.ref_name }} --no-edit
 
-      - name: Remove Workflow Files
-        run: |
-          # Create a temporary branch for pushing without workflows
-          git checkout -b temp-branch-${{ github.ref_name }}
-          git rm -r --cached .github/workflows/  # Remove workflows from the index only
-          git commit -m "Remove workflows for fork push (${{ github.ref_name }})" || echo "No changes to commit"
+            - name: Remove Workflow Files
+              run: |
+                  # Create a temporary branch for pushing without workflows
+                  git checkout -b temp-branch-${{ github.ref_name }}
+                  git rm -r --cached .github/workflows/  # Remove workflows from the index only
+                  git commit -m "Remove workflows for fork push (${{ github.ref_name }})" || echo "No changes to commit"
 
-      - name: Push to Personal Fork (filtered)
-        env:
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        run: |
-          git remote add fork https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
-          git push fork temp-branch-${{ github.ref_name }}:${{ github.ref_name }} --force
-
+            - name: Push to Personal Fork (filtered)
+              env:
+                  PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+              run: |
+                  git remote add fork https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sericakitty/eha-infoscreen.git
+                  git push fork temp-branch-${{ github.ref_name }}:${{ github.ref_name }} --force

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 
-export default function WeatherIcon({ data }) {
+export default function WeatherIcon({data}) {
     const [weatherData, setWeatherData] = useState(null);
 
     useEffect(() => {

@@ -1,4 +1,4 @@
-import { saveImageToBlob } from './saveBlob';
+import {saveImageToBlob} from './saveBlob';
 
 // Function to introduce a delay
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
