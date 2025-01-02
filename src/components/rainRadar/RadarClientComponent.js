@@ -187,7 +187,7 @@ export default function RadarClientComponent({data}) {
         <MapContainer
             center={initialLocation}
             zoom={initialZoom}
-            style={{height: '45vh', width: '100%'}}
+            style={{height: '42vh', width: '100%'}}
             zoomSnap={0.1}
         >
             <TileLayer

@@ -2,16 +2,13 @@
 'use client';
 
 import {useEffect, useRef, useState} from 'react';
+import styles from './notam.module.css';
 
 export default function NotamClientComponent() {
     const [notam, setNotam] = useState(null);
     const [error, setError] = useState(null);
     const [lastUpdated, setLastUpdated] = useState(null);
     const [timeSinceLastUpdate, setTimeSinceLastUpdate] = useState('');
-    const scrollContainerRef = useRef(null);
-    const scrollingIntervalRef = useRef(null);
-    const pauseTime = 2000;
-    let paused = false;
 
     // Function to retrieve NOTAM data
     async function fetchNotam() {
@@ -73,56 +70,6 @@ export default function NotamClientComponent() {
         return () => clearInterval(intervalId);
     }, [lastUpdated]);
 
-    // autoscroll feature if the notams overflow the div
-    useEffect(() => {
-        if (scrollContainerRef.current) {
-            const scrollElement = scrollContainerRef.current;
-
-            // pixel scrolled
-            const scrollStep = 3;
-            // ms between each scroll
-            const intervalTime = 300;
-            let direction = 'down';
-
-            // clear previous intervals (if any)
-            if (scrollingIntervalRef.current) {
-                clearInterval(scrollingIntervalRef.current);
-            }
-
-            scrollingIntervalRef.current = setInterval(() => {
-                if (direction === 'down') {
-                    // scroll down
-                    if (
-                        scrollElement.scrollTop + scrollElement.clientHeight >=
-                        scrollElement.scrollHeight
-                    ) {
-                        // pause to let user read last lines and flag change to signal scroll direction
-                        paused = true;
-                        setTimeout(() => {
-                            paused = false;
-                            direction = 'up';
-                        }, pauseTime);
-                    } else {
-                        scrollElement.scrollTop += scrollStep;
-                    }
-                } else if (direction === 'up') {
-                    // scroll up quickly
-                    // reset to top immediatly
-                    scrollElement.scrollTop = 0;
-                    // flag change to signal scroll direction
-                    direction = 'down';
-                }
-            }, intervalTime);
-        }
-
-        return () => {
-            // Clear interval on component unmount
-            if (scrollingIntervalRef.current) {
-                clearInterval(scrollingIntervalRef.current);
-            }
-        };
-    }, [notam]);
-
     if (error) {
         return <div>{error}</div>;
     }
@@ -132,21 +79,19 @@ export default function NotamClientComponent() {
     }
 
     return (
-        <div className="flex flex-col h-full w-full">
+        <div className={styles.notamContainer}>
             {/* Main content area */}
-            <div className="flex-grow overflow-auto" ref={scrollContainerRef}>
-                <pre className="text-sm">{notam.content}</pre>
-            </div>
+            <div className="flex-grow overflow-auto">{notam.content}</div>
 
             {/* Footer */}
-            <div className="flex justify-between items-end text-xs">
+            <div className="flex flex-col justify-between items-start">
                 {/* Bottom left: Last updated */}
-                <p className="text-white">
+                <p className={styles.notamFooter}>
                     Last updated: {timeSinceLastUpdate}
                 </p>
 
                 {/* Bottom right: CC BY 4.0 */}
-                <p className="text-white">
+                <p className={styles.notamFooter}>
                     NOTAM Data from:{' '}
                     <a
                         href="https://lentopaikat.fi/notam/notam.php?a=EFPR"

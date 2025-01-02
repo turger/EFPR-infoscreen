@@ -3,6 +3,7 @@
 
 import {useEffect, useState} from 'react';
 import {getInfoNotes} from '@/services/firebaseDB';
+import styles from './info.module.css';
 
 export default function InfoClientComponent() {
     const [allNotes, setAllNotes] = useState([]);
@@ -20,14 +21,11 @@ export default function InfoClientComponent() {
     }
 
     return (
-        <div className="p-1 relative h-full">
+        <div className={styles.infoNoteContainer}>
             <ul className="overflow-auto">
                 {Array.isArray(allNotes) &&
                     allNotes.map((note) => (
-                        <li
-                            key={note}
-                            className="py-1 text-sm flex items-center"
-                        >
+                        <li key={note} className={styles.infoNoteItem}>
                             <span className="flex-1">{note}</span>
                         </li>
                     ))}

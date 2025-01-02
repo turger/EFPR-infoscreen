@@ -65,7 +65,7 @@ export default function RunwayClientComponent({
                                     {station.name}
                                 </span>
                                 <span
-                                    style={{fontSize: 14, fontWeight: 'bold'}}
+                                    className={styles.temperatureValueCelsius}
                                 >
                                     {temperature}
                                 </span>
@@ -177,29 +177,13 @@ export default function RunwayClientComponent({
                     </div>
                 </div>
                 <div className={styles.footer}>
-                    <p
-                        style={{
-                            fontSize: 12,
-                            textAlign: 'center',
-                            color: 'black',
-                            paddingTop: 6,
-                        }}
-                    >
+                    <p>
                         Last updated:{' '}
                         {stationLastUpdated
                             ? stationLastUpdated.toLocaleTimeString()
                             : 'N/A'}
                     </p>
-                    <p
-                        style={{
-                            fontSize: 12,
-                            textAlign: 'center',
-                            color: 'black',
-                            paddingTop: 6,
-                        }}
-                    >
-                        Data provided by: XAMK
-                    </p>
+                    <p>Data provided by: XAMK</p>
                 </div>
             </div>
         </div>

@@ -122,7 +122,7 @@ export default function ReactLeafletMap({
     initialZoom,
     flights = [],
     airspaces = [],
-    mapHeight = '45vh',
+    mapHeight = '40vh',
     isDarkMode: initialDarkMode = true,
 }) {
     const [iconSize, setIconSize] = useState(6);

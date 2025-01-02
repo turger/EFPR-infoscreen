@@ -136,7 +136,7 @@ export default function DroneServerComponent() {
             />
 
             {/* Footer */}
-            <div className="flex justify-between items-end text-xs">
+            <div className="flex flex-col justify-between items-start text-xs">
                 <p className="text-white">
                     {adsbTime === '--:--:--'
                         ? 'No drones'

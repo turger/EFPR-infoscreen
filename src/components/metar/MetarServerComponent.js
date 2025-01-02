@@ -3,6 +3,7 @@ import isEqual from 'lodash.isequal';
 import LoadingSpinner from '../LoadingSpinner';
 import ErrorComponent from '../ErrorComponent';
 import {getThreeLatestMetarDatas} from './utils';
+import styles from './metar.module.css';
 
 function compareData(currentData, newData) {
     return isEqual(currentData, newData);
@@ -50,23 +51,23 @@ export default function MetarServerComponent() {
     const threeLatestMetarDatas = getThreeLatestMetarDatas(data);
 
     return (
-        <div className="flex flex-col h-full w-full">
+        <div className={styles.metarContainer}>
             {/* Main content area */}
-            <div className="flex-grow overflow-auto">
+            <div className={styles.metarItems}>
                 {threeLatestMetarDatas.map((metarReport) => (
                     <p key={metarReport}>{metarReport}</p>
                 ))}
             </div>
 
             {/* Footer */}
-            <div className="flex justify-between items-end text-xs">
+            <div className="flex flex-col justify-between items-start">
                 {/* Bottom left */}
-                <p className="text-white">
+                <p className={styles.metarFooter}>
                     Not suitable for official flight preparation
                 </p>
 
                 {/* Bottom right */}
-                <p className="text-white">
+                <p className={styles.metarFooter}>
                     Weather data from:{' '}
                     <a
                         href="https://en.ilmatieteenlaitos.fi/open-data"

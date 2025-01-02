@@ -5,6 +5,7 @@ import {fetcher} from '@/lib/fetcher';
 import LoadingSpinner from '../LoadingSpinner';
 import ErrorComponent from '../ErrorComponent';
 import {useData} from '@/lib/DataContext';
+import styles from './adsb.module.css';
 
 /* const AdsbClientComponent = dynamic(() => import('./AdsbClientComponent'), {
     ssr: false,
@@ -87,7 +88,7 @@ export default function AdsbServerComponent() {
         return <LoadingSpinner />;
     }
     return (
-        <>
+        <div className={styles.adsbContainer}>
             <div>
                 {/* <p className="text-white text-sm">
                     ADS-B - Flights And Airspaces - {adsbTime}
@@ -106,10 +107,10 @@ export default function AdsbServerComponent() {
             </div>
 
             {/* Footer */}
-            <div className="flex justify-between items-end text-xs">
-                <p className="text-white">Last updated: {adsbTime}</p>
+            <div className="flex flex-col justify-between items-start">
+                <p className={styles.adsbFooter}>Last updated: {adsbTime}</p>
 
-                <p className="text-white">
+                <p className={styles.adsbFooter}>
                     ADS-B Data from:{' '}
                     <a href="https://www.xamk.fi/" className="text-blue-400">
                         XAMK
@@ -124,6 +125,6 @@ export default function AdsbServerComponent() {
                     </a>
                 </p>
             </div>
-        </>
+        </div>
     );
 }

@@ -6,6 +6,7 @@ import {
     generateRadarFrameTimestamps,
     requestRainRadar,
 } from '@/lib/fmiQueryData';
+import styles from './radar.module.css';
 
 const RadarClientComponent = dynamic(() => import('./RadarClientComponent'), {
     ssr: false,
@@ -43,12 +44,11 @@ export default function RadarServerComponent() {
 
     // Pass imagePaths to the RadarClientComponent
     return (
-        <div>
+        <div className={styles.radarContainer}>
             <RadarClientComponent data={imagePaths} />
 
-            <div className="flex justify-between items-end text-xs">
-                <p className="text-white">Rain Radar</p>
-                <p className="text-white">
+            <div className="flex justify-between items-end">
+                <p className={styles.radarFooter}>
                     Rain radar Images from:{' '}
                     <a
                         href="https://en.ilmatieteenlaitos.fi/open-data"
