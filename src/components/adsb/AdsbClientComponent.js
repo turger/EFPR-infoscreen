@@ -122,17 +122,17 @@ export default function AdsbClientComponent({flights, airspaces}) {
         setIsDarkMode((prevMode) => !prevMode);
     };
 
-    // useEffect(() => {
-    //     const handleResize = () => {
-    //         // Adjusts iconSize based on window width
-    //         setIconSize(window.innerWidth / 130);
-    //     };
-    //     handleResize();
-    //     window.addEventListener('resize', handleResize);
-    //     return () => {
-    //         window.removeEventListener('resize', handleResize);
-    //     };
-    // }, []);
+    useEffect(() => {
+        const handleResize = () => {
+            // Adjusts iconSize based on window width
+            setIconSize(window.innerWidth / 130);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const getColorByAirspaceClass = (airspaceClass) => {
         switch (airspaceClass) {

@@ -47,7 +47,7 @@ NEXT_PUBLIC_FIREBASE_APPID=
 
 ## Creating a new Firebase project
 
-Create a new Firebase project from Firebase console. You should have Firebase CLI version 12.1.0 or later.
+Create a new Firebase project from Firebase console. You should have Firebase CLI version 12.1.0 or later. You might have to install firebase-tools globally `npm install -g firebase-tools`.
 
 Only at first time:
 `firebase login`
