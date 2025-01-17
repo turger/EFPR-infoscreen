@@ -1,0 +1,8 @@
+{
+    "rules": {
+        "infonotes": {
+            ".read": true,
+            ".write": false
+        }
+    }
+}

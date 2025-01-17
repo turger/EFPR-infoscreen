@@ -1,9 +1,9 @@
 // components/camera/CameraServerComponent.js
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import useSWR from 'swr';
 import LoadingSpinner from '../LoadingSpinner'; // Import the LoadingSpinner component
 import ErrorComponent from '../ErrorComponent'; // Import the ErrorComponent
-import { fetcher } from '../../lib/fetcher'; // Import the fetcher function
+import {fetcher} from '../../lib/fetcher'; // Import the fetcher function
 import dynamic from 'next/dynamic'; // This is used to dynamically import the client-side component, meaning it will only be loaded on the client-side
 import isEqual from 'lodash.isequal'; // Import the isEqual function, can be used to compare objects deeply
 
@@ -27,7 +27,7 @@ export default function CameraServerComponent() {
     const previousDataRef = useRef(null); // Store the previous data
     const isFirstLoadRef = useRef(true); // Check if it's the first load
 
-    const { data, error, isValidating } = useSWR(API_URL, fetcher, {
+    const {data, error, isValidating} = useSWR(API_URL, fetcher, {
         refreshInterval: 60000, // Refresh data every 60 seconds
         revalidateIfStale: false, // Disable revalidation if data is stale
         revalidateOnFocus: false, // Disable revalidation on focus

@@ -10,10 +10,10 @@ import {
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import styles from '../reactLeafletMap/mapDataStyles.module.css';
 
-function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
+function ResetButton({initialLocation, initialZoom, isDarkMode}) {
     const map = useMap();
     const resetMap = () => {
         map.setView(initialLocation, initialZoom);
@@ -40,13 +40,13 @@ function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
                         : '/svgs/resetmap_black.svg'
                 }
                 alt="Reset Map"
-                style={{ width: '25px', height: '25px' }}
+                style={{width: '25px', height: '25px'}}
             />
         </button>
     );
 }
 
-function ToggleButton({ toggleMapStyle, isDarkMode }) {
+function ToggleButton({toggleMapStyle, isDarkMode}) {
     return (
         <button
             onClick={toggleMapStyle}
@@ -69,7 +69,7 @@ function ToggleButton({ toggleMapStyle, isDarkMode }) {
                         : '/svgs/mode_black.svg'
                 }
                 alt="Change Mode"
-                style={{ width: '25px', height: '25px' }}
+                style={{width: '25px', height: '25px'}}
             />
         </button>
     );
@@ -87,7 +87,7 @@ const rotatedIcon = (iconUrl, rotation, iconSize) => {
     });
 };
 
-function ZoomHandler({ initialZoom }) {
+function ZoomHandler({initialZoom}) {
     const map = useMap();
 
     useEffect(() => {
@@ -111,7 +111,7 @@ function ZoomHandler({ initialZoom }) {
     return null;
 }
 
-export default function AdsbClientComponent({ flights, airspaces }) {
+export default function AdsbClientComponent({flights, airspaces}) {
     const aerodome_location = [60.48075888598088, 26.59665436528449];
     const initial_location = [61.1, 23.0];
     const initial_zoom = 6;
@@ -125,7 +125,11 @@ export default function AdsbClientComponent({ flights, airspaces }) {
     useEffect(() => {
         const handleResize = () => {
             // Adjusts iconSize based on window width
-            setIconSize(window.innerWidth / 130);
+            if (window.innerWidth > 1000) {
+                setIconSize(window.innerWidth / 130);
+            } else {
+                setIconSize(12);
+            }
         };
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -154,7 +158,7 @@ export default function AdsbClientComponent({ flights, airspaces }) {
             <MapContainer
                 center={initial_location}
                 zoom={initial_zoom}
-                style={{ height: '41vh', width: '100%' }}
+                style={{height: '41vh', width: '100%'}}
             >
                 <ZoomHandler initialZoom={initial_zoom} />
                 {isDarkMode ? (
@@ -237,7 +241,7 @@ export default function AdsbClientComponent({ flights, airspaces }) {
                                 opacity={1}
                                 permanent={true}
                             >
-                                <span style={{ color: 'yellow' }}>
+                                <span style={{color: 'yellow'}}>
                                     {flight.fli}
                                 </span>
                             </Tooltip>

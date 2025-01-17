@@ -1,47 +1,46 @@
 {
-  "env": {
-      "browser": true,
-      "es2021": true,
-      "node": true
-  },
-  "extends": [
-      "eslint:recommended",
-      "plugin:react/recommended",
-      "plugin:react-hooks/recommended",
-      "plugin:jsx-a11y/recommended",
-      "plugin:prettier/recommended"
-  ],
-  "parserOptions": {
-      "ecmaFeatures": {
-          "jsx": true
-      },
-      "ecmaVersion": 12,
-      "sourceType": "module"
-  },
-  "plugins": ["react", "prettier"],
-  "rules": {
-      "prettier/prettier": [
-          "error",
-          {
-              "endOfLine": "auto",
-              "semi": true,
-              "singleQuote": true,
-              "printWidth": 80,
-              "tabWidth": 4,
-              "trailingComma": "es5",
-              "arrowParens": "always",
-              "bracketSpacing": true,
-              "jsxBracketSameLine": false
-          }
-      ],
-      "react/prop-types": "off",
-      "react/react-in-jsx-scope": "off",
-      "no-console": "warn",
-      "no-unused-vars": "warn"
-  },
-  "settings": {
-      "react": {
-          "version": "detect"
-      }
-  }
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "plugin:jsx-a11y/recommended",
+        "plugin:prettier/recommended"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": ["react", "prettier"],
+    "rules": {
+        "prettier/prettier": [
+            "error",
+            {
+                "endOfLine": "auto",
+                "semi": true,
+                "singleQuote": true,
+                "printWidth": 80,
+                "tabWidth": 4,
+                "trailingComma": "es5",
+                "arrowParens": "always",
+                "jsxBracketSameLine": false
+            }
+        ],
+        "react/prop-types": "off",
+        "react/react-in-jsx-scope": "off",
+        "no-console": "warn",
+        "no-unused-vars": "warn"
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    }
 }

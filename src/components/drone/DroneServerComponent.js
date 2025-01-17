@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import dynamic from 'next/dynamic';
 import LoadingSpinner from '../LoadingSpinner';
 import ErrorComponent from '../ErrorComponent';
-import { useData } from '@/lib/DataContext';
+import {useData} from '@/lib/DataContext';
 
 const MapComponent = dynamic(
     () => import('../reactLeafletMap/ReactLeafletMap'),
@@ -13,7 +13,7 @@ const MapComponent = dynamic(
 );
 
 export default function DroneServerComponent() {
-    const { adsbData, adsbError } = useData();
+    const {adsbData, adsbError} = useData();
 
     const [drones, setDrones] = useState([]);
     const [adsbTime, setAdsbTime] = useState('--:--:--');
@@ -136,7 +136,7 @@ export default function DroneServerComponent() {
             />
 
             {/* Footer */}
-            <div className="flex justify-between items-end text-xs">
+            <div className="flex flex-col justify-between items-start text-xs">
                 <p className="text-white">
                     {adsbTime === '--:--:--'
                         ? 'No drones'

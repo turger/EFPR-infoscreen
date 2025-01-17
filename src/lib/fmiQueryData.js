@@ -45,7 +45,7 @@ export function generateRadarFrameTimestamps(
     baseDate = Date.now()
 ) {
     const uniqueTimestamps = new Set();
-    const numberSeries = Array.from({ length: framesCount }, (_, n) => n);
+    const numberSeries = Array.from({length: framesCount}, (_, n) => n);
 
     // Generate timestamps using the nthTenMinuteDivisibleTimestamp function
     numberSeries.reverse().forEach((n) => {

@@ -1,3 +1,5 @@
+import {DOMParser} from 'xmldom';
+
 export default async function fetchAndCalculateAverages() {
     const currentTime = new Date(); // Get current time
     const startTime = new Date(currentTime.getTime() + 24 * 60 * 60 * 1000);
@@ -17,7 +19,7 @@ export default async function fetchAndCalculateAverages() {
         const xmlDoc = parser.parseFromString(xml, 'text/xml');
 
         //extract timeseries data
-        const members = xmlDoc.getElementsByTagName('wfs:member');
+        const members = Array.from(xmlDoc.getElementsByTagName('wfs:member'));
 
         //object to store daily data
         const dailyData = {};
@@ -58,7 +60,7 @@ export default async function fetchAndCalculateAverages() {
             if (!parameter) continue;
 
             //loop through each point in time series and extract data
-            for (const point of points) {
+            Array.from(points).forEach((point) => {
                 const time =
                     point.getElementsByTagName('wml2:time')[0].textContent;
                 const value = parseFloat(
@@ -79,7 +81,7 @@ export default async function fetchAndCalculateAverages() {
 
                 //add the value to the corresponding parameter temperature, CloudCover, rain
                 dailyData[date][parameter].push(value);
-            }
+            });
         }
 
         //calculate averages for each parameter temperature, CloudCover, rain by date
@@ -156,23 +158,6 @@ function convertToOkta(cloudCoverage) {
         return 9; //sky obscured
     }
 }
-
-//fetch the data
-async function startDailyUpdate() {
-    const averages = await fetchAndCalculateAverages();
-    return averages;
-}
-
-// daily update
-function scheduleDailyUpdate() {
-    startDailyUpdate();
-
-    // start every 24h
-    setInterval(startDailyUpdate, 24 * 60 * 60 * 1000);
-    //setInterval(startDailyUpdate, 10 * 1000);
-}
-
-scheduleDailyUpdate();
 
 export function transformDailyAverages(dailyAverages) {
     if (!dailyAverages || dailyAverages.length === 0) {

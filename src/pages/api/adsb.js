@@ -13,7 +13,7 @@ export default async function getAdsbData(req, res) {
         const adsb_userkey = process.env.ADSB_USERKEY;
 
         if (!adsb_apikey || !adsb_userkey) {
-            return res.status(500).json({ error: 'Missing API or USER KEY' });
+            return res.status(500).json({error: 'Missing API or USER KEY'});
         }
 
         const now = Date.now();
@@ -46,6 +46,6 @@ export default async function getAdsbData(req, res) {
         res.status(200).json(data);
     } catch (error) {
         console.log('Error fetching ADS-B data:', error);
-        res.status(500).json({ error: 'Failed to fetch ADS-B data' });
+        res.status(500).json({error: 'Failed to fetch ADS-B data'});
     }
 }

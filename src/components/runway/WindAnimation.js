@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './WindAnimation.module.css';
 
-export default function WindAnimation({ windDirection, windGust }) {
+export default function WindAnimation({windDirection, windGust}) {
     const maxWindGust = 20; // Maximum expected wind gust
     const maxDuration = 4; // Slowest animation duration in seconds
     const minDuration = 1; // Fastest animation duration in seconds

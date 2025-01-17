@@ -13,12 +13,14 @@ import WeatherServerComponent from '@/components/weather/WeatherServerComponent'
 
 import InfoClientComponent from '@/components/Info/InfoClientComponent';
 import DroneServerComponent from '@/components/drone/DroneServerComponent';
-import { DataProvider } from '@/lib/DataContext';
+import {DataProvider} from '@/lib/DataContext';
+
+import styles from './index.module.css';
 
 export default function Home() {
     return (
         <DataProvider>
-            <div className="min-h-screen bg-[#292928] text-[#fac807]">
+            <div className={styles.mainContainer}>
                 <Head>
                     <title>Helsinki-East Aerodrome Info</title>
                     <meta
@@ -27,93 +29,51 @@ export default function Home() {
                     />
                 </Head>
 
-                {/* Main container with two main divs side by side */}
-                <div className="h-screen w-full flex justify-center items-center p-2 space-x-2">
-                    {/* Left Div */}
-                    <div className="w-3/5 h-full flex flex-row space-x-2">
-                        {/* Left Container: Two components stacked vertically */}
-                        <div className="flex flex-col justify-between w-2/5 h-full space-y-2">
-                            {/* Top Component */}
-                            <div className="flex items-center justify-center h-[3%] p-0">
-                                <h1 className="text-center text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-[#fac807]">
-                                    Helsinki-East Aerodrome Info
-                                </h1>
-                            </div>
-
-                            <div className="bg-[#6c7460] rounded-lg shadow-lg p-0 h-[45.5%]">
-                                <RunwayServerComponent />
-                                {/*Runway here */}
-                            </div>
-
-                            {/* Bottom Component */}
-                            <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 h-[49.5%]">
-                                <WeatherServerComponent />
-                                {/* Weather here */}
-                            </div>
-                        </div>
-
-                        {/*  Middle Container: Two components stacked vertically */}
-                        <div className="flex flex-col justify-between w-3/5 h-full space-y-2">
-                            {/* Top Component */}
-                            <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 h-1/2">
-                                <RadarServerComponent />
-                                {/*Radar here */}
-                            </div>
-
-                            {/* Bottom Component */}
-                            <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 h-1/2">
-                                <AdsbServerComponent />
-                                {/* ads-B here */}
-                            </div>
-                        </div>
+                <div className={styles.content}>
+                    <div className={styles.header}>
+                        <h1>Helsinki-East Aerodrome Info</h1>
                     </div>
-
-                    {/* Right Div */}
-                    <div className="w-2/5 h-full flex flex-col justify-between space-y-2">
-                        {/* Top: Two components stacked vertically */}
-
-                        {/* Bottom: One component */}
-                        <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 h-[24%] w-full">
-                            {<MetarServerComponent />}
-                            {/* Airport Notes here */}
-                        </div>
-                        <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 h-[38%] w-full">
-                            <NotamClientComponent />
-                            {/* Airport Notes here */}
-                        </div>
-
-                        {/* Bottom: Two components side by side, one small component under the right side component*/}
-                        <div className="h-[38%] flex space-x-2 w-full">
-                            <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 w-1/2 h-full">
-                                {/* Drone map here */}
-                                <DroneServerComponent />
+                    <div className={styles.component + ' ' + styles.runway}>
+                        <RunwayServerComponent />
+                    </div>
+                    <div className={styles.component + ' ' + styles.adsb}>
+                        <AdsbServerComponent />
+                    </div>
+                    <div className={styles.component + ' ' + styles.radar}>
+                        <RadarServerComponent />
+                    </div>
+                    <div className={styles.weather}>
+                        <WeatherServerComponent />
+                    </div>
+                    <div className={styles.component + ' ' + styles.metar}>
+                        {<MetarServerComponent />}
+                    </div>
+                    <div className={styles.component + ' ' + styles.notam}>
+                        <NotamClientComponent />
+                    </div>
+                    <div className={styles.component + ' ' + styles.drones}>
+                        <DroneServerComponent />
+                    </div>
+                    <div className={styles.component + ' ' + styles.info}>
+                        <InfoClientComponent />
+                    </div>
+                    <div className={styles.logos}>
+                        <div className="flex space-x-2 items-center justify-center">
+                            <div>
+                                <Image
+                                    src="/imgs/redstoneaero.png"
+                                    alt="Redstone Aero"
+                                    width={150}
+                                    height={30}
+                                />
                             </div>
-                            {/* Bottom Right two components vertically stacked */}
-                            <div className="w-1/2 flex flex-col space-y-2">
-                                {/* Top Component */}
-                                <div className="bg-[#6c7460] rounded-lg shadow-lg p-2 h-[90%]">
-                                    {/* <CameraServerComponent /> */}
-                                    <InfoClientComponent />
-                                </div>
-                                {/* Bottom Component */}
-                                <div className="flex space-x-2 items-center justify-center">
-                                    <div>
-                                        <Image
-                                            src="/imgs/redstoneaero.png"
-                                            alt="Redstone Aero"
-                                            width={220}
-                                            height={190}
-                                        />
-                                    </div>
-                                    <div className=" bg-white h-auto flex items-center justify-center">
-                                        <Image
-                                            src="/imgs/HH_logo_2020.png"
-                                            alt="Haaga-Helia"
-                                            width={120}
-                                            height={140}
-                                        />
-                                    </div>
-                                </div>
+                            <div className=" bg-white h-auto flex items-center justify-center">
+                                <Image
+                                    src="/imgs/HH_logo_2020.png"
+                                    alt="Haaga-Helia"
+                                    width={60}
+                                    height={30}
+                                />
                             </div>
                         </div>
                     </div>

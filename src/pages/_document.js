@@ -1,5 +1,5 @@
 // _document.js is used to augment your application's <html> and <body> tags
-import { Html, Head, Main, NextScript } from 'next/document';
+import {Html, Head, Main, NextScript} from 'next/document';
 
 export default function Document() {
     return (

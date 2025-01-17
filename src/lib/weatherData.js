@@ -31,7 +31,7 @@ const fetcher = async () => {
 };
 
 export default function useWeatherData() {
-    const { data, error } = useSWR('weatherData', fetcher, {
+    const {data, error} = useSWR('weatherData', fetcher, {
         refreshInterval: 600000, // Refresh every 10 minute
     });
 

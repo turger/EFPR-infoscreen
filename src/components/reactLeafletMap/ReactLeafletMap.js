@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     MapContainer,
     TileLayer,
@@ -28,7 +28,7 @@ const rotatedIcon = (iconUrl, rotation, iconSize) => {
 };
 
 /* Resets map to initial values */
-function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
+function ResetButton({initialLocation, initialZoom, isDarkMode}) {
     const map = useMap();
     const resetMap = () => {
         map.setView(initialLocation, initialZoom);
@@ -55,14 +55,14 @@ function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
                         : '/svgs/resetmap_black.svg'
                 }
                 alt="Reset Map"
-                style={{ width: '25px', height: '25px' }}
+                style={{width: '25px', height: '25px'}}
             />
         </button>
     );
 }
 
 /* Button to toggle between dark and light mode */
-function ToggleButton({ toggleMapStyle, isDarkMode }) {
+function ToggleButton({toggleMapStyle, isDarkMode}) {
     return (
         <button
             onClick={toggleMapStyle}
@@ -85,14 +85,14 @@ function ToggleButton({ toggleMapStyle, isDarkMode }) {
                         : '/svgs/mode_black.svg'
                 }
                 alt="Change Mode"
-                style={{ width: '25px', height: '25px' }}
+                style={{width: '25px', height: '25px'}}
             />
         </button>
     );
 }
 
 /* Handles zoom levels */
-function ZoomHandler({ initialZoom }) {
+function ZoomHandler({initialZoom}) {
     const map = useMap();
 
     useEffect(() => {
@@ -122,7 +122,7 @@ export default function ReactLeafletMap({
     initialZoom,
     flights = [],
     airspaces = [],
-    mapHeight = '45vh',
+    mapHeight = '40vh',
     isDarkMode: initialDarkMode = true,
 }) {
     const [iconSize, setIconSize] = useState(6);
@@ -136,7 +136,11 @@ export default function ReactLeafletMap({
     useEffect(() => {
         const handleResize = () => {
             // Adjusts iconSize based on window width
-            setIconSize(window.innerWidth / 130);
+            if (window.innerWidth > 1000) {
+                setIconSize(window.innerWidth / 130);
+            } else {
+                setIconSize(12);
+            }
         };
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -164,7 +168,7 @@ export default function ReactLeafletMap({
         <MapContainer
             center={initialLocation}
             zoom={initialZoom}
-            style={{ height: mapHeight, width: '100%' }}
+            style={{height: mapHeight, width: '100%'}}
         >
             <ZoomHandler initialZoom={initialZoom} />
             <TileLayer

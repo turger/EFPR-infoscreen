@@ -18,7 +18,7 @@ export default async function GET(req, res) {
         );
 
         if (!response.ok) {
-            res.status(500).json({ message: 'Failed to fetch NOTAM data' });
+            res.status(500).json({message: 'Failed to fetch NOTAM data'});
         }
 
         const htmlContent = await response.text();
@@ -33,9 +33,9 @@ export default async function GET(req, res) {
             .replace('EFPR - REDSTONE AERO\n\n', '')
             .replace('\n', '')
             .replaceAll('\n\n', '\n');
-        cachedData = { title, content };
+        cachedData = {title, content};
         lastFetchTime = Date.now();
     }
 
-    res.status(200).json({ data: cachedData });
+    res.status(200).json({data: cachedData});
 }

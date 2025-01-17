@@ -1,21 +1,3 @@
-import { useState, useEffect } from 'react';
-
-export default function WeatherIcon({ data }) {
-    const [weatherData, setWeatherData] = useState(null);
-
-    useEffect(() => {
-        if (data) {
-            setWeatherData(data); // Aseta data vain, jos sitä on olemassa
-        }
-    }, [data]); // Suorita vain, kun `data` muuttuu
-}
-
-///FOR TESTING PURPOSES :
-const mockweatherData = {
-    CloudCoverageOBSERVATION: 7, // You can change this value to test different cases (0-8)
-    temperatureOBSERVATION: -1,
-    tenMinPrecipitationOBSERVATION: 3,
-};
 export const weatherImg = (weatherData, isNight) => {
     let iconName = 'default';
 

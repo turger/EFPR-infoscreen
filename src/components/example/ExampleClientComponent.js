@@ -1,9 +1,9 @@
 // components/camera/ExampleClientComponent.js
 'use client';
 
-import React, { memo } from 'react';
+import React, {memo} from 'react';
 
-function ExampleClientComponent({ data }) {
+function ExampleClientComponent({data}) {
     if (!data) return null; // If no data is passed, render nothing
 
     return (

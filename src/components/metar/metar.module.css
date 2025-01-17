@@ -1,0 +1,33 @@
+.metarContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    font-size: 0.9rem;
+
+    @media screen and (min-width: 1400px) {
+        font-size: 1.2rem;
+    }
+
+    @media screen and (min-width: 1700px) {
+        font-size: 1.5rem;
+    }
+
+    @media screen and (min-width: 2000px) {
+        font-size: 1.9rem;
+    }
+
+    @media screen and (min-width: 3000px) {
+        font-size: 3rem;
+    }
+}
+
+.metarItems {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.metarFooter {
+    color: white;
+    font-size: 0.7em;
+}

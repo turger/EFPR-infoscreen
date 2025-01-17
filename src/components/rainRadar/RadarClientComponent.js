@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     MapContainer,
     TileLayer,
@@ -11,7 +11,7 @@ import {
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import proj4 from 'proj4'; // Import proj4
-import { projectionBounds } from '@/lib/fmiQueryData';
+import {projectionBounds} from '@/lib/fmiQueryData';
 
 // Defines the projections
 proj4.defs([
@@ -22,7 +22,7 @@ proj4.defs([
     ['EPSG:4326', '+proj=longlat +datum=WGS84 +no_defs'],
 ]);
 
-function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
+function ResetButton({initialLocation, initialZoom, isDarkMode}) {
     const map = useMap();
     const resetMap = () => {
         map.setView(initialLocation, initialZoom);
@@ -50,13 +50,13 @@ function ResetButton({ initialLocation, initialZoom, isDarkMode }) {
                         : '/svgs/resetmap_black.svg'
                 }
                 alt="Reset Map"
-                style={{ width: '25px', height: '25px' }}
+                style={{width: '25px', height: '25px'}}
             />
         </button>
     );
 }
 
-function ToggleButton({ toggleMapStyle, isDarkMode }) {
+function ToggleButton({toggleMapStyle, isDarkMode}) {
     return (
         <button
             onClick={toggleMapStyle}
@@ -80,7 +80,7 @@ function ToggleButton({ toggleMapStyle, isDarkMode }) {
                         : '/svgs/mode_black.svg'
                 }
                 alt="Change Mode"
-                style={{ width: '25px', height: '25px' }}
+                style={{width: '25px', height: '25px'}}
             />
         </button>
     );
@@ -98,7 +98,7 @@ const rotatedIcon = (iconUrl, rotation, iconSize) => {
     });
 };
 
-export default function RadarClientComponent({ data }) {
+export default function RadarClientComponent({data}) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [timestamps, setTimestamps] = useState([]);
     const [isDarkMode, setIsDarkMode] = useState(true);
@@ -116,7 +116,10 @@ export default function RadarClientComponent({ data }) {
     // Extracts URLs and timestamps from the data
     useEffect(() => {
         if (data.length > 0) {
-            const generatedTimestamps = data.map((item) => item.timestamp); // Extract timestamps
+            const generatedTimestamps = data.map((url) => {
+                const timeParam = new URL(url).searchParams.get('time');
+                return timeParam ? decodeURIComponent(timeParam) : null;
+            });
             setTimestamps(generatedTimestamps);
         }
     }, [data]);
@@ -184,7 +187,7 @@ export default function RadarClientComponent({ data }) {
         <MapContainer
             center={initialLocation}
             zoom={initialZoom}
-            style={{ height: '45vh', width: '100%' }}
+            style={{height: '42vh', width: '100%'}}
             zoomSnap={0.1}
         >
             <TileLayer
@@ -210,8 +213,8 @@ export default function RadarClientComponent({ data }) {
 
             {data.length > 0 && (
                 <ImageOverlay
-                    key={`${data[currentImageIndex].url}-${isDarkMode}`}
-                    url={data[currentImageIndex].url}
+                    key={`${data[currentImageIndex]}-${isDarkMode}`}
+                    url={data[currentImageIndex]}
                     bounds={bounds}
                     opacity={0.45}
                 />

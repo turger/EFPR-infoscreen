@@ -60,6 +60,6 @@ export default async function getAirspaces(req, res) {
         res.status(200).json(combinedData);
     } catch (error) {
         console.log('Error fetching data:', error);
-        res.status(500).json({ error: 'Failed to fetch data' });
+        res.status(500).json({error: 'Failed to fetch data'});
     }
 }
