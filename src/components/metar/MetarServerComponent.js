@@ -1,13 +1,8 @@
-import React, {useEffect, useRef, useState} from 'react';
-import isEqual from 'lodash.isequal';
+import React, {useEffect, useState} from 'react';
 import LoadingSpinner from '../LoadingSpinner';
 import ErrorComponent from '../ErrorComponent';
 import {getThreeLatestMetarDatas} from './utils';
 import styles from './metar.module.css';
-
-function compareData(currentData, newData) {
-    return isEqual(currentData, newData);
-}
 
 export default function MetarServerComponent() {
     const [error, setError] = useState();
@@ -38,7 +33,7 @@ export default function MetarServerComponent() {
         getData();
         const interval = setInterval(getData, 60000);
         return () => clearInterval(interval);
-    }, []);
+    }, [weatherApiUrl]);
 
     if (error) {
         return <ErrorComponent message={error.message} />;

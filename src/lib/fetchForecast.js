@@ -1,4 +1,3 @@
-import convert from 'xml-js';
 import {DOMParser} from 'xmldom';
 
 export default async function fetchAndCalculateAverages() {
@@ -159,23 +158,6 @@ function convertToOkta(cloudCoverage) {
         return 9; //sky obscured
     }
 }
-
-//fetch the data
-async function startDailyUpdate() {
-    const averages = await fetchAndCalculateAverages();
-    return averages;
-}
-
-// daily update
-function scheduleDailyUpdate() {
-    startDailyUpdate();
-
-    // start every 24h
-    setInterval(startDailyUpdate, 24 * 60 * 60 * 1000);
-    //setInterval(startDailyUpdate, 10 * 1000);
-}
-
-// scheduleDailyUpdate();
 
 export function transformDailyAverages(dailyAverages) {
     if (!dailyAverages || dailyAverages.length === 0) {

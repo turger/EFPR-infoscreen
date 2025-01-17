@@ -26,7 +26,7 @@ const weatherDataList = (weatherData) => [
         data: `${(weatherData.observation.tenMinPrecipitationOBSERVATION * 6).toFixed(0)} mm`,
     },
     {
-        title: 'CloudCover',
+        title: 'Cloud cover',
         data: `${weatherData.observation.CloudCoverageOBSERVATION}/8`,
     },
     {

@@ -9,8 +9,6 @@ export default async function observation() {
         `https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::multipointcoverage&place=pyhtää&starttime=${oneHourAgo.toISOString()}`,
     ];
 
-    //console.log('ObservationURL:', urls[1]);
-
     //Nyt ensimmäinen aikaleima on tasan 1h sitten, ja viimeinen on nykyhetki
 
     try {

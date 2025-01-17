@@ -1,7 +1,7 @@
 // src/components/notam/NotamClientComponent.js
 'use client';
 
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import styles from './notam.module.css';
 
 export default function NotamClientComponent() {
@@ -34,29 +34,6 @@ export default function NotamClientComponent() {
         }
     }
 
-    // Update the "Last updated" time text
-    const updateTimeSinceLastUpdate = () => {
-        if (lastUpdated) {
-            const now = new Date();
-            const diff = Math.floor((now - lastUpdated) / 1000); // Difference in seconds
-            const minutes = Math.floor(diff / 60);
-            const hours = Math.floor(minutes / 60);
-
-            if (hours >= 1) {
-                // When the full hour is reached, lastUpdated is updated and the couter is reset
-                fetchNotam();
-            } else if (minutes >= 1) {
-                // Display the number of minutes
-                setTimeSinceLastUpdate(`${minutes} minute(s) ago`);
-            } else {
-                // Number of seconds displayed
-                setTimeSinceLastUpdate(`${diff} second(s) ago`);
-            }
-        } else {
-            setTimeSinceLastUpdate('Not updated');
-        }
-    };
-
     // Retrieve NOTAM data for the first time and set the update interval every hour
     useEffect(() => {
         fetchNotam();
@@ -66,9 +43,33 @@ export default function NotamClientComponent() {
 
     // Updates the "Last updated" time every second
     useEffect(() => {
-        const intervalId = setInterval(updateTimeSinceLastUpdate, 1000);
-        return () => clearInterval(intervalId);
-    }, [lastUpdated]);
+        const updateTimeSinceLastUpdate = () => {
+            if (lastUpdated) {
+                const now = new Date();
+                const diff = Math.floor((now - lastUpdated) / 1000); // Difference in seconds
+                const minutes = Math.floor(diff / 60);
+                const hours = Math.floor(minutes / 60);
+
+                if (hours >= 1) {
+                    // When the full hour is reached, lastUpdated is updated and the couter is reset
+                    fetchNotam();
+                } else if (minutes >= 1) {
+                    // Display the number of minutes
+                    setTimeSinceLastUpdate(`${minutes} minute(s) ago`);
+                } else {
+                    // Number of seconds displayed
+                    setTimeSinceLastUpdate(`${diff} second(s) ago`);
+                }
+            } else {
+                setTimeSinceLastUpdate('Not updated');
+            }
+        };
+
+        const interval = setInterval(updateTimeSinceLastUpdate, 1000);
+        updateTimeSinceLastUpdate(); // Initial update
+
+        return () => clearInterval(interval);
+    }, [lastUpdated]); // Only depend on lastUpdated
 
     if (error) {
         return <div>{error}</div>;

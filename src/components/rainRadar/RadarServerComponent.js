@@ -1,4 +1,4 @@
-import React, {useState, useEffect, use} from 'react';
+import React, {useState, useEffect} from 'react';
 import dynamic from 'next/dynamic';
 import LoadingSpinner from '../LoadingSpinner';
 import ErrorComponent from '../ErrorComponent';
@@ -28,6 +28,7 @@ export default function RadarServerComponent() {
 
                 setImagePaths(urls);
             } catch (error) {
+                setError(error);
                 throw new Error(error);
             }
         };
