@@ -125,7 +125,11 @@ export default function AdsbClientComponent({flights, airspaces}) {
     useEffect(() => {
         const handleResize = () => {
             // Adjusts iconSize based on window width
-            setIconSize(window.innerWidth / 130);
+            if (window.innerWidth > 1000) {
+                setIconSize(window.innerWidth / 130);
+            } else {
+                setIconSize(12);
+            }
         };
         handleResize();
         window.addEventListener('resize', handleResize);
