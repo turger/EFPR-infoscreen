@@ -82,7 +82,9 @@ export default function NotamClientComponent() {
     return (
         <div className={styles.notamContainer}>
             {/* Main content area */}
-            <div className="flex-grow overflow-auto">{notam.content}</div>
+            <div className="flex-grow overflow-auto whitespace-pre-wrap">
+                {notam.content}
+            </div>
 
             {/* Footer */}
             <div className="flex flex-col justify-between items-start">

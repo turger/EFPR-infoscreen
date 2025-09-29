@@ -23,16 +23,18 @@ export default async function GET(req, res) {
 
         const htmlContent = await response.text();
         const $ = cheerio.load(htmlContent);
-        const title = $('p[style="font-size:20px"]').text().trim();
-        const content = $('p[style="font-size:14px"]')
-            .text()
+        const fullText = $('body').text();
+
+        // Split at the first '+' and normalize
+        const [titleRaw, ...contentParts] = fullText.split('+');
+        const title = (titleRaw || '').trim();
+        const content = contentParts
+            .join('+')
             .trim()
-            .replaceAll('?', '')
-            .replaceAll('�', ' ')
-            .replace('\n\n+\n', '\n\n')
-            .replace('EFPR - REDSTONE AERO\n\n', '')
-            .replace('\n', '')
-            .replaceAll('\n\n', '\n');
+            .replace(/\r/g, '')
+            .replace(/[ \t]+\n/g, '\n')
+            .replace(/\n{3,}/g, '\n\n');
+
         cachedData = {title, content};
         lastFetchTime = Date.now();
     }

@@ -5,6 +5,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 This project is forked from https://github.com/EHA-Display-Terminal-Team/eha-infoscreen
 
+![EFPR infoscreen screenshot](EFPR-infoscreen.png)
+
 ## Getting Started
 
 `yarn install` (only at first time)
@@ -23,8 +25,8 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 Aircraft location data from aero-network.
 ADS-B Data from: XAMK, Avionix. AUP/UUP Data from: Flyk.com
 
-ADSB_APIKEY=
-ADSB_USERKEY=
+ADSB_APIKEY=  
+ADSB_USERKEY=  
 
 ### Runway station observations
 
@@ -50,11 +52,11 @@ NEXT_PUBLIC_FIREBASE_APPID=
 Create a new Firebase project from Firebase console. You should have Firebase CLI version 12.1.0 or later. You might have to install firebase-tools globally `npm install -g firebase-tools`.
 
 Only at first time:
-`firebase login`
-`firebase experiments:enable webframeworks` to make Next.js work with Firebase
+`firebase login`  
+`firebase experiments:enable webframeworks` to make Next.js work with Firebase  
 `firebase init` (select hosting and realtime database)
 
-Hosting init:
+Hosting init:  
 Select `Use an existing project`
 
 ```
@@ -66,5 +68,5 @@ Select `Use an existing project`
 
 ## Deploying to Firebase
 
-When deploying a new version to Firebase:
+When deploying a new version to Firebase:  
 `yarn fb-deploy`
